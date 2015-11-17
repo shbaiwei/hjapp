@@ -76,7 +76,7 @@
     self.navigationController.navigationBarHidden=NO;
     //NSLog(@"_istag===%d",_isTag);
     
-    [self hidesTabBar:YES];
+    [self hidesTabBar:NO];
     [HttpEngine getCart:^(NSArray *dataArray, NSString *totalPrice, NSString *shippingFee, NSString *paymentPrice) {
         NSArray*array=dataArray;
         int num=0;
@@ -96,7 +96,7 @@
     _catalogueStrArray=[[NSMutableArray alloc]init];
     
     self.navigationItem.hidesBackButton=YES;
-    self.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(popself)];
+//    self.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(popself)];
     
     self.title=@"选择品种";
     [HttpEngine getAllFlower:^(NSArray *dataArray)
@@ -119,12 +119,12 @@
     
     
 }
--(void)popself
-{
-    
-    FlashViewController*flashVC=[[FlashViewController alloc]init];
-    [self.navigationController pushViewController:flashVC animated:YES];
-}
+//-(void)popself
+//{
+//    
+//    FlashViewController*flashVC=[[FlashViewController alloc]init];
+//    [self.navigationController pushViewController:flashVC animated:YES];
+//}
 
 -(void)getRightData
 {
@@ -304,41 +304,40 @@
     [self.view addSubview:self.leftTableV];
     
     //购物车
-    self.shopCarIV = [[UIImageView alloc] init];
-    self.shopCarIV.image = [UIImage imageNamed:@"shopcarr.png"];
-    self.shopCarIV.frame = CGRectMake(VIEW_WIDTH * 0.05, LBVIEW_HEIGHT1 / 1.36, VIEW_WIDTH * 0.142, VIEW_HEIGHT * 0.08);
-    [self.view addSubview:self.shopCarIV];
-    
-    UIButton*shopBtn=[[UIButton alloc]initWithFrame:CGRectMake(VIEW_WIDTH * 0.05, LBVIEW_HEIGHT1 / 1.36, VIEW_WIDTH * 0.142, VIEW_HEIGHT * 0.08)];
-    [shopBtn addTarget:self action:@selector(goShopCar) forControlEvents:UIControlEventTouchUpInside];
-    //[shopBtn setBackgroundColor:[UIColor redColor]];
-    [self.view addSubview:shopBtn];
-    
-    _numLabel=[[UILabel alloc]initWithFrame:CGRectMake(VIEW_WIDTH * 0.05+VIEW_WIDTH * 0.142-VIEW_HEIGHT*0.02, LBVIEW_HEIGHT1 / 1.36, VIEW_HEIGHT * 0.02, VIEW_HEIGHT * 0.02)];
-    _numLabel.backgroundColor=[UIColor redColor];
-    _numLabel.layer.cornerRadius=VIEW_HEIGHT*0.01;
-    _numLabel.clipsToBounds=YES;
-    _numLabel.font=[UIFont systemFontOfSize:10];
-    _numLabel.textAlignment=NSTextAlignmentCenter;
-    _numLabel.textColor=[UIColor whiteColor];
-    [self.view addSubview:_numLabel];
-    
-}
-//去购物车
--(void)goShopCar
-{
-    
-    ShopingPageViewController*shopVC=[[ShopingPageViewController alloc]init];
-    [self.navigationController pushViewController:shopVC animated:YES];
+//    self.shopCarIV = [[UIImageView alloc] init];
+//    self.shopCarIV.image = [UIImage imageNamed:@"shopcarr.png"];
+//    self.shopCarIV.frame = CGRectMake(VIEW_WIDTH * 0.05, LBVIEW_HEIGHT1 / 1.36, VIEW_WIDTH * 0.142, VIEW_HEIGHT * 0.08);
+//    [self.view addSubview:self.shopCarIV];
+//    
+//    UIButton*shopBtn=[[UIButton alloc]initWithFrame:CGRectMake(VIEW_WIDTH * 0.05, LBVIEW_HEIGHT1 / 1.36, VIEW_WIDTH * 0.142, VIEW_HEIGHT * 0.08)];
+//    [shopBtn addTarget:self action:@selector(goShopCar) forControlEvents:UIControlEventTouchUpInside];
+//    //[shopBtn setBackgroundColor:[UIColor redColor]];
+//    [self.view addSubview:shopBtn];
+//    
+//    _numLabel=[[UILabel alloc]initWithFrame:CGRectMake(VIEW_WIDTH * 0.05+VIEW_WIDTH * 0.142-VIEW_HEIGHT*0.02, LBVIEW_HEIGHT1 / 1.36, VIEW_HEIGHT * 0.02, VIEW_HEIGHT * 0.02)];
+//    _numLabel.backgroundColor=[UIColor redColor];
+//    _numLabel.layer.cornerRadius=VIEW_HEIGHT*0.01;
+//    _numLabel.clipsToBounds=YES;
+//    _numLabel.font=[UIFont systemFontOfSize:10];
+//    _numLabel.textAlignment=NSTextAlignmentCenter;
+//    _numLabel.textColor=[UIColor whiteColor];
+//    [self.view addSubview:_numLabel];
     
 }
+////去购物车
+//-(void)goShopCar
+//{
+//    
+//    ShopingPageViewController*shopVC=[[ShopingPageViewController alloc]init];
+//    [self.navigationController pushViewController:shopVC animated:YES];
+//    
+//}
 
 
 //右视图
 -(void)showRightTableView
 {
-    self.rightTableV=[[UITableView alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1/3.5, VIEW_HEIGHT/10, 5*LBVIEW_WIDTH1/6, 5*LBVIEW_HEIGHT1/6) style:UITableViewStyleGrouped];
-    
+    self.rightTableV=[[UITableView alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1/3.5, VIEW_HEIGHT/10, 5*LBVIEW_WIDTH1/6, 5*LBVIEW_HEIGHT1/6-64) style:UITableViewStylePlain];
     self.rightTableV.delegate=self;
     self.rightTableV.dataSource=self;
     [self.view addSubview:self.rightTableV];
@@ -479,7 +478,7 @@
 }
 
 
-//cell的区数
+//cell的行数
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     
@@ -516,7 +515,7 @@
     return 0;
 }
 
-//cell的行数
+//区数
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     if ([tableView isEqual:self.leftTableV])
@@ -604,20 +603,13 @@
 //    [UIView beginAnimations:@"123" context:nil];
 //    [UIView setAnimationDuration:2];
     
-    [UIView animateWithDuration:0.5 animations:^
+    [UIView animateWithDuration:1.5 animations:^
     {
-        anImage.frame=CGRectMake(LBVIEW_WIDTH1-LBVIEW_WIDTH1/3, rect.origin.y-LBVIEW_HEIGHT1/10, 40, 40);
+        anImage.frame=CGRectMake(3*LBVIEW_WIDTH1/5, LBVIEW_HEIGHT1-54, 40, 40);
         
     } completion:^(BOOL finished)
     {
-       [UIView animateWithDuration:1 animations:^
-        {
-        anImage.frame=CGRectMake(VIEW_WIDTH * 0.05+7, LBVIEW_HEIGHT1 / 1.36+7, 40, 40);
-           
-       } completion:^(BOOL finished)
-        {
-           [anImage removeFromSuperview];
-       }];
+        [anImage removeFromSuperview];
         
     }];
 //    [UIView commitAnimations];
@@ -639,6 +631,12 @@
         
         AllFlower*flower=_floerNameArray[indexPath.row];
         
+        //重置row状态
+        for (int i=0; i<_floerDetailArray.count; i++)
+        {
+            _isOpen[i]=NO;
+        }
+       
         //获取产品
         NSString*locatioanStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
         [HttpEngine getProductDetail:flower.flowerId withLocation:locatioanStr withProps:nil withPage:@"1" withPageSize:@"30" completion:^(NSArray *dataArray)

@@ -26,13 +26,12 @@
 {
     [super viewDidLoad];
     self.navigationController.navigationBarHidden=NO;
- //   self.navigationItem.hidesBackButton=YES;
-    
-//    self.navigationController.navigationBar =[[UIBarButtonItem alloc]initWithTitle:@"返回" style: UIBarButtonItemStylePlain target:self action:@selector(goBackBtn)];
+    [self hidesTabBar:YES];
+    self.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(goBackBtn)];
     
     
     self.title=@"订单详情";
-    _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-64) style:UITableViewStyleGrouped];
+    _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1) style:UITableViewStyleGrouped];
     _tableView.dataSource=self;
     _tableView.delegate=self;
     [self.view addSubview:_tableView];
@@ -40,10 +39,10 @@
     
 }
 
-//-(void)goBackBtn
-//{
-//    [self.navigationController popToRootViewControllerAnimated:YES];
-//}
+-(void)goBackBtn
+{
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -163,7 +162,7 @@
         if (section==0)
     {
         label.text=@"订单号:";
-        image.image=[UIImage imageNamed:@"oderNum.png"];
+        image.image=[UIImage imageNamed:@"order-ddh.png"];
         UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(130, 10, 150, 20)];
         numLabel.text=order.orderNo;
         numLabel.font=[UIFont systemFontOfSize:20];
@@ -172,12 +171,12 @@
     }
     if (section==1)
     {
-        image.image=[UIImage imageNamed:@"oderkagaku.png"];
+        image.image=[UIImage imageNamed:@"order-ddjg.png"];
         label.text=@"订单价格";
     }
     if (section==2)
     {
-         image.image=[UIImage imageNamed:@"oderList.png"];
+         image.image=[UIImage imageNamed:@"order-spqd.png"];
         label.text=@"商品清单";
     }
     
@@ -214,4 +213,33 @@
     return view;
 }
 
+//自定义隐藏tarbtn
+-(void)hidesTabBar:(BOOL)hidden
+{
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0];
+    for (UIView *view in self.tabBarController.view.subviews) {
+        if ([view isKindOfClass:[UITabBar class]]) {
+            if (hidden)
+            {
+                [view setFrame:CGRectMake(view.frame.origin.x, [UIScreen mainScreen].bounds.size.height, view.frame.size.width , view.frame.size.height)];
+            }
+            else{
+                [view setFrame:CGRectMake(view.frame.origin.x, [UIScreen mainScreen].bounds.size.height - 49, view.frame.size.width, view.frame.size.height)];
+                
+            }
+        }
+        else{
+            if([view isKindOfClass:NSClassFromString(@"UITransitionView")]){
+                if (hidden) {
+                    [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, [UIScreen mainScreen].bounds.size.height)];
+                }
+                else{
+                    [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, [UIScreen mainScreen].bounds.size.height - 49 )];
+                }
+            }
+        }
+    }
+    [UIView commitAnimations];
+}
 @end

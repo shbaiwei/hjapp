@@ -48,7 +48,6 @@
          [self showTableView];
      }];
     
-    [HttpEngine checkUser];
     //self.navigationController.navigationBarHidden=YES;
 }
 - (void)viewDidLoad
@@ -79,6 +78,14 @@
     [self.view addSubview:grayblueV];
     
     self.okaneL = [[UILabel alloc] init];
+    
+    NSLog(@"_shippingFee==%@",_shippingFee);
+//    NSString*str=@"0";
+//    if ([_shippingFee isEqualToString:str])
+//    {
+//        _shippingFee=@"免运费";
+//    }
+    
     self.okaneL.text = [NSString stringWithFormat:@"总计%@运费%@元",_totalPrice, _shippingFee];
     self.okaneL.textColor = [UIColor whiteColor];
     self.okaneL.backgroundColor=[UIColor blackColor];
@@ -191,6 +198,7 @@
         _totalPrice=totalPrice;
         _shippingFee=shippingFee;
         [self add:(sender.tag)];
+        
     }];
     
 }
@@ -243,6 +251,11 @@
         _dataArray=dataArray;
         _totalPrice=totalPrice;
         _shippingFee=shippingFee;
+//        if ([_shippingFee isEqualToString:@"0"])
+//        {
+//            _shippingFee=@"免运费";
+//        }
+        self.okaneL.text = [NSString stringWithFormat:@"总计%@运费%@元",_totalPrice, _shippingFee];
         [_tableView reloadData];
     }];
 }

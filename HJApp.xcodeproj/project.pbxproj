@@ -155,6 +155,7 @@
 		3242B14F1BE7155D00B29989 /* UIProgressView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 3242B1441BE7155D00B29989 /* UIProgressView+AFNetworking.m */; };
 		3242B1501BE7155D00B29989 /* UIRefreshControl+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 3242B1461BE7155D00B29989 /* UIRefreshControl+AFNetworking.m */; };
 		3242B1511BE7155D00B29989 /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 3242B1481BE7155D00B29989 /* UIWebView+AFNetworking.m */; };
+		325089DA1BFACD2800FD0CD3 /* HJNotifiton.m in Sources */ = {isa = PBXBuildFile; fileRef = 325089D91BFACD2700FD0CD3 /* HJNotifiton.m */; };
 		325AC5C51BE715DB00408525 /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 325AC5A51BE715DB00408525 /* MKAnnotationView+WebCache.m */; };
 		325AC5C61BE715DB00408525 /* NSData+ImageContentType.m in Sources */ = {isa = PBXBuildFile; fileRef = 325AC5A71BE715DB00408525 /* NSData+ImageContentType.m */; };
 		325AC5C71BE715DB00408525 /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 325AC5A91BE715DB00408525 /* SDImageCache.m */; };
@@ -183,6 +184,8 @@
 		325AC5EF1BE7707500408525 /* IdeaBackViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 325AC5ED1BE7707500408525 /* IdeaBackViewController.xib */; };
 		325AC5F31BE772F900408525 /* CooperateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 325AC5F11BE772F900408525 /* CooperateViewController.m */; };
 		325AC5F41BE772F900408525 /* CooperateViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 325AC5F21BE772F900408525 /* CooperateViewController.xib */; };
+		3289AFB51BFADDE70037A728 /* TodayShopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3289AFB31BFADDE70037A728 /* TodayShopViewController.m */; };
+		3289AFB61BFADDE70037A728 /* TodayShopViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3289AFB41BFADDE70037A728 /* TodayShopViewController.xib */; };
 		32B49B561BE30CE400AB6D55 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 32B49B551BE30CE400AB6D55 /* main.m */; };
 		32B49B591BE30CE400AB6D55 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 32B49B581BE30CE400AB6D55 /* AppDelegate.m */; };
 		32B49B5C1BE30CE400AB6D55 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32B49B5B1BE30CE400AB6D55 /* ViewController.m */; };
@@ -394,7 +397,7 @@
 		320BBF2B1BF9DCF7004DE70A /* themap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = themap.png; sourceTree = "<group>"; };
 		320BBF2C1BF9DCF7004DE70A /* user.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user.png; sourceTree = "<group>"; };
 		320BBF331BF9DD12004DE70A /* jt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = jt.png; sourceTree = "<group>"; };
-		320BBF351BF9DF95004DE70A /* navi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navi.png; sourceTree = "<group>"; };
+		320BBF351BF9DF95004DE70A /* navi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = navi.png; path = ../navi.png; sourceTree = "<group>"; };
 		320BBF371BF9E39E004DE70A /* over.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = over.png; sourceTree = "<group>"; };
 		322694E71BF426FF00955170 /* FlowerCatalogue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlowerCatalogue.h; sourceTree = "<group>"; };
 		322694E81BF426FF00955170 /* FlowerCatalogue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlowerCatalogue.m; sourceTree = "<group>"; };
@@ -435,6 +438,8 @@
 		3242B1461BE7155D00B29989 /* UIRefreshControl+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIRefreshControl+AFNetworking.m"; sourceTree = "<group>"; };
 		3242B1471BE7155D00B29989 /* UIWebView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+AFNetworking.h"; sourceTree = "<group>"; };
 		3242B1481BE7155D00B29989 /* UIWebView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+AFNetworking.m"; sourceTree = "<group>"; };
+		325089D81BFACD2600FD0CD3 /* HJNotifiton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HJNotifiton.h; sourceTree = "<group>"; };
+		325089D91BFACD2700FD0CD3 /* HJNotifiton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HJNotifiton.m; sourceTree = "<group>"; };
 		325AC5A41BE715DB00408525 /* MKAnnotationView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKAnnotationView+WebCache.h"; sourceTree = "<group>"; };
 		325AC5A51BE715DB00408525 /* MKAnnotationView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKAnnotationView+WebCache.m"; sourceTree = "<group>"; };
 		325AC5A61BE715DB00408525 /* NSData+ImageContentType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+ImageContentType.h"; sourceTree = "<group>"; };
@@ -487,6 +492,9 @@
 		325AC5F01BE772F900408525 /* CooperateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CooperateViewController.h; sourceTree = "<group>"; };
 		325AC5F11BE772F900408525 /* CooperateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CooperateViewController.m; sourceTree = "<group>"; };
 		325AC5F21BE772F900408525 /* CooperateViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CooperateViewController.xib; sourceTree = "<group>"; };
+		3289AFB21BFADDE70037A728 /* TodayShopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodayShopViewController.h; sourceTree = "<group>"; };
+		3289AFB31BFADDE70037A728 /* TodayShopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodayShopViewController.m; sourceTree = "<group>"; };
+		3289AFB41BFADDE70037A728 /* TodayShopViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TodayShopViewController.xib; sourceTree = "<group>"; };
 		32B49B511BE30CE400AB6D55 /* HJApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HJApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32B49B551BE30CE400AB6D55 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32B49B571BE30CE400AB6D55 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -735,6 +743,7 @@
 		320BBE461BF9D4DD004DE70A /* images */ = {
 			isa = PBXGroup;
 			children = (
+				320BBF351BF9DF95004DE70A /* navi.png */,
 				320BBF371BF9E39E004DE70A /* over.png */,
 				320BBF211BF9DC27004DE70A /* kessan.png */,
 				320BBF331BF9DD12004DE70A /* jt.png */,
@@ -1035,6 +1044,9 @@
 				32DDC1241BECB43900649AE5 /* ChangCityViewController.h */,
 				32DDC1251BECB43900649AE5 /* ChangCityViewController.m */,
 				32DDC1261BECB43900649AE5 /* ChangCityViewController.xib */,
+				3289AFB21BFADDE70037A728 /* TodayShopViewController.h */,
+				3289AFB31BFADDE70037A728 /* TodayShopViewController.m */,
+				3289AFB41BFADDE70037A728 /* TodayShopViewController.xib */,
 				325AC5EB1BE7707500408525 /* IdeaBackViewController.h */,
 				325AC5EC1BE7707500408525 /* IdeaBackViewController.m */,
 				325AC5ED1BE7707500408525 /* IdeaBackViewController.xib */,
@@ -1051,7 +1063,6 @@
 				32B49B951BE30EBF00AB6D55 /* AssortPageViewController.h */,
 				32B49B961BE30EBF00AB6D55 /* AssortPageViewController.m */,
 				32B49B971BE30EBF00AB6D55 /* AssortPageViewController.xib */,
-				320BBF351BF9DF95004DE70A /* navi.png */,
 				32E4DD8A1BEB36B100EFC9C3 /* MyBtn.h */,
 				32E4DD8B1BEB36B100EFC9C3 /* MyBtn.m */,
 				32E4DD7D1BEAF64B00EFC9C3 /* AssortTableViewCell.h */,
@@ -1115,6 +1126,8 @@
 			children = (
 				32B49CC21BE37BB500AB6D55 /* HttpEngine.h */,
 				32B49CC31BE37BB500AB6D55 /* HttpEngine.m */,
+				325089D81BFACD2600FD0CD3 /* HJNotifiton.h */,
+				325089D91BFACD2700FD0CD3 /* HJNotifiton.m */,
 				3242B1311BE70C4700B29989 /* GetPic.h */,
 				3242B1321BE70C4700B29989 /* GetPic.m */,
 				325AC5D51BE73B8B00408525 /* AllFlower.h */,
@@ -1464,6 +1477,7 @@
 				32DDC1231BECAB1400649AE5 /* FlowerTableViewCell.xib in Resources */,
 				320BBF1A1BF9D8AC004DE70A /* shop2.png in Resources */,
 				32B49B641BE30CE400AB6D55 /* LaunchScreen.storyboard in Resources */,
+				3289AFB61BFADDE70037A728 /* TodayShopViewController.xib in Resources */,
 				320BBEDD1BF9D4DD004DE70A /* index_kangnaixing.png in Resources */,
 				320BBEB91BF9D4DD004DE70A /* head.png in Resources */,
 				320BBEFD1BF9D4DD004DE70A /* select3.png in Resources */,
@@ -1603,6 +1617,7 @@
 			files = (
 				322694E91BF426FF00955170 /* FlowerCatalogue.m in Sources */,
 				32E4DD8F1BEB54A900EFC9C3 /* ShopingCar.m in Sources */,
+				3289AFB51BFADDE70037A728 /* TodayShopViewController.m in Sources */,
 				325AC5CB1BE715DB00408525 /* SDWebImageDownloaderOperation.m in Sources */,
 				325AC5D11BE715DB00408525 /* UIImage+WebP.m in Sources */,
 				320BBE451BF9B65A004DE70A /* UIScrollView+SVPullToRefresh.m in Sources */,
@@ -1617,6 +1632,7 @@
 				32D0317A1BE9B99A008CAC2B /* OderTableViewCell.m in Sources */,
 				32B49CC41BE37BB500AB6D55 /* HttpEngine.m in Sources */,
 				325AC5EA1BE769E000408525 /* ConsumerDetail.m in Sources */,
+				325089DA1BFACD2800FD0CD3 /* HJNotifiton.m in Sources */,
 				320BBE441BF9B65A004DE70A /* UIScrollView+SVInfiniteScrolling.m in Sources */,
 				32B49B9D1BE30EDA00AB6D55 /* OrderPageViewController.m in Sources */,
 				32B49BA21BE30EF100AB6D55 /* ShopingPageViewController.m in Sources */,

@@ -129,8 +129,6 @@
         return;
     }
     
-    self.view.backgroundColor = [UIColor colorWithRed:0.97 green:0.97 blue:1 alpha:1];
-    
     NSString*idStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"ID"];
     
     [HttpEngine getConsumerDetailData:idStr completion:^(NSArray *dataArray)
@@ -151,6 +149,7 @@
     _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 64, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-118) style:UITableViewStyleGrouped];
     _tableView.delegate=self;
     _tableView.dataSource=self;
+    _tableView.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     [self.view addSubview:_tableView];
 
 }
@@ -189,19 +188,30 @@
         [cell addSubview:self.myOderLabel];
         
         //全部订单
-        UIButton*allBtn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1/15)];
+        UIButton*allBtn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1/12)];
         [allBtn addTarget:self action:@selector(allOrder) forControlEvents:UIControlEventTouchUpInside];
         [cell addSubview:allBtn];
         //订单分类
+        
         NSArray*array=[[NSArray alloc]initWithObjects:@"待付款",@"待收货",@"退款／售后", nil];
-
+//NSArray*picArray=[NSArray alloc]initWithObjects:@"order_state1.png",@"order_state2.png",@"order_state3.png", nil
         
         for (int i=0; i<3; i++)
         {
+            
+            UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(i*LBVIEW_WIDTH1/3, LBVIEW_HEIGHT1/12+LBVIEW_HEIGHT1/18, LBVIEW_WIDTH1/3, LBVIEW_HEIGHT1/36)];
+            label.text=array[i];
+            label.textColor=[UIColor blackColor];
+            label.textAlignment=NSTextAlignmentCenter;
+            label.font=[UIFont systemFontOfSize:13];
+            [cell addSubview:label];
+            
+            
+            UIImageView*imageV=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/7+i*LBVIEW_WIDTH1/3, LBVIEW_HEIGHT1/12, 30, 30)];
+            imageV.image=[UIImage imageNamed:[NSString stringWithFormat:@"order_state%d.png",i+1]];
+            [cell addSubview:imageV];
+            
             UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(i*LBVIEW_WIDTH1/3, LBVIEW_HEIGHT1/15, LBVIEW_WIDTH1/3, LBVIEW_HEIGHT1/15)];
-            [btn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-            [btn setTitle:array[i] forState:UIControlStateNormal];
-            //[btn setBackgroundColor:[UIColor redColor]];
             btn.tag=i+10;
             [btn addTarget:self action:@selector(chooseOrder:) forControlEvents:UIControlEventTouchUpInside];
             [cell addSubview:btn];

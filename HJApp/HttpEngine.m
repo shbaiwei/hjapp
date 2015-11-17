@@ -54,6 +54,84 @@
          NSLog(@"Error:%@",error);
      }];
 }
+//花集公告
++(void)getNotifition:(void(^)(NSArray*dataArray))complete
+{
+    AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
+    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/article/"];
+    [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
+     {
+         NSLog(@"JSON===:%@",responseObject);
+         NSArray*array=responseObject[@"results"];
+         NSMutableArray*dataArray=[[NSMutableArray alloc]init];
+         for (int i=0; i<array.count; i++)
+         {
+             NSDictionary*dic=array[i];
+             HJNotifiton*hj=[HJNotifiton getPicWithDictionary:dic];
+             [dataArray addObject:hj];
+         }
+         complete(dataArray);
+         
+     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
+     {
+         NSLog(@"Error:%@",error);
+     }];
+
+}
+
+//意见反馈
++(void)ideaFeedBackName:(NSString*)name withMoblie:(NSString*)moblie withContent:(NSString*)content
+{
+
+    AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
+    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/feedback/"];
+    
+    NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+    NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
+    [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
+    
+    NSDictionary*parameters=@{@"name":name,@"mobile":moblie,@"content":content};
+    
+    [session POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData)
+     {
+         
+     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
+     {
+         NSLog(@"JSON:%@",responseObject);
+         
+     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
+     {
+         NSLog(@"Error:%@",error);
+     }];
+
+}
+
+//商务合作
++(void)cooperateName:(NSString*)name withMoblie:(NSString*)moblie withEmail:(NSString*)email withDanWei:(NSString*)danWei withOther:(NSString*)other withIp:(NSString *)ip
+{
+    
+    AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
+    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/feedback/"];
+    
+    NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+    NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
+    [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
+
+    NSDictionary*parameters=@{@"name":name,@"mobile":moblie,@"email":email,@"company":danWei,@"content":other,@"feedback_type":@"1",@"ip":ip};
+    
+    [session POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData)
+     {
+         
+     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
+     {
+         NSLog(@"JSON:%@",responseObject);
+         
+     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
+     {
+         NSLog(@"Error:%@",error);
+     }];
+
+}
 
 //产品分类
 +(void)getAllFlower:(void(^)(NSArray*dataArray))complete
@@ -181,7 +259,7 @@
     
     [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
-         NSLog(@"JSON:%@",responseObject);
+         NSLog(@"123==JSON:%@",responseObject);
          //skuName,*price,*number
          
          NSArray*array=responseObject[@"cart_list"];
@@ -388,6 +466,7 @@
          consumer.realName=responseObject[@"real_name"];
          consumer.gender=responseObject[@"gender"];
          consumer.birthday=responseObject[@"birthday"];
+         consumer.mobile=responseObject[@"mobile"];
          [dataArray addObject:consumer];
          complete(dataArray);
          

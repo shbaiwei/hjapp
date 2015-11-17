@@ -16,6 +16,7 @@
 #import "FlowerDetail.h"
 #import "ShopingCar.h"
 #import "AllAdress.h"
+#import "HJNotifiton.h"
 
 @interface HttpEngine : NSObject
 
@@ -27,7 +28,14 @@
 //广告图
 +(void)getPicture:(void(^)(NSArray*dataArray))complete;
 
+//花集公告
++(void)getNotifition:(void(^)(NSArray*dataArray))complete;
 
+//意见反馈
++(void)ideaFeedBackName:(NSString*)name withMoblie:(NSString*)moblie withContent:(NSString*)content;
+
+//商务合作
++(void)cooperateName:(NSString*)name withMoblie:(NSString*)moblie withEmail:(NSString*)email withDanWei:(NSString*)danWei withOther:(NSString*)other withIp:(NSString*)ip;
 
 //发送短信
 +(void)sendMessage;
@@ -58,8 +66,6 @@
 
 //增加商品
 +(void)addGoodsLocation:(NSString*)location withSku:(NSString*)sku withSupplier:(NSString*)supplier withNumber:(NSString*)number;
-
-
 
 
 

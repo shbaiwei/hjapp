@@ -13,12 +13,13 @@
 #import "CooperateViewController.h"
 #import "AssortPageViewController.h"
 #import "ChangCityViewController.h"
+#import "TodayShopViewController.h"
 
 @interface HomePageViewController ()<UIScrollViewDelegate>
 
 {
     int _count;
-    
+    int _countT;
 }
 @property (nonatomic, strong) UIView *topView;
 @property (nonatomic, strong) UIButton *leftButton;
@@ -62,7 +63,8 @@
 //////////////
 @property(nonatomic,strong)NSArray*picDataArray;
 @property(nonatomic,strong)NSArray*cityNameArray;
-
+@property(nonatomic,strong)NSArray*notifitionArray;
+@property (nonatomic, strong) UIScrollView*notifitionScroll;
 
 
 
@@ -88,14 +90,13 @@
 {
     [super viewDidLoad];
     self.title=@"首页";
+    self.view.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     
     [HttpEngine getCityNameBackcompletion:^(NSArray *dataArray)
      {
-         
          _cityNameArray=dataArray;
          //显示顶部视图
          [self theTopView];
-         
          
      }];
     
@@ -105,7 +106,6 @@
     //滑动轮播图部分
     [HttpEngine getPicture:^(NSArray *dataArray)
      {
-         
          
          _picDataArray=dataArray;
          [self scrollViewAndPageControl];
@@ -141,7 +141,6 @@
     NSString*cityName=[[NSUserDefaults standardUserDefaults]objectForKey:@"CITYNAME"];
     if (cityName==NULL)
     {
-       //NSLog(@"上海笑");
        [[NSUserDefaults standardUserDefaults]setObject:dic[@"name"] forKey:@"CITYNAME"];
         self.cityLabel.text = dic[@"name"];
     }
@@ -163,13 +162,6 @@
     [self.downButton setImage:downImage forState:UIControlStateNormal];
     [self.downButton addTarget:self action:@selector(changeCityBtn) forControlEvents:UIControlEventTouchUpInside];
     [self.topView addSubview:self.downButton];
-    
-    //    self.twoNButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    //    self.twoNButton.frame = CGRectMake(VIEW_WIDTH * 0.87, VIEW_HEIGHT * 0.037, VIEW_WIDTH * 0.086, VIEW_HEIGHT * 0.043);
-    //    UIImage *twoNum = [UIImage imageNamed:@"twoN.png"];
-    //    twoNum = [twoNum imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    //    [self.twoNButton setImage:twoNum forState:UIControlStateNormal];
-    //    [self.topView addSubview:self.twoNButton];
     
 }
 //城市切换按钮
@@ -222,27 +214,12 @@
     [self.pageControl addTarget:self action:@selector(pageAction:) forControlEvents:UIControlEventValueChanged];
     [self.mainScroll addSubview:self.pageControl];
     
-    //修改
-    //定时器
-    [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(animotion) userInfo:nil repeats:YES];
 }
--(void)animotion
-{
-    _count++;
-    
-    if (_count>_picDataArray.count-3)
-    {
-        _count=0;
-    }
-    [self.scrollPic setContentOffset:CGPointMake(_count*LBVIEW_WIDTH1, 0)  animated:YES];
-}
-
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     NSInteger number =scrollView.contentOffset.x  / LBVIEW_WIDTH1;
     self.pageControl.currentPage = number;
 }
-
 - (void)pageAction:(UIPageControl *)pageCon
 {
     [self.scrollPic setContentOffset:CGPointMake(LBVIEW_WIDTH1 * pageCon.currentPage, 0) animated:YES];
@@ -253,7 +230,7 @@
 - (void)theFlowersButtons
 {
     self.flowerView = [[UIView alloc] init];
-    self.flowerView.frame = CGRectMake(0,LBVIEW_HEIGHT1/4.5, LBVIEW_WIDTH1, LBVIEW_WIDTH1 / 2);
+    self.flowerView.frame = CGRectMake(0,LBVIEW_HEIGHT1/4.5, LBVIEW_WIDTH1, LBVIEW_WIDTH1 / 2-2);
     self.flowerView.backgroundColor = [UIColor whiteColor];
     [self.mainScroll addSubview:self.flowerView];
     
@@ -274,7 +251,6 @@
     baiheImage = [baiheImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     self.baiheButton.contentMode = UIViewContentModeScaleAspectFill;
     self.baiheButton.frame = CGRectMake(self.roseButton.frame.size.width * 1.9, VIEW_HEIGHT * 0.02, VIEW_HEIGHT * 0.085, VIEW_HEIGHT * 0.085);
-    //    self.baiheButton.frame = CGRectMake(VIEW_WIDTH * 0.3, VIEW_HEIGHT * 0.02, VIEW_HEIGHT * 0.085, VIEW_HEIGHT * 0.085);
     [self.baiheButton setImage:baiheImage forState:UIControlStateNormal];
     self.baiheButton.layer.cornerRadius = 20;
     self.baiheButton.clipsToBounds = YES;
@@ -288,7 +264,6 @@
     knxImage = [knxImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     self.KNXButton.contentMode = UIViewContentModeScaleAspectFill;
     self.KNXButton.frame = CGRectMake(self.roseButton.frame.size.width * 3.6, VIEW_HEIGHT * 0.02, VIEW_HEIGHT * 0.085, VIEW_HEIGHT * 0.085);
-    //    self.KNXButton.frame = CGRectMake(VIEW_WIDTH * 0.55, VIEW_HEIGHT * 0.02, VIEW_HEIGHT * 0.085, VIEW_HEIGHT * 0.085);
     [self.KNXButton setImage:knxImage forState:UIControlStateNormal];
     self.KNXButton.layer.cornerRadius = 20;
     self.KNXButton.clipsToBounds = YES;
@@ -302,7 +277,6 @@
     dtjImage = [dtjImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     self.DTJButton.contentMode = UIViewContentModeScaleAspectFill;
     self.DTJButton.frame = CGRectMake(self.roseButton.frame.size.width * 5.3, VIEW_HEIGHT * 0.02, VIEW_HEIGHT * 0.085, VIEW_HEIGHT * 0.085);
-    //    self.DTJButton.frame = CGRectMake(VIEW_WIDTH * 0.81, VIEW_HEIGHT * 0.02, VIEW_HEIGHT * 0.085, VIEW_HEIGHT * 0.085);
     [self.DTJButton setImage:dtjImage forState:UIControlStateNormal];
     self.DTJButton.layer.cornerRadius = 20;
     self.DTJButton.clipsToBounds = YES;
@@ -329,7 +303,6 @@
     baoImage = [baoImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     self.baoButton.contentMode = UIViewContentModeScaleAspectFill;
     self.baoButton.frame = CGRectMake(self.huacaoButton.frame.size.width * 1.9, self.roseButton.frame.size.height * 1.75, VIEW_HEIGHT * 0.085, VIEW_HEIGHT * 0.085);
-    //    self.baoButton.frame = CGRectMake(VIEW_WIDTH * 0.3, self.roseButton.frame.size.height * 1.75, VIEW_HEIGHT * 0.085, VIEW_HEIGHT * 0.085);
     [self.baoButton setImage:baoImage forState:UIControlStateNormal];
     self.baoButton.layer.cornerRadius = 20;
     self.baoButton.clipsToBounds = YES;
@@ -343,7 +316,6 @@
     yshImage = [yshImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     self.yshButton.contentMode = UIViewContentModeScaleAspectFill;
     self.yshButton.frame = CGRectMake(self.huacaoButton.frame.size.width * 3.6, self.roseButton.frame.size.height * 1.75, VIEW_HEIGHT * 0.085, VIEW_HEIGHT * 0.085);
-    //    self.yshButton.frame = CGRectMake(VIEW_WIDTH * 0.55, self.roseButton.frame.size.height * 1.75, VIEW_HEIGHT * 0.085, VIEW_HEIGHT * 0.085);
     [self.yshButton setImage:yshImage forState:UIControlStateNormal];
     self.yshButton.layer.cornerRadius = 20;
     self.yshButton.clipsToBounds = YES;
@@ -424,6 +396,7 @@
 }
 -(void)btnClick:(UIButton*)sender
 {
+    
     AssortPageViewController*assortVC=[[AssortPageViewController alloc]init];
     assortVC.isTag=(int)sender.tag-1;
     [self.navigationController pushViewController:assortVC animated:YES];
@@ -439,24 +412,87 @@
     self.oneMoneyView.backgroundColor = [UIColor whiteColor];
     [self.mainScroll addSubview:self.oneMoneyView];
     
-    self.todayMoneyImageView = [[UIImageView alloc] init];
-    self.todayMoneyImageView.image = [UIImage imageNamed:@"toady-market.png"];
-    self.todayMoneyImageView.frame = CGRectMake(10, VIEW_HEIGHT * 0.01, VIEW_WIDTH / 4, VIEW_HEIGHT * 0.042);
-    [self.oneMoneyView addSubview:self.todayMoneyImageView];
     
-    self.textLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.todayMoneyImageView.frame.size.width + 10, 7, LBVIEW_WIDTH1 / 1.6, VIEW_HEIGHT * 0.05)];
-    self.textLabel.text = @"上海批发市场均价最近七天环比上升9.68%";
-    self.textLabel.textColor = [UIColor blackColor];
-    self.textLabel.font = [UIFont systemFontOfSize:12];
-    [self.oneMoneyView addSubview:self.textLabel];
+    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, (LBVIEW_HEIGHT1 / 13- LBVIEW_HEIGHT1 / 15)/2, VIEW_WIDTH / 4, LBVIEW_HEIGHT1 / 15)];
+    label.text=@"花集公告";
+    label.textColor=[UIColor blueColor];
+    label.textAlignment=NSTextAlignmentCenter;
+    label.font=[UIFont boldSystemFontOfSize:18];
+    [self.oneMoneyView addSubview:label];
     
+    UILabel*lineLabel=[[UILabel alloc]initWithFrame:CGRectMake(10+VIEW_WIDTH / 4-1,(LBVIEW_HEIGHT1 / 13- LBVIEW_HEIGHT1 / 20)/2, 1, LBVIEW_HEIGHT1 / 20)];
+    lineLabel.backgroundColor=[UIColor grayColor];
+    [self.oneMoneyView addSubview:lineLabel];
+    
+    [HttpEngine getNotifition:^(NSArray *dataArray)
+    {
+        _notifitionArray=dataArray;
+        [self todayShop];
+    }];
+    
+}
+//今日花市
+-(void)todayShop
+{
+    _notifitionScroll=[[UIScrollView alloc]initWithFrame:CGRectMake(VIEW_WIDTH / 4 + 10, (LBVIEW_HEIGHT1 / 13- LBVIEW_HEIGHT1 / 15)/2, 3*VIEW_WIDTH/4-20, LBVIEW_HEIGHT1 / 15)];
+    _notifitionScroll.contentSize=CGSizeMake(3*VIEW_WIDTH/4-10, LBVIEW_HEIGHT1 / 15*_notifitionArray.count);
+    _notifitionScroll.showsHorizontalScrollIndicator=NO;
+    _notifitionScroll.showsVerticalScrollIndicator=NO;
+    _notifitionScroll.delegate=self;
+    _notifitionScroll.bounces=NO;
+    _notifitionScroll.pagingEnabled=YES;
+    [self.oneMoneyView addSubview:_notifitionScroll];
+    for (int i=0; i<_notifitionArray.count; i++)
+    {
+        HJNotifiton*hjn=_notifitionArray[i];
+        UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0,i*LBVIEW_HEIGHT1 / 15, 3*VIEW_WIDTH/4-20,LBVIEW_HEIGHT1/15)];
+        [btn setTitle:hjn.title forState:UIControlStateNormal];
+        [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        btn.tag=1000+i;
+        [btn addTarget:self action:@selector(gotoNotifition:) forControlEvents:UIControlEventTouchUpInside];
+        [_notifitionScroll addSubview:btn];
+        
+    }
+    //定时器
+    [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(animotion) userInfo:nil repeats:YES];
+}
+
+-(void)gotoNotifition:(UIButton*)sender
+{
+    TodayShopViewController*todayVC=[[TodayShopViewController alloc]init];
+    todayVC.tag=(int)sender.tag-1000;
+    [self.navigationController pushViewController:todayVC animated:YES];
+    
+}
+
+
+-(void)animotion
+{
+    //上面
+    _count++;
+        
+    if (_count>_picDataArray.count-3)
+    {
+        _count=0;
+    }
+    [self.scrollPic setContentOffset:CGPointMake(_count*LBVIEW_WIDTH1, 0)  animated:YES];
+    
+    //下面
+    _countT++;
+    
+    if (_countT>_notifitionArray.count-1)
+    {
+        _countT=0;
+    }
+    [self.notifitionScroll setContentOffset:CGPointMake(0,_countT*LBVIEW_HEIGHT1 / 15)  animated:YES];
 }
 
 
 
 
-//一元疯抢部分
--(void)theOneMoney {
+//限时秒杀部分
+-(void)theOneMoney
+{
     
     self.oneMoneyImageView = [[UIImageView alloc] init];
     GetPic*getpic=_picDataArray[1];
@@ -471,25 +507,36 @@
 
 
 //意见反馈以及商务合作部分
-- (void)theIkenAndBess {
+- (void)theIkenAndBess
+{
+    
+    NSArray*array=[[NSArray alloc]initWithObjects:@"意见反馈",@"商务合作", nil];
+    for (int i=0; i<2;i++)
+    {
+        UIView*view=[[UIView alloc]initWithFrame:CGRectMake(i*(VIEW_WIDTH / 2+1), LBVIEW_WIDTH1 / 2+ LBVIEW_HEIGHT1 / 4.5+LBVIEW_HEIGHT1/13+VIEW_HEIGHT / 6+3, VIEW_WIDTH / 2-1, VIEW_HEIGHT * 0.08)];
+        view.backgroundColor=[UIColor whiteColor];
+        [self.mainScroll addSubview:view];
+
+        
+        UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/10+i*LBVIEW_WIDTH1/2, LBVIEW_WIDTH1 / 2+ LBVIEW_HEIGHT1 / 4.5+LBVIEW_HEIGHT1/13+VIEW_HEIGHT / 6+20, 30, 30)];
+        image.image=[UIImage imageNamed:[NSString stringWithFormat:@"other_service_%d.png",i+1]];
+        [self.mainScroll addSubview:image];
+        
+        UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/10+i*LBVIEW_WIDTH1/2+30, LBVIEW_WIDTH1 / 2+ LBVIEW_HEIGHT1 / 4.5+LBVIEW_HEIGHT1/13+VIEW_HEIGHT / 6+10, VIEW_WIDTH / 4,VIEW_HEIGHT * 0.07)];
+        label.text=array[i];
+        label.textColor=[UIColor blackColor];
+        [self.mainScroll addSubview:label];
+        
+    }
+    
     
     self.ikenButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    UIImage *ikenImage = [UIImage imageNamed:@"other_service_1.png"];
-//    ikenImage = [ikenImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-//    [self.ikenButton setImage:ikenImage forState:UIControlStateNormal];
-    [self.ikenButton setTitle:@"意见反馈" forState:UIControlStateNormal];
     self.ikenButton.frame = CGRectMake(0, LBVIEW_WIDTH1 / 2+ LBVIEW_HEIGHT1 / 4.5+LBVIEW_HEIGHT1/13+VIEW_HEIGHT / 6, VIEW_WIDTH / 2, VIEW_HEIGHT * 0.07);
-    self.ikenButton.backgroundColor = [UIColor whiteColor];
     [self.ikenButton addTarget:self action:@selector(ikenButton:) forControlEvents:UIControlEventTouchUpInside];
     [self.mainScroll addSubview:self.ikenButton];
     
     self.bessButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    UIImage *bessImage = [UIImage imageNamed:@"other_service_2.png"];
-//    bessImage = [bessImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-//    [self.bessButton setImage:bessImage forState:UIControlStateNormal];
-    [self.bessButton setTitle:@"商务合作" forState:UIControlStateNormal];
     self.bessButton.frame = CGRectMake(self.ikenButton.frame.size.width + 1,  LBVIEW_WIDTH1 / 2+ LBVIEW_HEIGHT1 / 4.5+LBVIEW_HEIGHT1/13+VIEW_HEIGHT / 6, VIEW_WIDTH / 2, VIEW_HEIGHT * 0.07);
-    self.bessButton.backgroundColor = [UIColor whiteColor];
     [self.bessButton addTarget:self action:@selector(bessButton:) forControlEvents:UIControlEventTouchUpInside];
     [self.mainScroll addSubview:self.bessButton];
     
@@ -497,7 +544,6 @@
 }
 -(void)ikenButton:(UIButton*)sender
 {
-    
     IdeaBackViewController*ideaVC=[[IdeaBackViewController alloc]init];
     [self.navigationController pushViewController:ideaVC animated:YES];
     

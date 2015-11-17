@@ -210,25 +210,6 @@
     
     self.tableView.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     
-//    if (_dataArray.count==0)
-//    {
-//        
-//    }
-//    else
-//    {
-//        //表尾部
-//        UIView*footView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 60)];
-//        footView.backgroundColor=[UIColor lightGrayColor];
-//        self.tableView.tableFooterView=footView;
-//        
-//        UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 10, LBVIEW_WIDTH1, 30)];
-//        [btn setBackgroundColor:[UIColor whiteColor]];
-//        [btn setTitle:@"加载更多..." forState:UIControlStateNormal];
-//        [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-//        [btn addTarget:self action:@selector(loadMoreOrder) forControlEvents:UIControlEventTouchUpInside];
-//        [footView addSubview:btn];
-//    }
-    
     //下拉刷新 上拉加载更多
     __weak OrderPageViewController *weakSelf = self;
     
@@ -243,20 +224,6 @@
     }];
 
 }
-//加载更多
-//-(void)loadMoreOrder
-//{
-//    _pageNum+=10;
-//    NSString*pageNumStr=[NSString stringWithFormat:@"%d",_pageNum];
-//    [HttpEngine myOrder:@"1" with:@"1" with:pageNumStr with:@"" completion:^(NSArray *dataArray)
-//     {
-//         _dataArray=dataArray;
-//         
-//         //[self showMyOrder];
-//         [_tableView reloadData];
-//     }];
-//}
-
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     NSDictionary*dic=_dataArray[section];
@@ -396,16 +363,12 @@
     [view addSubview:lable];
     
     UIButton*btn=[UIButton buttonWithType:UIButtonTypeSystem];
-    
-    //边框颜色
-//    CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateDeviceRGB();
-//    CGColorRef color = CGColorCreate(colorSpaceRef, (CGFloat[]){1,0,0,1});
-//    [btn.layer setBorderColor:color];
-//    btn.layer.borderColor=[UIColor grayColor].CGColor;
-    
+    btn.layer.borderColor=[UIColor grayColor].CGColor;
+    btn.layer.borderWidth=1;
+    btn.layer.cornerRadius=2;
     btn.frame=CGRectMake(LBVIEW_WIDTH1-110, LBVIEW_HEIGHT1*0.12-30, 100, 20);
     [btn setTitle:@"再次购买" forState:UIControlStateNormal];
-    [btn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(againBuy) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:btn];
     
