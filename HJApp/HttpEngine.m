@@ -210,8 +210,14 @@
     
     NSMutableArray*datArray=[[NSMutableArray alloc]init];
     
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[BWCommon getCurrentVC].view animated:YES];
+    hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"head.png"]];
+    hud.mode = MBProgressHUDModeCustomView;
+    
+    
     [session GET:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
+         [hud removeFromSuperview];
          //NSLog(@"分类产品  JSON:%@",responseObject);
          NSArray*array=responseObject[@"data"];
          for (int i=0; i<array.count; i++)
@@ -227,6 +233,7 @@
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
      {
          NSLog(@"Error:%@",error);
+         [hud removeFromSuperview];
      }];
 }
 

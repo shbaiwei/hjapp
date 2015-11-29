@@ -16,6 +16,7 @@
 #import "DistributionStyleViewController.h"
 #import "DistributionTimeViewController.h"
 #import "redPacketViewController.h"
+#import "PayTableViewCell.h"
 
 
 @interface PayViewController () <UIScrollViewDelegate>
@@ -36,6 +37,8 @@
 @property(nonatomic,copy)NSString*addrId;
 @property(nonatomic,copy)NSString*password;
 @property(nonatomic,copy)UITextField*tf;
+
+
 
 //送货方式
 @property(nonatomic,strong)UIView*shadView;
@@ -306,6 +309,14 @@
     }
     
 }
+
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if(indexPath.section == 1){
+        [self changeAddress];
+    }else if(indexPath.section == 3){
+        
+    }
+}
 //输入密码
 -(void)inputPassword
 {
@@ -449,13 +460,13 @@
     }
     if (indexPath.section==6)
     {
-        return 30;
+        return 40;
     }
     if (indexPath.section==7)
     {
-        return 30;
+        return 40;
     }
-    return 30;
+    return 40;
 }
 //cell
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -465,8 +476,10 @@
     if (cell==nil)
     {
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
-   
-    cell.selectionStyle=UITableViewCellSelectionStyleNone;
+        cell.selectionStyle=UITableViewCellSelectionStyleNone;
+        
+    }
+    
     switch (indexPath.section)
     {
         case 0:
@@ -480,9 +493,11 @@
             _styleLabel.font=[UIFont systemFontOfSize:14];
             [view addSubview:_styleLabel];
             
-            UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-30, 5, 10, 20)];
-            image.image=[UIImage imageNamed:@"item-r.png"];
-            [view addSubview:image];
+            cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+            
+            //UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-30, 5, 10, 20)];
+            //image.image=[UIImage imageNamed:@"item-r.png"];
+            //[view addSubview:image];
             
             UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 30)];
             [btn addTarget:self action:@selector(cutAddress) forControlEvents:UIControlEventTouchUpInside];
@@ -501,6 +516,8 @@
         _distributionAddrsDetailLabel.font=[UIFont systemFontOfSize:14];
         [cell addSubview:_distributionAddrsDetailLabel];
             
+            cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+            
         }
             break;
             
@@ -515,9 +532,11 @@
             _distributionLabel.font=[UIFont systemFontOfSize:14];
             [view addSubview:_distributionLabel];
             
-            UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-30, 5, 10, 20)];
-            image.image=[UIImage imageNamed:@"item-r.png"];
-            [view addSubview:image];
+            cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+            
+            //UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-30, 5, 10, 20)];
+            //image.image=[UIImage imageNamed:@"item-r.png"];
+            //[view addSubview:image];
             
             UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 30)];
             [btn addTarget:self action:@selector(distributionTime) forControlEvents:UIControlEventTouchUpInside];
@@ -527,17 +546,22 @@
             
         case 3:
         {
-
-            cell.imageView.image=[UIImage imageNamed:[NSString stringWithFormat:@"pay1-%lu.png",indexPath.row+1]];
-
-            cell.textLabel.text=_payStyleArray[indexPath.row];
+            PayTableViewCell *cell0 = [PayTableViewCell cellWithTableView:tableView];
+            
+            //UIImageView *iconImage = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 24, 24)];
+            [cell0.iconImage setImage:[UIImage imageNamed:[NSString stringWithFormat:@"pay1-%lu.png",indexPath.row+1]]];
+            //cell0.iconImage = iconImage;
+            //cell.imageView.frame = CGRectMake(0, 0, 24, 24);
+            cell0.textLabel.text=_payStyleArray[indexPath.row];
             UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-30, 5, 20, 20)];
             [btn setBackgroundImage:[UIImage imageNamed:@"maru.png"] forState:UIControlStateNormal];
             [btn setBackgroundImage:[UIImage imageNamed:@"Dg.png"] forState:UIControlStateSelected];
             btn.selected=NO;
             btn.tag=indexPath.row+10;
             [btn addTarget:self action:@selector(choosePayStyle:) forControlEvents:UIControlEventTouchUpInside];
-            [cell addSubview:btn];
+            [cell0 addSubview:btn];
+            
+            return cell0;
         }
             break;
             
@@ -550,9 +574,10 @@
                 _redLabel.textColor=[UIColor blackColor];
                 [cell addSubview:_redLabel];
             
-            UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-20, 5, 10, 20)];
-            image.image=[UIImage imageNamed:@"item-r.png"];
-            [cell addSubview:image];
+            cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+            //UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-20, 5, 10, 20)];
+            //image.image=[UIImage imageNamed:@"item-r.png"];
+            //[cell addSubview:image];
             
             if (![_redStr isEqualToString:@"未达到使用额度"]&&![_redStr isEqualToString:@"暂无红包"])
             {
@@ -628,7 +653,6 @@
         default:
             break;
     }
-    }
     return cell;
 }
 
@@ -637,7 +661,7 @@
 {
     DistributionStyleViewController*distribuVC=[[DistributionStyleViewController alloc]init];
     distribuVC.payVC=self;
-    [self.navigationController pushViewController:distribuVC animated:NO];
+    [self.navigationController pushViewController:distribuVC animated:YES];
 
 }
 
@@ -682,11 +706,11 @@
 {
     UIView*view=[[UIView alloc]init];
     NSArray*array=[[NSArray alloc]initWithObjects:@"配送方式",@"配送地址",@"配送时间",@"支付方式",@"花集红包",@"订单备注",@"订单价格",@"商品清单", nil];
-    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, 5, 150, 30)];
+    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, 0, 150, 30)];
     label.text=array[section];
     [view addSubview:label];
     
-    if (section==1)
+  /*  if (section==1)
     {
         UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-140, 10, 120, 20)];
         [btn setTitle:@"选择其它收货地址" forState:UIControlStateNormal];
@@ -695,17 +719,18 @@
         [btn addTarget:self action:@selector(changeAddress) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:btn];
         
-        UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-20, 10, 10, 20)];
+        UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-20, 10, 10, 12)];
         image.image=[UIImage imageNamed:@"item-r.png"];
         [view addSubview:image];
     }
+   */
     
     return view;
     
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 40;
+    return 30;
 }
 //更换地址
 -(void)changeAddress

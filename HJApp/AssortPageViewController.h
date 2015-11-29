@@ -11,10 +11,10 @@
 #import "FlashViewController.h"
 
 @interface AssortPageViewController : HJViewController
-
 {
     BOOL _isOpen[666];
     int _lastTag[666];
+
 }
 @property(nonatomic,unsafe_unretained)int isTag;
 //@property(nonatomic,strong)UITabBarController*tabBarVC;

@@ -46,7 +46,7 @@
     self.title=@"登陆";
     
     self.view=[[UIView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1)];
-    self.view.backgroundColor=[UIColor colorWithRed:0.97 green:0.97 blue:1 alpha:1];
+    self.view.backgroundColor=[UIColor whiteColor];
     
 //    UIView*titleView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1/10)];
 //    titleView.backgroundColor=[UIColor colorWithRed:0.23 green:0.5 blue:0.84 alpha:0.9];
@@ -72,13 +72,13 @@
     for (int i=0; i<2; i++)
     {
         
-        UIView*view=[[UIView alloc]initWithFrame:CGRectMake(10, 40+i*(LBVIEW_HEIGHT1/15.0+10), LBVIEW_WIDTH1-20, LBVIEW_HEIGHT1/15.0)];
-        view.layer.borderColor=[UIColor grayColor].CGColor;
+        UIView*view=[[UIView alloc]initWithFrame:CGRectMake(20, 40+i*(LBVIEW_HEIGHT1/15.0), LBVIEW_WIDTH1-40, LBVIEW_HEIGHT1/15.0)];
+        view.layer.borderColor=[UIColor colorWithRed:0.90 green:0.90 blue:0.90 alpha:1].CGColor;
         view.layer.borderWidth=1;
         [self.view addSubview:view];
         
         
-        UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, 0, LBVIEW_WIDTH1/5.0, LBVIEW_HEIGHT1/15.0)];
+        UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(15, 0, LBVIEW_WIDTH1/5.0, LBVIEW_HEIGHT1/15.0)];
         label.text=labelNameArray[i];
         label.textColor=[UIColor blackColor];
         [view addSubview:label];
@@ -98,7 +98,7 @@
         field.tag=i+10;
         [view addSubview:field];
         //登陆注册按钮
-        UIButton*lgBtn=[[UIButton alloc]initWithFrame:CGRectMake(20, 40+2*label.frame.size.height+20+10+50+i*(LBVIEW_HEIGHT1/15.0+20), LBVIEW_WIDTH1-40, LBVIEW_HEIGHT1/15.0)];
+        UIButton*lgBtn=[[UIButton alloc]initWithFrame:CGRectMake(20, 40+2*label.frame.size.height+10+30+i*(LBVIEW_HEIGHT1/15.0+10), LBVIEW_WIDTH1-40, LBVIEW_HEIGHT1/15.0)];
         if (i==0)
         {
             [lgBtn setBackgroundColor:[UIColor redColor]];
@@ -114,9 +114,10 @@
         
     }
     //忘记密码按钮
-    UIButton*disBtn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-LBVIEW_WIDTH1/4.0-10, 40+2*LBVIEW_HEIGHT1/15.0+20+10+10, LBVIEW_WIDTH1/4.0, LBVIEW_WIDTH1/15.0)];
+    UIButton*disBtn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-LBVIEW_WIDTH1/4.0-10, 40+2*LBVIEW_HEIGHT1/15.0+10, LBVIEW_WIDTH1/4.0, LBVIEW_WIDTH1/15.0)];
     [disBtn setTitle:@"忘记密码?" forState:UIControlStateNormal];
-    [disBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [disBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    [disBtn.titleLabel setFont:[UIFont systemFontOfSize:14]];
     [self.view addSubview:disBtn];
     
     

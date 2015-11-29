@@ -430,7 +430,7 @@
 {
     AboutMeViewController *aboutVC = [[AboutMeViewController alloc] init];
     [self hidesTabBar:YES];
-    [self.navigationController pushViewController:aboutVC animated:NO];
+    [self.navigationController pushViewController:aboutVC animated:YES];
 }
 
 
@@ -442,33 +442,33 @@
     {
         AdressViewController *adressVC = [[AdressViewController alloc] init];
         [self hidesTabBar:YES];
-        [self.navigationController pushViewController:adressVC animated:NO];
+        [self.navigationController pushViewController:adressVC animated:YES];
     }
     //花集红包
     if(indexPath.row==3)
     {
         FlowerMoneyViewController*flowerVC=[[FlowerMoneyViewController alloc]init];
         [self hidesTabBar:YES];
-        [self.navigationController pushViewController:flowerVC animated:NO];
+        [self.navigationController pushViewController:flowerVC animated:YES];
     }
     //消息中心
     if(indexPath.row==4)
     {
         MessageCenterViewController*messageVC=[[MessageCenterViewController alloc]init];
-        [self.navigationController pushViewController:messageVC animated:NO];
+        [self.navigationController pushViewController:messageVC animated:YES];
         
     }
     //花集余额
     if(indexPath.row==5)
     {
         UserMoneyViewController *userMVC = [[UserMoneyViewController alloc] init];
-        [self.navigationController pushViewController:userMVC animated:NO];
+        [self.navigationController pushViewController:userMVC animated:YES];
     }
     //我的售后
     if(indexPath.row==6)
     {
         ComplainViewController*complainVC=[[ComplainViewController alloc]init];
-        [self.navigationController pushViewController:complainVC animated:NO];
+        [self.navigationController pushViewController:complainVC animated:YES];
     }
     //客服电话
     if(indexPath.row==7)
