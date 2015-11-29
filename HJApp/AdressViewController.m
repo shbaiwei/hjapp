@@ -22,8 +22,11 @@
 
 ////
 @property(nonatomic,strong)NSArray*dataArray;
+@property(nonatomic,strong)UILabel*chooseLable;
+@property(nonatomic,unsafe_unretained)int lastTag;
+@property(nonatomic,strong)NSDictionary*defaultAdDic;
 
-
+@property(nonatomic,unsafe_unretained)int defaultIndex;
 @end
 
 @implementation AdressViewController
@@ -37,46 +40,47 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-
     self.navigationController.navigationBarHidden=NO;
+    self.navigationController.navigationBar.translucent =NO;
     [HttpEngine getAddress:^(NSArray *dataArray)
      {
          _dataArray=dataArray;
-         [self creatTableview];
+         [self refreshData];
+         [_adressTV reloadData];
      }];
+    
+    //获取默认地址
+    [HttpEngine getDefaultAddress:^(NSDictionary*dataDic)
+     {
+         _defaultAdDic=dataDic;
+    }];
     
 }
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    UIView*headView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1,64)];
-    headView.backgroundColor=[UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1];
-    [self.view addSubview:headView];
-    
-    UILabel*titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 20, LBVIEW_WIDTH1, 30)];
-    titleLabel.text=@"管理收货地址";
-    titleLabel.font=[UIFont systemFontOfSize:18];
-    titleLabel.textAlignment=NSTextAlignmentCenter;
-    titleLabel.textColor=[UIColor whiteColor];
-    [headView addSubview:titleLabel];
-    
-    UIButton*backBtn=[[UIButton alloc]initWithFrame:CGRectMake(10, 30, 50, 20)];
-    [backBtn setTitle:@"返回" forState:UIControlStateNormal];
-    [backBtn addTarget:self action:@selector(backBtn) forControlEvents:UIControlEventTouchUpInside];
-    [headView addSubview:backBtn];
-    
-    
+    self.title=@"管理收货地址";
+    [self creatTableview];
 }
 
--(void)backBtn
+//刷新默认的索引值
+-(void)refreshData
 {
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    for (int i=0; i<_dataArray.count; i++)
+    {
+        AllAdress*adress=_dataArray[i];
+        NSString*str1=adress.addrId;
+        NSString*str2=_defaultAdDic[@"addr_id"];
+        if ([str2 isEqualToString:str1])
+        {
+            _defaultIndex=i;
+        }
+    }
 }
-
 //表的创建
 -(void)creatTableview
 {
-    self.adressTV = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-118) style:UITableViewStyleGrouped];
+    self.adressTV = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-64) style:UITableViewStyleGrouped];
     self.adressTV.delegate = self;
     self.adressTV.dataSource = self;
     [self.view addSubview:self.adressTV];
@@ -102,25 +106,82 @@
     AllAdress*adress=_dataArray[indexPath.row];
     
     AdressTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+   
     if (cell == nil)
     {
+        cell.selectionStyle= UITableViewCellSelectionStyleNone;
         cell = [[AdressTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellId];
         
-        cell.numAddressLabel.text=[NSString stringWithFormat:@"%lu",indexPath.row];
+        cell.numAddressLabel.text=[NSString stringWithFormat:@"%lu",indexPath.row+1];
+        cell.numAddressLabel.textColor=[UIColor whiteColor];
+        cell.numAddressLabel.font=[UIFont boldSystemFontOfSize:12];
+        
         cell.nameL.text=adress.consignee;
         cell.numberL.text=adress.phoneMob;
-        cell.adressL.text=adress.chineseCity;
+        cell.adressL.text=[NSString stringWithFormat:@"%@ %@ %@ %@",adress.chineseProvince,adress.chineseCity,adress.chineseTown,adress.address];
+        
+       
+       
+        
+        _chooseLable=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/5/1.1, 95, 2*LBVIEW_WIDTH1/5, 20)];
+       
+        _chooseLable.tag=indexPath.row+500;
+        _chooseLable.font = [UIFont systemFontOfSize:14];
+        [cell addSubview:_chooseLable];
+        
         
         [cell.deleBtn addTarget:self action:@selector(deleteBtn:) forControlEvents:UIControlEventTouchUpInside];
         cell.deleBtn.tag=indexPath.row;
         
         [cell.bjBtn addTarget:self action:@selector(bianJiBtn:) forControlEvents:UIControlEventTouchUpInside];
         cell.bjBtn.tag=indexPath.row+1000;
+        cell.morenBtn.tag=indexPath.row+100;
         
+        
+        [cell.morenBtn addTarget:self action:@selector(defaultAddre:) forControlEvents:UIControlEventTouchUpInside];
+        
+        if (indexPath.row==_defaultIndex)
+        {
+            _chooseLable.text=@"默认地址";
+            [cell.morenBtn setImage:[UIImage imageNamed:@"Dg.png"] forState:UIControlStateNormal];
+            
+        }
+        else
+        {
+            _chooseLable.text= @"设为默认地址";
+            [cell.morenBtn setImage:[UIImage imageNamed:@"maru.png"] forState:UIControlStateNormal];
+        }
         
         
     }
     return cell;
+}
+
+-(void)defaultAddre:(UIButton*)sender
+{
+    //设置默认地址
+    AllAdress*alldress=_dataArray[sender.tag-100];
+   [HttpEngine setDefaultAddress:alldress.addrId];
+
+    [self performSelector:@selector(goBackPage) withObject:nil afterDelay:0.2]; 
+}
+-(void)goBackPage
+{
+    if ([_payVCStr isEqualToString:@"payVC"])
+    {
+        [self.navigationController popViewControllerAnimated:YES];
+        return;
+    }
+    
+    //获取默认地址
+    [HttpEngine getDefaultAddress:^(NSDictionary*dataDic)
+     {
+         _defaultAdDic=dataDic;
+         [self refreshData];
+         [_adressTV reloadData];
+         
+     }];
+   
 }
 
 //设置区尾
@@ -171,7 +232,8 @@
     NewAdViewController*newVC=[[NewAdViewController alloc]init];
     newVC.userName=adress.consignee;
     newVC.phone=adress.phoneMob;
-    newVC.procon=adress.chineseCity;
+    newVC.procon=[NSString stringWithFormat:@"%@ %@ %@",adress.chineseProvince,adress.chineseCity,adress.chineseTown];
+    newVC.adre=adress.address;
     newVC.bj=1;
     newVC.addrId=adress.addrId;
     [self.navigationController pushViewController:newVC animated:YES];

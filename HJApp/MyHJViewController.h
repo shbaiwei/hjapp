@@ -13,4 +13,5 @@
 @property BOOL Loged;
 @property NSString *usernamestr;
 
+@property(nonatomic,strong)UITabBarController*tabBarVC;
 @end

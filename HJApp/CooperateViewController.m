@@ -27,7 +27,6 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     self.title=@"商务合作";
-    [self hidesTabBar:YES];
     
     [self showPage];
     
@@ -44,11 +43,11 @@
     NSArray*fieldArray=[[NSArray alloc]initWithObjects:@"请输入您的姓名",@"请输入您的手机号码",@"请输入您的邮箱地址",@"请输入您所在单位名称", nil];
     for (int i=0; i<4; i++)
     {
-        UILabel *nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, 10+i*LBVIEW_HEIGHT1/7, 100, 30)];
+        UILabel *nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, 10+i*100, 100, 30)];
         nameLabel.text=nameArray[i];
         [scrollView addSubview:nameLabel];
         
-        UITextField*field=[[UITextField alloc]initWithFrame:CGRectMake(10, 60+i*LBVIEW_HEIGHT1/7, LBVIEW_WIDTH1-20, 50)];
+        UITextField*field=[[UITextField alloc]initWithFrame:CGRectMake(10, 60+i*100, LBVIEW_WIDTH1-20, 50)];
         field.borderStyle=UITextBorderStyleLine;
         field.placeholder=fieldArray[i];
         field.tag=i+1;
@@ -56,18 +55,18 @@
     }
 
     
-    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(5, 130+3*LBVIEW_HEIGHT1/7, 100, 30)];
+    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(5, 130+3*100, 100, 30)];
     label.text=@"其它信息";
     [scrollView addSubview:label];
     
-    UITextView*tView=[[UITextView alloc]initWithFrame:CGRectMake(10, 160+3*LBVIEW_HEIGHT1/7, LBVIEW_WIDTH1-20, LBVIEW_HEIGHT1/5)];
+    UITextView*tView=[[UITextView alloc]initWithFrame:CGRectMake(10, 160+3*100, LBVIEW_WIDTH1-20, LBVIEW_HEIGHT1/5)];
     tView.layer.borderColor =[UIColor grayColor].CGColor;
     tView.layer.borderWidth =1.0;
     tView.layer.cornerRadius =5.0;
     tView.tag=5;
     [scrollView addSubview:tView];
     
-    UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(10, LBVIEW_HEIGHT1-50, LBVIEW_WIDTH1-20, 30)];
+    UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(10,480+LBVIEW_HEIGHT1/5, LBVIEW_WIDTH1-20, 30)];
     [btn setTitle:@"提交" forState:UIControlStateNormal];
     [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [btn setBackgroundColor:[UIColor redColor]];
@@ -85,35 +84,18 @@
     UITextField*field5=(UITextField*)[self.view viewWithTag:5];
     [HttpEngine cooperateName:field1.text withMoblie:field2.text withEmail:field3.text withDanWei:field4.text withOther:field5.text withIp:@"122.192.197.71"];
 
-}
-
-//自定义隐藏tarbtn
--(void)hidesTabBar:(BOOL)hidden
-{
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:0];
-    for (UIView *view in self.tabBarController.view.subviews) {
-        if ([view isKindOfClass:[UITabBar class]]) {
-            if (hidden)
-            {
-                [view setFrame:CGRectMake(view.frame.origin.x, [UIScreen mainScreen].bounds.size.height, view.frame.size.width , view.frame.size.height)];
-            }
-            else{
-                [view setFrame:CGRectMake(view.frame.origin.x, [UIScreen mainScreen].bounds.size.height - 49, view.frame.size.width, view.frame.size.height)];
-                
-            }
-        }
-        else{
-            if([view isKindOfClass:NSClassFromString(@"UITransitionView")]){
-                if (hidden) {
-                    [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, [UIScreen mainScreen].bounds.size.height)];
-                }
-                else{
-                    [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, [UIScreen mainScreen].bounds.size.height - 49 )];
-                }
-            }
-        }
-    }
-    [UIView commitAnimations];
+    UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"反馈成功" preferredStyle: UIAlertControllerStyleAlert];
+    UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
+                          {
+                              
+                          }];
+    UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
+                                 {
+                                     
+                                 }];
+    [alert addAction:cancel];
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
+    
 }
 @end

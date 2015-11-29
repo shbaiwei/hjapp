@@ -10,7 +10,7 @@
 
 @interface AllAdress : NSObject
 
-@property(nonatomic,copy)NSString *addrId,*consignee,*phoneMob,*chineseCity,*chineseProvince,*chineseTown,*address;
+@property(nonatomic,copy)NSString *addrId,*consignee,*phoneMob,*chineseCity,*chineseProvince,*chineseTown,*address,*province;
 
 +(id)ConsumerDetailDictionary:(NSDictionary*)dic;
 -(id)initWithDictionary:(NSDictionary*)dic;

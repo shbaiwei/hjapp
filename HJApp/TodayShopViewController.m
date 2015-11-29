@@ -22,6 +22,7 @@
 {
     [super viewDidLoad];
     self.navigationController.navigationBarHidden=NO;
+    self.navigationController.navigationBar.translucent =NO;
     
     [self.navigationController.navigationBar setTitleTextAttributes:
   @{NSFontAttributeName:[UIFont systemFontOfSize:19],
@@ -41,20 +42,20 @@
 -(void)showPage
 {
     HJNotifiton*hjn=_dataArray[_tag];
-    UILabel*titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 64, LBVIEW_WIDTH1, LBVIEW_HEIGHT1/15)];
+    UILabel*titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1/15)];
     titleLabel.text=hjn.title;
     titleLabel.textAlignment=NSTextAlignmentCenter;
     titleLabel.font=[UIFont boldSystemFontOfSize:20];
     [self.view addSubview:titleLabel];
     
-    UILabel*detailLabel=[[UILabel alloc]initWithFrame:CGRectMake(10,LBVIEW_HEIGHT1/15+64, LBVIEW_WIDTH1-20, LBVIEW_HEIGHT1/20)];
+    UILabel*detailLabel=[[UILabel alloc]initWithFrame:CGRectMake(10,LBVIEW_HEIGHT1/15, LBVIEW_WIDTH1-20, LBVIEW_HEIGHT1/20)];
     detailLabel.text=[NSString stringWithFormat:@"作者: %@   发布日期: %@",hjn.author,hjn.dateCreated];
     detailLabel.font=[UIFont systemFontOfSize:15];
     detailLabel.textAlignment=NSTextAlignmentCenter;
     [self.view addSubview:detailLabel];
     
     
-    UILabel*lineLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, LBVIEW_HEIGHT1/15+64+LBVIEW_HEIGHT1/20,  LBVIEW_WIDTH1-20, 1)];
+    UILabel*lineLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, LBVIEW_HEIGHT1/15+LBVIEW_HEIGHT1/20,  LBVIEW_WIDTH1-20, 1)];
     lineLabel.backgroundColor=[UIColor grayColor];
     [self.view addSubview:lineLabel];
 
@@ -62,7 +63,7 @@
     CGSize size = [hjn.content boundingRectWithSize:CGSizeMake(LBVIEW_WIDTH1-40, LONG_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
     
     
-    UILabel*contentLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, LBVIEW_HEIGHT1/15+70+LBVIEW_HEIGHT1/20, LBVIEW_WIDTH1-40, size.height+30)];
+    UILabel*contentLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, LBVIEW_HEIGHT1/15+6+LBVIEW_HEIGHT1/20, LBVIEW_WIDTH1-40, size.height+30)];
     contentLabel.text=hjn.content;
     contentLabel.font=font;
     contentLabel.numberOfLines=0;

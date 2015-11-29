@@ -10,21 +10,5 @@
 
 @interface AboutMeViewController : UIViewController
 
-@property (weak, nonatomic) IBOutlet UILabel *memberNameLabel;
-
-@property (weak, nonatomic) IBOutlet UILabel *memberIdLabel;
-
-@property (weak, nonatomic) IBOutlet UITextField *trueNameTF;
-
-@property (weak, nonatomic) IBOutlet UIButton *birthdayBtn;
-
-@property (weak, nonatomic) IBOutlet UIButton *sexBtn;
-
-@property (weak, nonatomic) IBOutlet UILabel *sexLabel;
-
-@property (weak, nonatomic) IBOutlet UILabel *birthdayLabel;
-
-- (IBAction)saveBtn:(UIButton *)sender;
-- (IBAction)backMyHJ:(UIButton *)sender;
-
+@property(nonatomic,unsafe_unretained)int isTag;
 @end

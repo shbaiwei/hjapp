@@ -18,7 +18,6 @@
 @property (nonatomic, strong) UILabel *adressL;
 
 @property (nonatomic, strong) UIImageView *maruIV;
-@property (nonatomic, strong) UILabel *choiceL;
 
 @property (nonatomic, strong) UIImageView *bjIV;
 @property (nonatomic, strong) UIImageView *deleIV;
@@ -26,7 +25,6 @@
 @property (nonatomic, strong) UIButton *bjBtn;
 @property (nonatomic, strong) UIButton *deleBtn;
 
-@property UIButton *morenBtn;
-@property BOOL btnStatue;
+@property (nonatomic,strong)  UIButton *morenBtn;
 
 @end

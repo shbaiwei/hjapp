@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PayViewController.h"
 
 @interface AdressViewController : UIViewController
 
+@property(nonatomic,copy)NSString*payVCStr;
+
+@property(nonatomic,strong)PayViewController*payVC;
 @end

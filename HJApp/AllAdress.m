@@ -27,6 +27,7 @@
         _chineseProvince=[dic[@"chinese_province"]copy];
         _chineseTown=[dic[@"chinese_town"]copy];
         _address=[dic[@"address"]copy];
+        _province=[dic[@"province"]copy];
 
     }
     return self;

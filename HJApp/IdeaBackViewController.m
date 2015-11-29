@@ -24,12 +24,12 @@
 {
     [super viewDidLoad];
     self.navigationController.navigationBarHidden=NO;
+    self.navigationController.navigationBar.translucent=NO;
     [self.navigationController.navigationBar setTitleTextAttributes:
      @{NSFontAttributeName:[UIFont systemFontOfSize:19],
        NSForegroundColorAttributeName:[UIColor whiteColor]}];
     self.view.backgroundColor = [UIColor whiteColor];
     self.title=@"意见反馈";
-    [self hidesTabBar:YES];
     
     NSString*strId=[[NSUserDefaults standardUserDefaults]objectForKey:@"ID"];
     [HttpEngine getConsumerDetailData:strId completion:^(NSArray *dataArray)
@@ -42,14 +42,18 @@
 }
 -(void)showPage
 {
+    UIScrollView*scrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1)];
+    scrollView.contentSize=CGSizeMake(LBVIEW_WIDTH1, LBVIEW_HEIGHT1+LBVIEW_HEIGHT1/5);
+    [self.view addSubview:scrollView];
+    
     NSArray*nameArray=[[NSArray alloc]initWithObjects:@"姓名",@"手机号", nil];
     for (int i=0; i<2; i++)
     {
-        UILabel *nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, 74+i*LBVIEW_HEIGHT1/7, 100, 30)];
+        UILabel *nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, 10+i*120, 100, 30)];
         nameLabel.text=nameArray[i];
-        [self.view addSubview:nameLabel];
+        [scrollView addSubview:nameLabel];
         
-        UITextField*field=[[UITextField alloc]initWithFrame:CGRectMake(10, 124+i*LBVIEW_HEIGHT1/7, LBVIEW_WIDTH1-20, 50)];
+        UITextField*field=[[UITextField alloc]initWithFrame:CGRectMake(10, 60+i*120, LBVIEW_WIDTH1-20, 50)];
         field.borderStyle=UITextBorderStyleLine;
         if (i==0)
         {
@@ -61,26 +65,26 @@
             field.text=_mobile;
             field.tag=2;
         }
-        [self.view addSubview:field];
+        [scrollView addSubview:field];
     }
 
-    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(5, 194+LBVIEW_HEIGHT1/7, 100, 30)];
+    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(5,270, 100, 30)];
     label.text=@"详细内容";
-    [self.view addSubview:label];
+    [scrollView addSubview:label];
     
-    UITextView*tView=[[UITextView alloc]initWithFrame:CGRectMake(10, 230+LBVIEW_HEIGHT1/7, LBVIEW_WIDTH1-20, LBVIEW_HEIGHT1/5)];
+    UITextView*tView=[[UITextView alloc]initWithFrame:CGRectMake(10, 320, LBVIEW_WIDTH1-20, LBVIEW_HEIGHT1/5)];
     tView.layer.borderColor =[UIColor grayColor].CGColor;
     tView.layer.borderWidth =1.0;
     tView.layer.cornerRadius =5.0;
     tView.tag=3;
-    [self.view addSubview:tView];
+    [scrollView addSubview:tView];
     
-    UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(10, LBVIEW_HEIGHT1-100, LBVIEW_WIDTH1-20, 30)];
+    UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(10,350+ LBVIEW_HEIGHT1/5, LBVIEW_WIDTH1-20, 30)];
     [btn setTitle:@"提交" forState:UIControlStateNormal];
     [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [btn setBackgroundColor:[UIColor redColor]];
     [btn addTarget:self action:@selector(comit) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:btn];
+    [scrollView addSubview:btn];
 }
 
 -(void)comit
@@ -91,35 +95,19 @@
     UITextView*tfView=(UITextView*)[self.view viewWithTag:3];
     
     [HttpEngine ideaFeedBackName:field1.text withMoblie:field2.text withContent:tfView.text];
+    
+    UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"反馈成功" preferredStyle: UIAlertControllerStyleAlert];
+    UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
+                          {
+                              
+                          }];
+    UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
+                                 {
+                                    
+                                 }];
+    [alert addAction:cancel];
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
 
-}
-//自定义隐藏tarbtn
--(void)hidesTabBar:(BOOL)hidden
-{
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:0];
-    for (UIView *view in self.tabBarController.view.subviews) {
-        if ([view isKindOfClass:[UITabBar class]]) {
-            if (hidden)
-            {
-                [view setFrame:CGRectMake(view.frame.origin.x, [UIScreen mainScreen].bounds.size.height, view.frame.size.width , view.frame.size.height)];
-            }
-            else{
-                [view setFrame:CGRectMake(view.frame.origin.x, [UIScreen mainScreen].bounds.size.height - 49, view.frame.size.width, view.frame.size.height)];
-                
-            }
-        }
-        else{
-            if([view isKindOfClass:NSClassFromString(@"UITransitionView")]){
-                if (hidden) {
-                    [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, [UIScreen mainScreen].bounds.size.height)];
-                }
-                else{
-                    [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, [UIScreen mainScreen].bounds.size.height - 49 )];
-                }
-            }
-        }
-    }
-    [UIView commitAnimations];
 }
 @end

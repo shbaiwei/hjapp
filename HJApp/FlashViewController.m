@@ -15,6 +15,9 @@
 
 @interface FlashViewController ()
 
+@property(nonatomic,strong)UITabBarController*tabBar;
+
+
 @end
 
 @implementation FlashViewController
@@ -29,11 +32,11 @@
 -(void)goToPage
 {
     //TabBar
-    UITabBarController *tabBar = [[UITabBarController alloc] init];
+    _tabBar = [[UITabBarController alloc] init];
     //tabBar.tabBar.opaque = YES;
     
     UIWindow*window=[[UIApplication sharedApplication]keyWindow];
-    window.rootViewController=tabBar;
+    window.rootViewController=_tabBar;
     
     HomePageViewController *homeVC = [[HomePageViewController alloc] init];
     AssortPageViewController *assortVC= [[AssortPageViewController alloc] init];
@@ -109,7 +112,11 @@
     UINavigationController *naviShop = [[UINavigationController alloc] initWithRootViewController:shopVC];
     UINavigationController *naviMyHuaJi = [[UINavigationController alloc] initWithRootViewController:myHuaJiVC];
     
-    tabBar.viewControllers = @[naviHome, naviAssprt, naviOder, naviShop, naviMyHuaJi];
+    homeVC.tabBarVC=_tabBar;
+    myHuaJiVC.tabBarVC=_tabBar;
+    shopVC.tabBarVC=_tabBar;
+    assortVC.tabBarVC=_tabBar;
+    _tabBar.viewControllers = @[naviHome, naviAssprt, naviOder, naviShop, naviMyHuaJi];
     
     //设置导航栏背景色
     naviHome.navigationBar.barTintColor = [UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1];
@@ -121,6 +128,7 @@
     
     [naviHome setNavigationBarHidden:YES animated:YES];
     
+    
     //设置导航栏字体和颜色
     [naviMyHuaJi.navigationBar setTitleTextAttributes: @{NSFontAttributeName:
                                                              [UIFont boldSystemFontOfSize:19],NSForegroundColorAttributeName:[UIColor whiteColor]}];
@@ -129,8 +137,16 @@
     
     [naviShop.navigationBar setTitleTextAttributes:@{NSFontAttributeName :[UIFont boldSystemFontOfSize:19], NSForegroundColorAttributeName: [UIColor whiteColor]}];
     [naviAssprt.navigationBar setTitleTextAttributes:@{NSFontAttributeName :[UIFont boldSystemFontOfSize:19], NSForegroundColorAttributeName: [UIColor whiteColor]}];
+   
     
 }
 
+
+//-(void)nextPageHomePageViewController:(HomePageViewController *)homeVC didFinish:(NSInteger)tag
+//{
+//    NSLog(@"12345678");
+//    _tabBar.selectedIndex=1;
+//
+//}
 
 @end

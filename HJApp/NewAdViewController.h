@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HZAreaPickerView.h"
 
-@interface NewAdViewController : UIViewController
+@interface NewAdViewController : UIViewController<UITextFieldDelegate,HZAreaPickerDatasource,HZAreaPickerDelegate>
+
 
 @property(nonatomic,copy)NSString*addrId;
 @property (nonatomic, copy) NSString *userName;

@@ -14,6 +14,7 @@
 #import "UIImageView+WebCache.h"
 #import "MyButton.h"
 #import "SVPullToRefresh.h"
+#import "LoginViewController.h"
 
 
 @interface OrderPageViewController ()
@@ -39,11 +40,25 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    //判断是否需要登陆
+    NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+    if (str==NULL)
+    {
+        LoginViewController*loginVC=[[LoginViewController alloc]init];
+        [self.navigationController pushViewController:loginVC animated:YES];
+        return;
+    }
+    
     [self hidesTabBar:NO];
     self.navigationController.navigationBarHidden=YES;
-
+    //self.navigationController.navigationBar.translucent=NO;
+    
+    //获取上个页面所选取的种类
+    _chooseValue=[[NSUserDefaults standardUserDefaults]objectForKey:@"THREETAG"];
     if (_chooseValue!=NULL)
     {
+        NSLog(@"_chooseValue===%@",_chooseValue);
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"THREETAG"];
         [HttpEngine myOrder:@"1" with:@"1" with:@"10" with:_chooseValue completion:^(NSArray *dataArray)
          {
              _dataArray=dataArray;
@@ -72,10 +87,10 @@
     headView.backgroundColor=[UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1];
     [self.view addSubview:headView];
     
-    UIButton*backBtn=[[UIButton alloc]initWithFrame:CGRectMake(10, 30, 50, 20)];
-    [backBtn setTitle:@"返回" forState:UIControlStateNormal];
-    [backBtn addTarget:self action:@selector(backBtn) forControlEvents:UIControlEventTouchUpInside];
-    [headView addSubview:backBtn];
+//    UIButton*backBtn=[[UIButton alloc]initWithFrame:CGRectMake(10, 30, 50, 20)];
+//    [backBtn setTitle:@"返回" forState:UIControlStateNormal];
+//    [backBtn addTarget:self action:@selector(backBtn) forControlEvents:UIControlEventTouchUpInside];
+//    [headView addSubview:backBtn];
     
     //我的订单
     _myOrderBtn=[[MyButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.3, 20, LBVIEW_WIDTH1*0.4, 30)];
@@ -87,6 +102,11 @@
 }
 - (void)insertRowAtTop
 {
+    if (_dataArray.count==0)
+    {
+        return;
+    }
+    
     __weak OrderPageViewController *weakSelf = self;
     
     [HttpEngine myOrder:@"1" with:@"1" with:@"10" with:@"" completion:^(NSArray *dataArray)
@@ -101,6 +121,10 @@
 }
 - (void)insertRowAtBottom
 {
+    if (_dataArray.count==0)
+    {
+        return;
+    }
     __weak OrderPageViewController *weakSelf = self;
     [weakSelf.tableView beginUpdates];
     
@@ -119,11 +143,11 @@
 
 }
 
--(void)backBtn
-{
-    MyHJViewController*myHJVC=[[MyHJViewController alloc]init];
-    [self.navigationController pushViewController:myHJVC animated:YES];
-}
+//-(void)backBtn
+//{
+//    MyHJViewController*myHJVC=[[MyHJViewController alloc]init];
+//    [self.navigationController pushViewController:myHJVC animated:YES];
+//}
 
 -(void)myOrderBtnClick
 {
@@ -283,12 +307,12 @@
     //view.backgroundColor=[UIColor  lightGrayColor];
     
     UIImageView*blueImageV = [[UIImageView alloc]initWithFrame:CGRectMake(10, LBVIEW_HEIGHT1*0.05-20, LBVIEW_HEIGHT1*0.025, LBVIEW_HEIGHT1*0.025)];
-    blueImageV.image = [UIImage imageNamed:@"bluehouse.png"];
+    blueImageV.image = [UIImage imageNamed:@"my-order-ico.png"];
     [view addSubview:blueImageV];
     
     
     UILabel *dNamelable=[[UILabel alloc]initWithFrame:CGRectMake(20+LBVIEW_HEIGHT1*0.025, LBVIEW_HEIGHT1*0.05-20, 100,20)];
-    dNamelable.text=dic[@"to_florist_id"];
+    dNamelable.text=dic[@"to_florist_name"];
     //dNamelable.textAlignment=NSTextAlignmentCenter;
     dNamelable.backgroundColor=[UIColor clearColor];
     [view addSubview:dNamelable];
@@ -304,8 +328,9 @@
     
     UILabel *jyLable=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-90, LBVIEW_HEIGHT1*0.05-20, 80,20)];
     jyLable.text=@"交易关闭";
-    jyLable.textColor=[UIColor blueColor];
+    jyLable.textColor=[UIColor colorWithRed:43/255.0 green:152/255.0 blue:225/255.0 alpha:1];
     jyLable.font=[UIFont systemFontOfSize:14];
+    jyLable.textAlignment=NSTextAlignmentRight;
     //dNamelable.textAlignment=NSTextAlignmentCenter;
     jyLable.backgroundColor=[UIColor clearColor];
     [view addSubview:jyLable];
@@ -329,7 +354,9 @@
     order.recvName=dic[@"recv_name"];
     order.recvMobile=dic[@"recv_mobile"];
     order.recvAddress=dic[@"recv_address"];
+    order.orderPrice=dic[@"order_price"];
     order.preferMoney=dic[@"prefer_money"];
+    order.discountPrice=dic[@"discount_price"];
     order.paymentPrice=dic[@"payment_price"];
     order.dataArray=dic[@"detail"];
     [array addObject:order];
@@ -355,34 +382,59 @@
     UIView*view=[[UIView alloc]init];
     view.backgroundColor=[UIColor whiteColor];
     
-    UILabel *lable=[[UILabel alloc]initWithFrame:CGRectMake(10, 10, LBVIEW_WIDTH1-10,20)];
+    UIFont*font=[UIFont systemFontOfSize:14];
     NSString*numStr=[NSString stringWithFormat:@"%lu",detailArray.count];
-    NSString*picStr=[NSString stringWithFormat:@"¥%@",dic[@"order_price"]];
-    lable.text=[NSString stringWithFormat:@"共%@件商品 实际支付%@（含运费¥10.0）",numStr,picStr];
-    lable.backgroundColor=[UIColor clearColor];
+    NSString*labelStr=[NSString stringWithFormat:@"共%@件商品 实际支付",numStr];
+    CGSize size=[labelStr boundingRectWithSize:CGSizeMake(LBVIEW_WIDTH1, 20) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
+    UILabel *lable=[[UILabel alloc]initWithFrame:CGRectMake(10, 10, size.width,20)];
+    lable.text=labelStr;
+    lable.font=font;
     [view addSubview:lable];
+    
+    
+    UIFont*font1=[UIFont systemFontOfSize:20];
+    NSString*picStr=[NSString stringWithFormat:@"¥%@",dic[@"order_price"]];
+    CGSize size1=[picStr boundingRectWithSize:CGSizeMake(LBVIEW_WIDTH1, 20) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font1} context:nil].size;
+    UILabel *priceLable=[[UILabel alloc]initWithFrame:CGRectMake(10+size.width, 10, size1.width,20)];
+    priceLable.text=picStr;
+    priceLable.textColor=[UIColor redColor];
+    priceLable.font=font1;
+    [view addSubview:priceLable];
+    
+    UILabel *freeLable=[[UILabel alloc]initWithFrame:CGRectMake(10+size.width+size1.width, 10, 80,20)];
+    freeLable.text=@"(含运费¥0.00)";
+    freeLable.textColor=[UIColor grayColor];
+    freeLable.font=[UIFont systemFontOfSize:12];
+    [view addSubview:freeLable];
+    
     
     UIButton*btn=[UIButton buttonWithType:UIButtonTypeSystem];
     btn.layer.borderColor=[UIColor grayColor].CGColor;
     btn.layer.borderWidth=1;
     btn.layer.cornerRadius=2;
+    btn.layer.cornerRadius=5;
+    btn.clipsToBounds=YES;
     btn.frame=CGRectMake(LBVIEW_WIDTH1-110, LBVIEW_HEIGHT1*0.12-30, 100, 20);
     [btn setTitle:@"再次购买" forState:UIControlStateNormal];
     [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [btn addTarget:self action:@selector(againBuy) forControlEvents:UIControlEventTouchUpInside];
+    btn.tag=section+500;
+    [btn addTarget:self action:@selector(againBuy:) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:btn];
     
     return view;
 }
 
--(void)againBuy
+//再次购买
+-(void)againBuy:(UIButton*)sender
 {
+    NSDictionary*dic=_dataArray[sender.tag-500];
+    NSArray*array=dic[@"detail"];
     
-    
-    
-    
-    
-    
+    NSDictionary*dicc=array[0];
+    NSLog(@"dicc[order_no]===%@",dicc[@"order_no"]);
+    [HttpEngine anginBuy:dicc[@"order_no"]];
+
+
 }
 
 //自定义隐藏tarbtn

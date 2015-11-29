@@ -18,6 +18,27 @@
 @implementation AppDelegate
 
 
+//拷贝资源路径
+-(void)copyDataBase
+{
+    //获取应用程序资源的路径
+    NSString * path=[[NSBundle mainBundle]pathForResource:@"mydatabasehuajia" ofType:@"sqlite"];
+    
+    // NSuserDefaults 对象序列化 数据库 coreData
+    NSString * destionPath=[NSHomeDirectory() stringByAppendingString:@"/Documents/mydatabasehuajia.sqlite"];
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:destionPath])
+    {
+        [[NSFileManager defaultManager]copyItemAtPath:path toPath:destionPath error:nil];
+        NSLog(@"1323");
+    }
+    
+    else
+    {
+        NSLog(@"文件已经存在");
+    }
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
@@ -27,9 +48,13 @@
     self.window.backgroundColor = [UIColor colorWithRed:0.97 green:0.97 blue:1 alpha:1];
     [self.window makeKeyAndVisible];
 
+    [self copyDataBase];
     
     FlashViewController*flashVC=[[FlashViewController alloc]init];
     self.window.rootViewController=flashVC;
+    
+    //微信
+    [WXApi registerApp:@"fffff"];
     
     return YES;
 }
@@ -40,6 +65,8 @@
     [self.window endEditing:YES];
 }
 
+
+//支付宝
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
     //如果极简开发包不可用，会跳转支付宝钱包进行支付，需要将支付宝钱包的支付结果回传给开发包

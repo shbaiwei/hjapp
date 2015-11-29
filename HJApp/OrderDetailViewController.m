@@ -62,20 +62,23 @@
     orderDetail*order=_dataArray[0];
     UITableViewCell*cell=[tableView dequeueReusableCellWithIdentifier:@"cell"];
     
-    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-    
     if (cell==nil)
     {
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
-        
+         cell.selectionStyle =UITableViewCellSelectionStyleNone;
     }
     if (indexPath.section==0)
     {
-        UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, 0, 120, LBVIEW_HEIGHT1*0.1)];
-        label.text=[NSString stringWithFormat:@"%@ %@ %@",order.recvName,order.recvMobile,order.recvAddress];
-        label.numberOfLines=2;
-        label.font=[UIFont systemFontOfSize:12];
+        UILabel*nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, 0, LBVIEW_WIDTH1-20, LBVIEW_HEIGHT1*0.05)];
+        nameLabel.text=[NSString stringWithFormat:@"%@  %@",order.recvName,order.recvMobile];
+        nameLabel.font=[UIFont systemFontOfSize:14];
+        [cell addSubview:nameLabel];
+        
+        UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, LBVIEW_HEIGHT1*0.05, LBVIEW_WIDTH1-20, LBVIEW_HEIGHT1*0.05)];
+        label.text=[NSString stringWithFormat:@"%@",order.recvAddress];
+        label.font=[UIFont systemFontOfSize:14];
         [cell addSubview:label];
+        
         return cell;
     }
     NSArray*nameArray=[[NSArray alloc]initWithObjects:@"总价",@"配送价",@"花卷抵扣", nil];
@@ -91,23 +94,19 @@
         [cell addSubview:prcLabel];
         if (indexPath.row==0)
         {
-            prcLabel.text=order.paymentPrice;
+            prcLabel.text=[NSString stringWithFormat:@"¥%@",order.orderPrice];
         }
         if (indexPath.row==1)
         {
-            prcLabel.text=@"¥10";
+            prcLabel.text=[NSString stringWithFormat:@"¥%@",order.preferMoney];
         }
         if (indexPath.row==2)
         {
-            prcLabel.text=order.preferMoney;
+            prcLabel.text=[NSString stringWithFormat:@"- ¥%@",order.discountPrice];
         }
         return cell;
     }
     
-    //    order.currPrice=daArray[@""];
-    //    order.merchDesc=dic[@""];
-    //    order.merchName=dic[@""];
-    //    order.merchQty=dic[@""];
     NSDictionary*dic=order.dataArray[indexPath.row];
     UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, 0, 160, LBVIEW_HEIGHT1*0.08)];
     label.text=[NSString stringWithFormat:@"%@  %@",dic[@"merch_name"],dic[@"merch_desc"]];
@@ -115,13 +114,19 @@
     label.font=[UIFont systemFontOfSize:12];
     [cell addSubview:label];
     
-    UILabel*prcLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-70, 0, 60, LBVIEW_HEIGHT1*0.08)];
-    prcLabel.text=@"123";
-    [cell addSubview:prcLabel];
-    
     UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-110, 0, 40, LBVIEW_HEIGHT1*0.08)];
     numLabel.text=[NSString stringWithFormat:@"x%@",dic[@"merch_qty"]];;
     [cell addSubview:numLabel];
+    
+    
+    UILabel*prcLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-70, 0, 60, LBVIEW_HEIGHT1*0.08)];
+//    float num=[dic[@"merch_qty"] floatValue];
+//    float price=[dic[@"curr_price"] floatValue];
+//    float allPrice=num*price;
+//    prcLabel.text=[NSString stringWithFormat:@"¥%0.2f",allPrice];
+    prcLabel.text=dic[@"curr_price"];
+    [cell addSubview:prcLabel];
+    
     
     
     
@@ -196,20 +201,37 @@
     orderDetail*order=_dataArray[0];
     NSArray*array=order.dataArray;
     UIView*view=[[UIView alloc]init];
-    //view.backgroundColor=[UIColor lightGrayColor];
-    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-200, 10, 200, 20)];
-    label.textColor=[UIColor blackColor];
-    [view addSubview:label];
-    if (section==0)
+    view.backgroundColor=[UIColor whiteColor];
+        if (section==0)
     {
         return nil;
     }
     if (section==1)
     {
-        label.text=[NSString stringWithFormat:@"实际支付¥%@",order.paymentPrice];
+        UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-150, 10, 70, 20)];
+        label.textColor=[UIColor blackColor];
+        label.text=@"实际支付";
+        [view addSubview:label];
+        
+        UILabel*picLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-70, 10, 80, 20)];
+        picLabel.textColor=[UIColor redColor];
+        picLabel.text=[NSString stringWithFormat:@"¥%@",order.paymentPrice];
+        [view addSubview:picLabel];
+        
         return view;
     }
-    label.text=[NSString stringWithFormat:@"共%lu件商品，合计¥%@",array.count,order.paymentPrice];
+    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-190, 10, 110, 20)];
+    label.textColor=[UIColor blackColor];
+    label.font=[UIFont systemFontOfSize:14];
+    label.text=[NSString stringWithFormat:@"共%lu件商品，合计",array.count];
+    [view addSubview:label];
+    
+    UILabel*picLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-80, 10, 80, 20)];
+    picLabel.textColor=[UIColor redColor];
+    picLabel.font=[UIFont systemFontOfSize:14];
+    picLabel.text=[NSString stringWithFormat:@"¥%@",order.paymentPrice];
+    [view addSubview:picLabel];
+    
     return view;
 }
 

@@ -27,8 +27,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    self.view.frame=CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1);
+    self.navigationController.navigationBar.translucent =NO;
+    //self.view.frame=CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1);
 
     self.view.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     
@@ -42,26 +42,30 @@
 }
 -(void)showPage
 {
-    UILabel*chooseCityLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 64, LBVIEW_WIDTH1, 60)];
+    UIScrollView*scrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1)];
+    scrollView.contentSize=CGSizeMake(LBVIEW_WIDTH1, 200+_dataArray.count*20);
+    [self.view addSubview:scrollView];
+    
+    UILabel*chooseCityLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 60)];
     
     chooseCityLabel.text=[[NSUserDefaults standardUserDefaults]objectForKey:@"CITYNAME"];
     chooseCityLabel.textAlignment=NSTextAlignmentCenter;
     chooseCityLabel.textColor=[UIColor redColor];
     chooseCityLabel.font=[UIFont systemFontOfSize:19];
     chooseCityLabel.backgroundColor=[UIColor whiteColor];
-    [self.view addSubview:chooseCityLabel];
+    [scrollView addSubview:chooseCityLabel];
     
-    UILabel*titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 124, LBVIEW_WIDTH1, 40)];
+    UILabel*titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 60, LBVIEW_WIDTH1, 40)];
     titleLabel.textAlignment=NSTextAlignmentCenter;
     titleLabel.text=@"热门城市";
     
-    [self.view addSubview:titleLabel];
+    [scrollView addSubview:titleLabel];
     
     int height=(int)_dataArray.count/3;
     
-    UIView*btnView=[[UIView alloc]initWithFrame:CGRectMake(0, 164, LBVIEW_WIDTH1, (height+1)*60)];
+    UIView*btnView=[[UIView alloc]initWithFrame:CGRectMake(0, 100, LBVIEW_WIDTH1, (height+1)*60)];
     btnView.backgroundColor=[UIColor whiteColor];
-    [self.view addSubview:btnView];
+    [scrollView addSubview:btnView];
     
     for (int i=0; i<_dataArray.count; i++)
     {

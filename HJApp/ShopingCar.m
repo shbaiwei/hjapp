@@ -26,7 +26,8 @@
         _number=[dic[@"number"]copy];
         _skuId=[dic[@"sku_id"]copy];
         _supplierId=[dic[@"supplier_id"]copy];
-        _dataArray=dic[@"props"];
+        _Id=[dic[@"id"]copy];
+        _props=dic[@"props"];
     }
     return self;
 }

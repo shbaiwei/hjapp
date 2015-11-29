@@ -10,4 +10,5 @@
 
 @interface ShopingPageViewController : UIViewController
 
+@property(nonatomic,strong)UITabBarController*tabBarVC;
 @end

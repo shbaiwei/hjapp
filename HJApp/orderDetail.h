@@ -10,7 +10,7 @@
 
 @interface orderDetail : NSObject
 
-@property(nonatomic,copy)NSString *orderNo,*recvName,*recvMobile,*recvAddress,*preferMoney,*datetime,*toFloristName,*paymentPrice,*currPrice,*merchDesc,*merchImage,*merchName,*merchQty;
+@property(nonatomic,copy)NSString *orderNo,*recvName,*recvMobile,*recvAddress,*preferMoney,*datetime,*toFloristName,*paymentPrice,*currPrice,*merchDesc,*merchImage,*merchName,*merchQty,*orderPrice,*discountPrice;
 @property(nonatomic,strong)NSArray*dataArray;
 
 //+(id)ConsumerDetailDictionary:(NSDictionary*)dic;

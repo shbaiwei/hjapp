@@ -10,7 +10,7 @@
 
 @interface FlowerDetail : NSObject
 
-@property(nonatomic,copy)NSString *goodsName,*image,*propValue;
+@property(nonatomic,copy)NSString *goodsName,*image,*propValue,*standardNumber,*Id;
 @property(nonatomic,strong)NSArray*dataArray;
 
 +(id)getAllFlowerDictionary:(NSDictionary*)dic;

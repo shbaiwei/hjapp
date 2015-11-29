@@ -11,7 +11,6 @@
 #import "UIImageView+WebCache.h"
 #import "IdeaBackViewController.h"
 #import "CooperateViewController.h"
-#import "AssortPageViewController.h"
 #import "ChangCityViewController.h"
 #import "TodayShopViewController.h"
 
@@ -21,6 +20,7 @@
     int _count;
     int _countT;
 }
+
 @property (nonatomic, strong) UIView *topView;
 @property (nonatomic, strong) UIButton *leftButton;
 @property (nonatomic, strong) UIImageView *mapImageView;
@@ -80,17 +80,25 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
+  
     self.navigationController.navigationBarHidden=YES;
     [self hidesTabBar:NO];
     self.cityLabel.text=[[NSUserDefaults standardUserDefaults]objectForKey:@"CITYNAME"];
-    //NSLog(@"沙河路径=====%@",NSHomeDirectory());
+    NSLog(@"沙河路径=====%@",NSHomeDirectory());
+    
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    //发送短信
+    //[HttpEngine sendMessage];
+    
     self.title=@"首页";
     self.view.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
+    
+    
     
     [HttpEngine getCityNameBackcompletion:^(NSArray *dataArray)
      {
@@ -117,19 +125,19 @@
          [self theIkenAndBess];
      }];
     
-    
 }
 
 //显示顶部视图
 - (void)theTopView
 {
+    
     self.topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1 / 11.5)];
     
     self.topView.backgroundColor = [UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1];
     [self.view addSubview:self.topView];
     
     self.mapImageView = [[UIImageView alloc] init];
-    self.mapImageView.image = [UIImage imageNamed:@"spqd_1.png"];
+    self.mapImageView.image = [UIImage imageNamed:@"Map.png"];
     self.mapImageView.frame = CGRectMake(VIEW_WIDTH * 0.035, VIEW_HEIGHT * 0.043, VIEW_WIDTH * 0.042, VIEW_HEIGHT * 0.035);
     [self.topView addSubview:self.mapImageView];
     
@@ -137,6 +145,12 @@
     self.cityLabel.frame = CGRectMake(VIEW_WIDTH * 0.085, VIEW_HEIGHT * 0.042, VIEW_WIDTH * 0.21, VIEW_HEIGHT * 0.035);
     
     NSDictionary*dic=_cityNameArray[0];
+    NSString*code=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
+    if (code==NULL)
+    {
+        [[NSUserDefaults standardUserDefaults]setObject:dic[@"code"] forKey:@"CODE"];
+    }
+    
     
     NSString*cityName=[[NSUserDefaults standardUserDefaults]objectForKey:@"CITYNAME"];
     if (cityName==NULL)
@@ -207,7 +221,7 @@
     }
     //pageControl
     
-    self.pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(self.scrollPic.frame.size.width / 2.1,self.scrollPic.frame.size.height*0.8, VIEW_WIDTH * 0.05, VIEW_HEIGHT * 0.03)];
+    self.pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(100,self.scrollPic.frame.size.height*0.8, VIEW_WIDTH-200, VIEW_HEIGHT * 0.03)];
     self.pageControl.numberOfPages = _picDataArray.count-2;
     self.pageControl.currentPageIndicatorTintColor=[UIColor whiteColor];
     self.pageControl.pageIndicatorTintColor=[UIColor grayColor];
@@ -238,7 +252,7 @@
     UIImage *roseImage = [UIImage imageNamed:@"index_meigui.png"];
     roseImage = [roseImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     self.roseButton.contentMode = UIViewContentModeScaleAspectFill;
-    self.roseButton.frame = CGRectMake(VIEW_WIDTH * 0.05, VIEW_HEIGHT * 0.02, VIEW_HEIGHT * 0.085, VIEW_HEIGHT * 0.085);
+    self.roseButton.frame = CGRectMake(VIEW_WIDTH/13, VIEW_HEIGHT * 0.02, 2*VIEW_WIDTH/13, 2*VIEW_WIDTH/13);
     [self.roseButton setImage:roseImage forState:UIControlStateNormal];
     self.roseButton.layer.cornerRadius = 10;
     self.roseButton.clipsToBounds = YES;
@@ -250,7 +264,7 @@
     UIImage *baiheImage = [UIImage imageNamed:@"index_baihe.png"];
     baiheImage = [baiheImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     self.baiheButton.contentMode = UIViewContentModeScaleAspectFill;
-    self.baiheButton.frame = CGRectMake(self.roseButton.frame.size.width * 1.9, VIEW_HEIGHT * 0.02, VIEW_HEIGHT * 0.085, VIEW_HEIGHT * 0.085);
+    self.baiheButton.frame = CGRectMake(4*VIEW_WIDTH/13, VIEW_HEIGHT * 0.02, 2*VIEW_WIDTH/13, 2*VIEW_WIDTH/13);
     [self.baiheButton setImage:baiheImage forState:UIControlStateNormal];
     self.baiheButton.layer.cornerRadius = 20;
     self.baiheButton.clipsToBounds = YES;
@@ -263,7 +277,7 @@
     UIImage *knxImage = [UIImage imageNamed:@"index_kangnaixing.png"];
     knxImage = [knxImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     self.KNXButton.contentMode = UIViewContentModeScaleAspectFill;
-    self.KNXButton.frame = CGRectMake(self.roseButton.frame.size.width * 3.6, VIEW_HEIGHT * 0.02, VIEW_HEIGHT * 0.085, VIEW_HEIGHT * 0.085);
+    self.KNXButton.frame = CGRectMake(7*LBVIEW_WIDTH1/13, VIEW_HEIGHT * 0.02,  2*VIEW_WIDTH/13,  2*VIEW_WIDTH/13);
     [self.KNXButton setImage:knxImage forState:UIControlStateNormal];
     self.KNXButton.layer.cornerRadius = 20;
     self.KNXButton.clipsToBounds = YES;
@@ -276,7 +290,7 @@
     UIImage *dtjImage = [UIImage imageNamed:@"index_duotouju.png"];
     dtjImage = [dtjImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     self.DTJButton.contentMode = UIViewContentModeScaleAspectFill;
-    self.DTJButton.frame = CGRectMake(self.roseButton.frame.size.width * 5.3, VIEW_HEIGHT * 0.02, VIEW_HEIGHT * 0.085, VIEW_HEIGHT * 0.085);
+    self.DTJButton.frame = CGRectMake(10*LBVIEW_WIDTH1/13, VIEW_HEIGHT * 0.02,  2*VIEW_WIDTH/13,  2*VIEW_WIDTH/13);
     [self.DTJButton setImage:dtjImage forState:UIControlStateNormal];
     self.DTJButton.layer.cornerRadius = 20;
     self.DTJButton.clipsToBounds = YES;
@@ -289,7 +303,7 @@
     UIImage *huacaoImage = [UIImage imageNamed:@"index_peihuapeicao.png"];
     huacaoImage = [huacaoImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     self.huacaoButton.contentMode = UIViewContentModeScaleAspectFill;
-    self.huacaoButton.frame = CGRectMake(VIEW_WIDTH * 0.05, self.roseButton.frame.size.height * 1.75, VIEW_HEIGHT * 0.085, VIEW_HEIGHT * 0.085);
+    self.huacaoButton.frame = CGRectMake(VIEW_WIDTH/13, self.roseButton.frame.size.height * 1.75,  2*VIEW_WIDTH/13,  2*VIEW_WIDTH/13);
     [self.huacaoButton setImage:huacaoImage forState:UIControlStateNormal];
     self.huacaoButton.layer.cornerRadius = 20;
     self.huacaoButton.clipsToBounds = YES;
@@ -302,7 +316,7 @@
     UIImage *baoImage = [UIImage imageNamed:@"index_baozhuangzicai.png"];
     baoImage = [baoImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     self.baoButton.contentMode = UIViewContentModeScaleAspectFill;
-    self.baoButton.frame = CGRectMake(self.huacaoButton.frame.size.width * 1.9, self.roseButton.frame.size.height * 1.75, VIEW_HEIGHT * 0.085, VIEW_HEIGHT * 0.085);
+    self.baoButton.frame = CGRectMake(4*VIEW_WIDTH/13, self.roseButton.frame.size.height * 1.75,  2*VIEW_WIDTH/13,  2*VIEW_WIDTH/13);
     [self.baoButton setImage:baoImage forState:UIControlStateNormal];
     self.baoButton.layer.cornerRadius = 20;
     self.baoButton.clipsToBounds = YES;
@@ -315,7 +329,7 @@
     UIImage *yshImage = [UIImage imageNamed:@"index_yongshenghua.png"];
     yshImage = [yshImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     self.yshButton.contentMode = UIViewContentModeScaleAspectFill;
-    self.yshButton.frame = CGRectMake(self.huacaoButton.frame.size.width * 3.6, self.roseButton.frame.size.height * 1.75, VIEW_HEIGHT * 0.085, VIEW_HEIGHT * 0.085);
+    self.yshButton.frame = CGRectMake(7*VIEW_WIDTH/13, self.roseButton.frame.size.height * 1.75,  2*VIEW_WIDTH/13,  2*VIEW_WIDTH/13);
     [self.yshButton setImage:yshImage forState:UIControlStateNormal];
     self.yshButton.layer.cornerRadius = 20;
     self.yshButton.clipsToBounds = YES;
@@ -327,7 +341,7 @@
     UIImage *jkhImage = [UIImage imageNamed:@"index_jinkouhua.png"];
     jkhImage = [jkhImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     self.jkhButton.contentMode = UIViewContentModeScaleAspectFill;
-    self.jkhButton.frame = CGRectMake(self.huacaoButton.frame.size.width * 5.3, self.roseButton.frame.size.height * 1.75, VIEW_HEIGHT * 0.085, VIEW_HEIGHT * 0.085);
+    self.jkhButton.frame = CGRectMake(10*VIEW_WIDTH/13, self.roseButton.frame.size.height * 1.75,  2*VIEW_WIDTH/13,  2*VIEW_WIDTH/13);
     //    self.jkhButton.frame = CGRectMake(VIEW_WIDTH * 0.81, self.roseButton.frame.size.height * 1.75, VIEW_HEIGHT * 0.085, VIEW_HEIGHT * 0.085);
     [self.jkhButton setImage:jkhImage forState:UIControlStateNormal];
     self.jkhButton.layer.cornerRadius = 20;
@@ -336,28 +350,28 @@
     [_jkhButton addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.flowerView addSubview:self.jkhButton];
     //花名
-    self.roseLabel = [[UILabel alloc] initWithFrame:CGRectMake(VIEW_WIDTH * 0.05, VIEW_HEIGHT * 0.105, VIEW_WIDTH * 0.15, VIEW_HEIGHT * 0.03)];
+    self.roseLabel = [[UILabel alloc] initWithFrame:CGRectMake(VIEW_WIDTH/13,VIEW_HEIGHT * 0.02+2*VIEW_WIDTH/13, 2*VIEW_WIDTH/13, VIEW_HEIGHT * 0.03)];
     self.roseLabel.text = @"玫瑰";
     self.roseLabel.textColor = [UIColor blackColor];
     self.roseLabel.font = [UIFont systemFontOfSize:14];
     self.roseLabel.textAlignment=NSTextAlignmentCenter;
     [self.flowerView addSubview:self.roseLabel];
     
-    self.baiheLbael = [[UILabel alloc] initWithFrame:CGRectMake(self.roseLabel.frame.size.width * 1.9, VIEW_HEIGHT * 0.105, VIEW_WIDTH * 0.15, VIEW_HEIGHT * 0.03)];
+    self.baiheLbael = [[UILabel alloc] initWithFrame:CGRectMake(4*VIEW_WIDTH/13,VIEW_HEIGHT * 0.02+2*VIEW_WIDTH/13, 2*VIEW_WIDTH/13, VIEW_HEIGHT * 0.03)];
     self.baiheLbael.text = @"百合";
     self.baiheLbael.textColor = [UIColor blackColor];
     self.baiheLbael.font = [UIFont systemFontOfSize:14];
     self.baiheLbael.textAlignment=NSTextAlignmentCenter;
     [self.flowerView addSubview:self.baiheLbael];
     
-    self.knxLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.roseLabel.frame.size.width * 3.6, VIEW_HEIGHT * 0.105, VIEW_WIDTH * 0.15, VIEW_HEIGHT * 0.03)];
+    self.knxLabel = [[UILabel alloc] initWithFrame:CGRectMake(7*VIEW_WIDTH/13,VIEW_HEIGHT * 0.02+2*VIEW_WIDTH/13, 2*VIEW_WIDTH/13,  VIEW_HEIGHT * 0.03)];
     self.knxLabel.text = @"康乃馨";
     self.knxLabel.textColor = [UIColor blackColor];
     self.knxLabel.font = [UIFont systemFontOfSize:14];
     self.knxLabel.textAlignment=NSTextAlignmentCenter;
     [self.flowerView addSubview:self.knxLabel];
     
-    self.dtjLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.roseLabel.frame.size.width * 5.35, VIEW_HEIGHT * 0.105, VIEW_WIDTH * 0.15, VIEW_HEIGHT * 0.03)];
+    self.dtjLabel = [[UILabel alloc] initWithFrame:CGRectMake(10*VIEW_WIDTH/13,VIEW_HEIGHT * 0.02+2*VIEW_WIDTH/13, 2*VIEW_WIDTH/13,  VIEW_HEIGHT * 0.03)];
     self.dtjLabel.text = @"多头菊";
     self.dtjLabel.textColor = [UIColor blackColor];
     self.dtjLabel.font = [UIFont systemFontOfSize:14];
@@ -365,28 +379,28 @@
     [self.flowerView addSubview:self.dtjLabel];
     
     
-    self.huacaoLabel = [[UILabel alloc] initWithFrame:CGRectMake(VIEW_WIDTH * 0.04, VIEW_HEIGHT * 0.235, VIEW_WIDTH * 0.19, VIEW_HEIGHT * 0.03)];
+    self.huacaoLabel = [[UILabel alloc] initWithFrame:CGRectMake(VIEW_WIDTH/13-VIEW_WIDTH/16, self.roseButton.frame.size.height * 1.75+2*VIEW_WIDTH/13, 2*VIEW_WIDTH/13+VIEW_WIDTH/8, VIEW_HEIGHT * 0.03)];
     self.huacaoLabel.text = @"配花配草";
     self.huacaoLabel.textColor = [UIColor blackColor];
     self.huacaoLabel.textAlignment=NSTextAlignmentCenter;
     self.huacaoLabel.font = [UIFont systemFontOfSize:14];
     [self.flowerView addSubview:self.huacaoLabel];
     
-    self.baoLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.roseLabel.frame.size.width * 1.8, VIEW_HEIGHT * 0.235, VIEW_WIDTH * 0.19, VIEW_HEIGHT * 0.03)];
+    self.baoLabel = [[UILabel alloc] initWithFrame:CGRectMake(4*VIEW_WIDTH/13-VIEW_WIDTH/16, self.roseButton.frame.size.height * 1.75+2*VIEW_WIDTH/13, 2*VIEW_WIDTH/13+VIEW_WIDTH/8,  VIEW_HEIGHT * 0.03)];
     self.baoLabel.text = @"包装资材";
     self.baoLabel.textColor = [UIColor blackColor];
     self.baoLabel.textAlignment=NSTextAlignmentCenter;
     self.baoLabel.font = [UIFont systemFontOfSize:14];
     [self.flowerView addSubview:self.baoLabel];
     
-    self.yshLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.roseLabel.frame.size.width * 3.5, VIEW_HEIGHT * 0.235, VIEW_WIDTH * 0.19, VIEW_HEIGHT * 0.03)];
+    self.yshLabel = [[UILabel alloc] initWithFrame:CGRectMake(7*VIEW_WIDTH/13, self.roseButton.frame.size.height * 1.75+2*VIEW_WIDTH/13, 2*VIEW_WIDTH/13,  VIEW_HEIGHT * 0.03)];
     self.yshLabel.text = @"永生花";
     self.yshLabel.textColor = [UIColor blackColor];
     self.yshLabel.textAlignment=NSTextAlignmentCenter;
     self.yshLabel.font = [UIFont systemFontOfSize:14];
     [self.flowerView addSubview:self.yshLabel];
     
-    self.jkhLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.roseLabel.frame.size.width * 5.2, VIEW_HEIGHT * 0.235, VIEW_WIDTH * 0.19, VIEW_HEIGHT * 0.03)];
+    self.jkhLabel = [[UILabel alloc] initWithFrame:CGRectMake(10*VIEW_WIDTH/13, self.roseButton.frame.size.height * 1.75+2*VIEW_WIDTH/13, 2*VIEW_WIDTH/13,  VIEW_HEIGHT * 0.03)];
     self.jkhLabel.text = @"进口花";
     self.jkhLabel.textColor = [UIColor blackColor];
     self.jkhLabel.textAlignment=NSTextAlignmentCenter;
@@ -396,11 +410,11 @@
 }
 -(void)btnClick:(UIButton*)sender
 {
+     NSString*isTag=[NSString stringWithFormat:@"%lu",sender.tag-1];
     
-    AssortPageViewController*assortVC=[[AssortPageViewController alloc]init];
-    assortVC.isTag=(int)sender.tag-1;
-    [self.navigationController pushViewController:assortVC animated:YES];
+    [[NSUserDefaults standardUserDefaults]setObject:isTag forKey:@"TWOTAG"];
     
+     _tabBarVC.selectedIndex=1;
 }
 
 
@@ -470,7 +484,6 @@
 {
     //上面
     _count++;
-        
     if (_count>_picDataArray.count-3)
     {
         _count=0;
@@ -518,9 +531,9 @@
         [self.mainScroll addSubview:view];
 
         
-        UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/10+i*LBVIEW_WIDTH1/2, LBVIEW_WIDTH1 / 2+ LBVIEW_HEIGHT1 / 4.5+LBVIEW_HEIGHT1/13+VIEW_HEIGHT / 6+20, 30, 30)];
+        UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/10, (view.frame.size.height-30)/2, 30, 30)];
         image.image=[UIImage imageNamed:[NSString stringWithFormat:@"other_service_%d.png",i+1]];
-        [self.mainScroll addSubview:image];
+        [view addSubview:image];
         
         UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/10+i*LBVIEW_WIDTH1/2+30, LBVIEW_WIDTH1 / 2+ LBVIEW_HEIGHT1 / 4.5+LBVIEW_HEIGHT1/13+VIEW_HEIGHT / 6+10, VIEW_WIDTH / 4,VIEW_HEIGHT * 0.07)];
         label.text=array[i];
@@ -545,12 +558,14 @@
 -(void)ikenButton:(UIButton*)sender
 {
     IdeaBackViewController*ideaVC=[[IdeaBackViewController alloc]init];
+    [self hidesTabBar:YES];
     [self.navigationController pushViewController:ideaVC animated:YES];
     
 }
 -(void)bessButton:(UIButton*)sender
 {
     CooperateViewController*cooperateVC=[[CooperateViewController alloc]init];
+    [self hidesTabBar:YES];
     [self.navigationController pushViewController:cooperateVC animated:YES];
     
 }

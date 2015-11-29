@@ -15,8 +15,12 @@
 #import "orderDetail.h"
 #import "FlowerDetail.h"
 #import "ShopingCar.h"
+#import "ShopingCarDetail.h"
 #import "AllAdress.h"
 #import "HJNotifiton.h"
+#import "ComplainServe.h"
+
+
 
 @interface HttpEngine : NSObject
 
@@ -44,7 +48,7 @@
 +(void)checkUser;
 
 //用户注册
-+(void)registerRequestUsername:(NSString*)username withPassword:(NSString*)password withMobile:(NSString*)mobile withRegIp:(NSString*)regIp;
++(void)registerRequestUsername:(NSString*)username withPassword:(NSString*)password withMobile:(NSString*)mobile withRegIp:(NSString*)regIp withFlorist:(NSString*)isFlorist;
 
 //登陆请求
 +(void)loginRequest:(NSString*)name with:(NSString*)pas complete:(void(^)(NSString*fail))complete;
@@ -61,8 +65,11 @@
 +(void)getProductDetail:(NSString*)idStr withLocation:(NSString*)location withProps:(NSArray*)props withPage:(NSString*)page withPageSize:(NSString*)pageSize completion:(void(^)(NSArray*dataArray))complete;
 
 
+//购物车详细列表
++(void)getCart:(void(^)(NSDictionary*allDic,NSArray*dataArray,NSString*totalPrice,NSString*shippingFee,NSString*paymentPrice,NSString*error))complete;
+
 //购物车列表
-+(void)getCart:(void(^)(NSArray*dataArray,NSString*totalPrice,NSString*shippingFee,NSString*paymentPrice))complete;
++(void)getSimpleCart:(void(^)(NSArray*array))complete;
 
 //增加商品
 +(void)addGoodsLocation:(NSString*)location withSku:(NSString*)sku withSupplier:(NSString*)supplier withNumber:(NSString*)number;
@@ -83,6 +90,8 @@
 +(void)myOrder:(NSString*)full with:(NSString*)page with:(NSString*)pageSize with:(NSString*)status completion:(void(^)(NSArray*dataArray))complete;
 //订单详细
 +(void)detailOrder:(NSString*)idStr completion:(void(^)(NSDictionary*dataDic))complete;
+//再次购买
++(void)anginBuy:(NSString*)order;
 
 //订单提交
 +(void)submitOrderAddressId:(NSString*)addressId withMethod:(NSString*)method withSpaypassword:(NSString*)spaypassword withCouponNo:(NSString*)couponNo;
@@ -101,8 +110,9 @@
 //地址删除
 +(void)deleteAddress:(NSString*)addrId;
 //设置默认收货地址
-+(void)defaultAddress:(NSString*)addrId;
-
++(void)setDefaultAddress:(NSString*)addrId;
+//获取默认收货地址
++(void)getDefaultAddress:(void(^)(NSDictionary*dataDic))complete;
 
 
 //我的红包
@@ -115,5 +125,15 @@
 //花集余额充值
 +(void)topUpAmount:(NSString*)amount withMethod:(NSString*)method;
 
+//消息中心
+//+(void)
 
+//我的售后
++(void)complainServerPage:(NSString*)page withPageSize:(NSString*)pageSize completion:(void(^)(NSArray*dataArray))complete;
+
+//消息中心
++(void)messageCentercompletion:(void(^)(NSArray*dataArray))complete;
+
+//错误数据
++(NSString*)errorData:(NSDictionary*)userInfo;
 @end

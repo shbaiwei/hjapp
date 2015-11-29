@@ -9,15 +9,27 @@
 #import "AboutMeViewController.h"
 #import "HttpEngine.h"
 #import "MyHJViewController.h"
+#import "ChangeSexViewController.h"
 
 
-@interface AboutMeViewController ()
+@interface AboutMeViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property(nonatomic,strong)NSArray*dataArray;
 
 @property(nonatomic,strong)UIView*btnView;
 @property(nonatomic,strong)UIView*timeView;
 @property(nonatomic,strong)UIView*shadowView;
 @property(nonatomic,strong)UIDatePicker *datePicker;
+@property(nonatomic,strong)NSArray*titleArray;
+
+@property(nonatomic,strong)UITableView*tableView;
+@property(nonatomic,strong)UIButton*sexBtn;
+@property(nonatomic,strong)UIButton*birthdayBtn;
+@property(nonatomic,strong)UITextField*trueNameTF;
+@property(nonatomic,strong)UILabel*sexLabel;
+@property(nonatomic,strong)UILabel*birthdayLabel;
+
+
+@property(nonatomic,strong)UILabel*timeLabel;
 
 @end
 
@@ -26,11 +38,26 @@
 
 @implementation AboutMeViewController
 
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    if (_isTag==10)
+    {
+        _sexLabel.text=@"男";
+    }
+    if (_isTag==11)
+    {
+        _sexLabel.text=@"女";
+    }
+
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.navigationController.navigationBarHidden=YES;
-   
+    self.navigationController.navigationBarHidden=NO;
+    self.title=@"个人资料";
+    self.navigationController.navigationBar.translucent =NO;
+    _titleArray=[[NSArray alloc]initWithObjects:@"会员",@"会员UID",@"真实姓名",@"性别",@"生日", nil];
     NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"ID"];
     [HttpEngine getConsumerDetailData:str completion:^(NSArray *dataArray)
     {
@@ -39,48 +66,178 @@
         
     }];
     
-   
+
 }
 -(void)showConsumerDetail
 {
-    //*userid,*uniqueid,*realName,*gender,*birthday;
-
-    ConsumerDetail*consumer=_dataArray[0];
-    
-    _memberNameLabel.text=consumer.userid;
-    _memberIdLabel.text=consumer.uniqueid;
-    _trueNameTF.text=consumer.realName;
-    
-    //[_birthdayBtn setTitle:consumer.birthday forState:UIControlStateNormal];
-    [_birthdayBtn addTarget:self action:@selector(changeBirthday) forControlEvents:UIControlEventTouchUpInside];
-    
-    _birthdayLabel.text=consumer.birthday;
-    if ([consumer.gender isEqualToString:@"0"])
-    {
-         _sexLabel.text=@"男";
-        //[_sexBtn setTitle:@"男" forState:UIControlStateNormal];
-    }
-    else
-    {
-     _sexLabel.text=@"女";
-    }
-    
-    [_sexBtn addTarget:self action:@selector(changeSex) forControlEvents:UIControlEventTouchUpInside];
+    _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1) style:UITableViewStyleGrouped];
+    _tableView.delegate=self;
+    _tableView.dataSource=self;
+    _tableView.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
+    [self.view addSubview:_tableView];
 }
+
+//区头
+-(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView*view=[[UIView alloc]init];
+    
+    UIImageView*headImage=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1 * 0.05, (80-LBVIEW_HEIGHT1*0.09)/2, LBVIEW_HEIGHT1*0.09, LBVIEW_HEIGHT1* 0.09)];
+    headImage.image=[UIImage imageNamed:@"head.png"];
+    [view addSubview:headImage];
+    
+    UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(3*LBVIEW_WIDTH1/4-10, 20, LBVIEW_WIDTH1/4, 40)];
+    [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [btn setTitle:@"更换头像" forState:UIControlStateNormal];
+    btn.titleLabel.font=[UIFont systemFontOfSize:17];
+    btn.layer.borderColor=[UIColor grayColor].CGColor;
+    btn.layer.borderWidth=1;
+    btn.layer.cornerRadius=10;
+    btn.clipsToBounds=YES;
+    [view addSubview:btn];
+    
+    return view;
+}
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 80;
+}
+
+//区尾
+-(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    UIView*view=[[UIView alloc]init];
+    UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(10, 30, LBVIEW_WIDTH1-20, 30)];
+    [btn setBackgroundColor:[UIColor redColor]];
+    [btn setTitle:@"保存" forState:UIControlStateNormal];
+    [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    btn.layer.cornerRadius=7;
+    btn.clipsToBounds=YES;
+    [btn addTarget:self action:@selector(saveBtn:) forControlEvents:UIControlEventTouchUpInside];
+    [view addSubview:btn];
+    
+    return view;
+}
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 70;
+}
+
+//区
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 5;
+}
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 60;
+}
+-(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    ConsumerDetail*consumer=_dataArray[0];
+    UITableViewCell*cell=[tableView cellForRowAtIndexPath:indexPath];
+    cell.selectionStyle=UITableViewCellSelectionStyleNone;
+    if (cell==nil)
+    {
+        cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+        cell.textLabel.text=_titleArray[indexPath.row];
+        switch (indexPath.row)
+        {
+            case 0:
+            {
+                UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 20, 2*LBVIEW_WIDTH1/3, 20)];
+                label.textColor=[UIColor blackColor];
+                label.text=consumer.userid;
+                [cell addSubview:label];
+            }
+                break;
+            case 1:
+            {
+                UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 20, 2*LBVIEW_WIDTH1/3, 20)];
+                label.textColor=[UIColor blackColor];
+                label.text=consumer.uniqueid;
+                [cell addSubview:label];
+                
+            }
+                break;
+            case 2:
+            {
+                _trueNameTF=[[UITextField alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 15,LBVIEW_WIDTH1/2, 40)];
+                _trueNameTF.layer.borderColor=[UIColor grayColor].CGColor;
+                _trueNameTF.layer.borderWidth=1;
+                _trueNameTF.layer.cornerRadius=10;
+                _trueNameTF.clipsToBounds=YES;
+                _trueNameTF.text=[NSString stringWithFormat:@"%@",consumer.realName];
+                _trueNameTF.textColor=[UIColor blackColor];
+                [cell addSubview:_trueNameTF];
+                
+            }
+                break;
+            case 3:
+            {
+                
+                _sexLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3+10, 10,LBVIEW_WIDTH1/2-10, 40)];
+                _sexLabel.textColor=[UIColor blackColor];
+                [cell addSubview:_sexLabel];
+                
+                _sexBtn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 10,LBVIEW_WIDTH1/2, 40)];
+                _sexBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+                _sexBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
+                _sexBtn.layer.borderWidth=1;
+                _sexBtn.layer.borderColor=[UIColor grayColor].CGColor;
+                _sexBtn.layer.cornerRadius=10;
+                _sexBtn.clipsToBounds=YES;
+                [_sexBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+                if ([consumer.gender isEqualToString:@"0"])
+                {
+                    _sexLabel.text=@"男";
+                }
+                else
+                {
+                    _sexLabel.text=@"女";
+                }
+                [_sexBtn addTarget:self action:@selector(changeSex) forControlEvents:UIControlEventTouchUpInside];
+                [cell addSubview:_sexBtn];
+            }
+                break;
+            case 4:
+            {
+                _birthdayLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3+10, 10,LBVIEW_WIDTH1/2-10, 40)];
+                _birthdayLabel.textColor=[UIColor blackColor];
+                _birthdayLabel.text=consumer.birthday;
+                [cell addSubview:_birthdayLabel];
+                
+                _birthdayBtn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 10,LBVIEW_WIDTH1/2, 40)];
+                _birthdayBtn.layer.borderWidth=1;
+                _birthdayBtn.layer.borderColor=[UIColor grayColor].CGColor;
+                _birthdayBtn.layer.cornerRadius=10;
+                _birthdayBtn.clipsToBounds=YES;
+                [_birthdayBtn addTarget:self action:@selector(changeBirthday) forControlEvents:UIControlEventTouchUpInside];
+                [cell addSubview:_birthdayBtn];
+            }
+                break;
+            default:
+                break;
+        }
+        
+    }
+    
+    return cell;
+}
+
 -(void)changeBirthday
 {
-
-    
     _timeView=[[UIView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.1, LBVIEW_HEIGHT1*0.25, LBVIEW_WIDTH1*0.8, LBVIEW_HEIGHT1*0.5)];
     _timeView.backgroundColor=[UIColor whiteColor];
     _timeView.layer.cornerRadius=10;
     _timeView.clipsToBounds=YES;
     
-    UILabel*timeLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, 0, LBVIEW_WIDTH1*0.8-10, LBVIEW_HEIGHT1*0.1-1)];
-    timeLabel.text=@"2015年1月3日周日";
-    timeLabel.font=[UIFont systemFontOfSize:19];
-    timeLabel.textColor=[UIColor blueColor];
-    [_timeView addSubview:timeLabel];
+    _timeLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, 0, LBVIEW_WIDTH1*0.8-10, LBVIEW_HEIGHT1*0.1-1)];
+    //_timeLabel.text=@"2015年1月3日周日";
+    
+    _timeLabel.font=[UIFont systemFontOfSize:19];
+    _timeLabel.textColor=[UIColor blueColor];
+    [_timeView addSubview:_timeLabel];
     
     UILabel*lineLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, LBVIEW_HEIGHT1*0.1-1, LBVIEW_WIDTH1*0.8, 1)];
     lineLabel.textColor=[UIColor blueColor];
@@ -88,7 +245,11 @@
     
     _datePicker = [[ UIDatePicker alloc] initWithFrame:CGRectMake(0, LBVIEW_HEIGHT1*0.1, LBVIEW_WIDTH1*0.8, LBVIEW_HEIGHT1*0.3)];
     _datePicker.datePickerMode = UIDatePickerModeDate;
-      [_timeView addSubview:_datePicker];
+    [_datePicker addTarget:self action:@selector(showTime) forControlEvents:UIControlEventValueChanged];
+    [_timeView addSubview:_datePicker];
+    
+    
+    
     
     UILabel*btnLineLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, LBVIEW_HEIGHT1*0.4-1, LBVIEW_WIDTH1*0.8, 1)];
     btnLineLabel.textColor=[UIColor grayColor];
@@ -102,7 +263,6 @@
     [_timeView addSubview:timeBtn];
     
     
-    
     _shadowView=[[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
     _shadowView.backgroundColor=[UIColor darkGrayColor];
     _shadowView.alpha=0.9;
@@ -114,75 +274,35 @@
     
     
 }
+//时间显示
+-(void)showTime
+{
+    NSDate*date=_datePicker.date;
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
+    [formatter setDateFormat:@"yyyy-MM-dd"];
+    NSString*timeStr=[formatter stringFromDate:date];
+    _timeLabel.text=timeStr;
+}
+
 
 -(void)chooseTime
 {
- 
     [_shadowView removeFromSuperview];
     NSDate*date=_datePicker.date;
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
     [formatter setDateFormat:@"yyyy-MM-dd"];
     NSString*timeStr=[formatter stringFromDate:date];
-    NSLog(@"%@",timeStr);
     _birthdayLabel.text=timeStr;
     
 }
 
 -(void)changeSex
 {
-    _btnView=[[UIView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.1, LBVIEW_HEIGHT1*0.45, LBVIEW_WIDTH1*0.8, LBVIEW_HEIGHT1*0.1)];
-    //_view=[[UIView alloc]initWithFrame:CGSizeMake(280, 120)];
-    _btnView.backgroundColor=[UIColor whiteColor];
-    _btnView.layer.cornerRadius=10;
-    _btnView.clipsToBounds=YES;
-    
-    UILabel *labelStriping=[[UILabel alloc]initWithFrame:CGRectMake(0, LBVIEW_HEIGHT1*0.05, LBVIEW_WIDTH1*0.8, 1)];
-    labelStriping.backgroundColor=[UIColor grayColor];
-    [_btnView addSubview:labelStriping];
-    
-    for (int i=0; i<2; i++)
-    {
-        UIButton *btn=[[UIButton alloc]initWithFrame:CGRectMake(0,i* LBVIEW_HEIGHT1*0.05, LBVIEW_WIDTH1*0.8, LBVIEW_HEIGHT1*0.05)];
-        if (i==0)
-        {
-            [btn setTitle:@"男" forState:UIControlStateNormal];
-        }
-        if (i==1)
-        {
-            [btn setTitle:@"女" forState:UIControlStateNormal];
-        }
-        [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [btn addTarget:self action:@selector(removeBtn:) forControlEvents:UIControlEventTouchUpInside];
-        btn.tag=i+1;
-        btn.titleLabel.font=[UIFont systemFontOfSize:18];
-        [_btnView addSubview:btn];
-    }
-    _shadowView=[[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
-    _shadowView.backgroundColor=[UIColor darkGrayColor];
-    _shadowView.alpha=0.9;
-    
-    //找window
-    UIWindow *window=[[UIApplication sharedApplication]keyWindow];
-    [window addSubview:_shadowView];
-    [_shadowView addSubview:_btnView];
-   
+    ChangeSexViewController*changeSex=[[ChangeSexViewController alloc]init];
+    changeSex.aboutMeVC=self;
+    [self.navigationController pushViewController:changeSex animated:NO];
 
 }
--(void)removeBtn:(UIButton *)btn
-{
-    [_shadowView removeFromSuperview];
-    if (btn.tag==1)
-    {
-        _sexLabel.text=@"男";
-    }
-    else
-    {
-        _sexLabel.text=@"女";
-    }
-    
-}
-
-
 
 - (IBAction)saveBtn:(UIButton *)sender
 {
@@ -193,14 +313,13 @@
     }
     [HttpEngine updataConsumerDetailData:_trueNameTF.text with:str with:_birthdayLabel.text];
     
-}
-
-- (IBAction)backMyHJ:(UIButton *)sender
-{
-    MyHJViewController*myHJVC=[[MyHJViewController alloc]init];
-    [self.navigationController pushViewController:myHJVC animated:YES];
+    UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"更新成功" preferredStyle: UIAlertControllerStyleAlert];
+    UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
+                                 {
+                                    
+                                 }];
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
     
 }
-
-
 @end

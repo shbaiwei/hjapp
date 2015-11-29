@@ -24,6 +24,8 @@
         _goodsName=[dic[@"goods_name"]copy];
         _image=[dic[@"image"]copy];
         _propValue=[dic[@"prop_value"]copy];
+        _standardNumber=[dic[@"standard_number"]copy];
+        _Id=[dic[@"id"]copy];
         _dataArray=dic[@"price_list"];
     }
     return self;

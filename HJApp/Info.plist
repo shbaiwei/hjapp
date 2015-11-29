@@ -24,11 +24,17 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.huaji.HJApp</string>
+			<string>alipay</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>hjapp</string>
+				<string>iOSHJApp</string>
 			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>winXin</string>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>

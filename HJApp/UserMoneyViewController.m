@@ -127,14 +127,14 @@
     [self.view addSubview:self.wechatBth];
     
 
-    self.okBtn = [[UIButton alloc]init];
-    self.okBtn.frame = CGRectMake(LBVIEW_WIDTH1 / 13, + self.moneyLabel.frame.size.height + self.nokoLabel.frame.size.height + 120 + 70 + 70, LBVIEW_WIDTH1 / 1.2, LBVIEW_HEIGHT1 / 19);
-    UIImage *okimage = [UIImage imageNamed:@"ok.png"];
-    okimage = [okimage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    [self.okBtn setImage:okimage forState:UIControlStateNormal];
-    self.okBtn.layer.cornerRadius = 10;
-    self.okBtn.clipsToBounds=YES;
-    [self.view addSubview:self.okBtn];
+//    self.okBtn = [[UIButton alloc]init];
+//    self.okBtn.frame = CGRectMake(LBVIEW_WIDTH1 / 13, + self.moneyLabel.frame.size.height + self.nokoLabel.frame.size.height + 120 + 70 + 70, LBVIEW_WIDTH1 / 1.2, LBVIEW_HEIGHT1 / 19);
+//    UIImage *okimage = [UIImage imageNamed:@"ok.png"];
+//    okimage = [okimage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+//    [self.okBtn setImage:okimage forState:UIControlStateNormal];
+//    self.okBtn.layer.cornerRadius = 10;
+//    self.okBtn.clipsToBounds=YES;
+//    [self.view addSubview:self.okBtn];
     
     
 }

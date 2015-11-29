@@ -10,8 +10,8 @@
 
 @interface ShopingCar : NSObject
 
-@property(nonatomic,copy)NSString *skuName,*price,*number,*skuId,*supplierId;
-@property(nonatomic,strong)NSArray*dataArray;
+@property(nonatomic,copy)NSString *skuName,*price,*number,*skuId,*supplierId,*Id;
+@property(nonatomic,strong)NSArray*props;
 
 +(id)ConsumerDetailDictionary:(NSDictionary*)dic;
 -(id)initWithDictionary:(NSDictionary*)dic;
