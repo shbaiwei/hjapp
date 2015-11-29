@@ -27,7 +27,7 @@
         [self addSubview:self.numAddressLabel];
         
         self.nameL = [[UILabel alloc] init];
-        self.nameL.font = [UIFont systemFontOfSize:17];
+        //self.nameL.font = [UIFont systemFontOfSize:17];
         [self.contentView addSubview:self.nameL];
         [self.nameL autoresizingMask];
         
@@ -38,7 +38,7 @@
         
         
         self.adressL = [[UILabel alloc] init];
-        self.adressL.font = [UIFont systemFontOfSize:13];
+        //self.adressL.font = [UIFont systemFontOfSize:13];
         self.adressL.numberOfLines = 2;
         [self.contentView addSubview:self.adressL];
         
@@ -47,13 +47,6 @@
        
         [self.contentView addSubview:_morenBtn];
         
-        
-
-//        self.choiceL = [[UILabel alloc] init];
-//        self.choiceL.text = @"设为默认地址";
-//        self.choiceL.font = [UIFont systemFontOfSize:14];
-//        self.choiceL.alpha = 0.5;
-//        [self.contentView addSubview:self.choiceL];
         
         
         
@@ -72,6 +65,7 @@
         [self.bjBtn setTitleColor:[UIColor grayColor] forState:(UIControlStateNormal)];
         self.bjBtn.titleLabel.font = [UIFont systemFontOfSize:14];
         self.bjBtn.alpha = 0.6;
+        //[self.bjBtn setBackgroundColor:[UIColor redColor]];
         [self.contentView addSubview:self.bjBtn];
         
         
@@ -80,6 +74,7 @@
         [self.deleBtn setTitleColor:[UIColor grayColor] forState:(UIControlStateNormal)];
         self.deleBtn.titleLabel.font = [UIFont systemFontOfSize:14];
         self.deleBtn.alpha = 0.6;
+        //[self.deleBtn setBackgroundColor:[UIColor redColor]];
         [self.contentView addSubview:self.deleBtn];
         
     }
@@ -98,19 +93,19 @@
     self.numAddressLabel.frame=CGRectMake(width/5.2+(width/4-width/14)/2,height / 6+height /18+height/26, width /13, width /13);
     
     
-    self.nameL.frame = CGRectMake(width / 1.5, height / 6, width / 1.5, height / 5);
+    self.nameL.frame = CGRectMake(width / 1.5, height / 6, width*4, height / 5);
     self.numberL.frame = CGRectMake(width / 1.5+width /1.5, height / 6, width / 0.6, height / 5);
     
     self.adressL.frame = CGRectMake(width / 1.5, height / 2.7, self.frame.size.width-width/1.5, height / 3);
     
-    self.morenBtn.frame = CGRectMake(width / 1.5, height / 1.25, width / 4.5, height / 7);
+    self.morenBtn.frame = CGRectMake(width / 1.5, height / 1.25,20, 20);
     //self.choiceL.frame = CGRectMake(width / 1.1, height / 1.25, width *2, height / 7);
     
     self.bjIV.frame = CGRectMake(width / 1.1+width*2, height / 1.25, width / 5, height / 6.5);
-    self.bjBtn.frame = CGRectMake(width / 1.1+width*2, height / 1.24, width, height / 6.5);
+    self.bjBtn.frame = CGRectMake(width / 1.1+width*2, height / 1.24, width, height / 5);
     
-    self.deleIV.frame = CGRectMake(width / 1.1+width*2+width+width/8, height /1.23, width / 5 ,height / 6.5);
-    self.deleBtn.frame = CGRectMake(width / 1.1+width*2+width+width/8, height / 1.24, width, height / 6.5);
+    self.deleIV.frame = CGRectMake(width / 1.1+width*2+width+width/8, height /1.23, width / 5 ,height /6.5);
+    self.deleBtn.frame = CGRectMake(width / 1.1+width*2+width+width/8, height / 1.24, width, height / 5);
     
     
 }

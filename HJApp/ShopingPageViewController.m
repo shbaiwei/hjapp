@@ -71,6 +71,7 @@
     _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-54)];
     _tableView.dataSource=self;
     _tableView.delegate=self;
+    _tableView.tableFooterView=[[UIView alloc]initWithFrame:CGRectZero];
     [self.view addSubview:_tableView];
     
     _tableView.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
@@ -187,35 +188,44 @@
     }
     
     UITableViewCell*cell=[tableView cellForRowAtIndexPath:indexPath];
-    cell.selectionStyle= UITableViewCellSelectionStyleNone;
     
     if (cell==nil)
     {
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
-        UILabel*nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, LBVIEW_HEIGHT1*0.01, LBVIEW_WIDTH1*0.5, LBVIEW_HEIGHT1*0.06)];
+        cell.selectionStyle= UITableViewCellSelectionStyleNone;
+        UILabel*nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, 5, LBVIEW_WIDTH1*0.5-10, 60)];
         nameLabel.text=[NSString stringWithFormat:@"%@ %@",spCa.skuName,attributeStr] ;
-        nameLabel.numberOfLines=0;
+        nameLabel.numberOfLines=2;
         [cell addSubview:nameLabel];
         
-        UILabel*picLabel=[[UILabel alloc]initWithFrame:CGRectMake(30+LBVIEW_WIDTH1*0.5, LBVIEW_HEIGHT1*0.01, LBVIEW_WIDTH1*0.2, LBVIEW_HEIGHT1*0.06)];
+        NSString*str=[NSString stringWithFormat:@"¥%@",spCa.price];
+        UIFont*font=[UIFont systemFontOfSize:17];
+        CGSize size=[str boundingRectWithSize:CGSizeMake(100, 30) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
+        
+        UILabel*picLabel=[[UILabel alloc]initWithFrame:CGRectMake(10+LBVIEW_WIDTH1*0.5, 20, size.width, 30)];
         picLabel.text=[NSString stringWithFormat:@"¥%@",spCa.price];
         picLabel.textColor=[UIColor redColor];
         [cell addSubview:picLabel];
         
-        UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-50, LBVIEW_HEIGHT1*0.01, 20, LBVIEW_HEIGHT1*0.06)];
+//        UILabel*xlabel=[[UILabel alloc]initWithFrame:CGRectMake((3*LBVIEW_WIDTH1*0.5-70+size.width)/2, 25, 20, 20)];
+//        xlabel.text=@"X";
+//        xlabel.textColor=[UIColor grayColor];
+//        [cell addSubview:xlabel];
+        
+        UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-60, 25, 20, 20)];
         numLabel.text=[NSString stringWithFormat:@"%@",spCa.number];
         numLabel.textAlignment=NSTextAlignmentCenter;
-        numLabel.font=[UIFont systemFontOfSize:14];
+        numLabel.font=[UIFont systemFontOfSize:16];
         [cell addSubview:numLabel];
         
-        UIButton*addBtn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-30, LBVIEW_HEIGHT1*0.025, 20, 20)];
+        UIButton*addBtn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-40, 20, 30, 30)];
         [addBtn setImage:[UIImage imageNamed:@"plus.png"] forState:UIControlStateNormal];
         [addBtn addTarget:self action:@selector(addBtn:) forControlEvents:UIControlEventTouchUpInside];
         addBtn.tag=indexPath.row;
         [cell addSubview:addBtn];
         
         
-        UIButton*subBtn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-70, LBVIEW_HEIGHT1*0.025, 20, 20)];
+        UIButton*subBtn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-90, 20, 30, 30)];
         [subBtn setImage:[UIImage imageNamed:@"jian.png"] forState:UIControlStateNormal];
         subBtn.tag=indexPath.row+1000;
         [subBtn addTarget:self action:@selector(subBtn:) forControlEvents:UIControlEventTouchUpInside];
@@ -227,7 +237,7 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    return LBVIEW_HEIGHT1*0.08;
+    return 70;
     
 }
 //增加按钮
@@ -275,7 +285,11 @@
     ShopingCar*spCa=_dataArray[tag];
     NSString*numer=spCa.number;
     numer=[NSString stringWithFormat:@"%lu",[numer integerValue]-1];
-    NSLog(@"----%@",numer);
+    if (numer==0)
+    {
+        return;
+    }
+   // NSLog(@"----%@",numer);
     //添加
     NSLog(@"===%@,===%@",spCa.skuId,spCa.supplierId);
     NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];

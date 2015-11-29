@@ -66,10 +66,12 @@
 - (void)newadressPage
 {
     
-    UIView *userV = [[UIView alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 17, LBVIEW_HEIGHT1 / 7, LBVIEW_WIDTH1 / 1.1, LBVIEW_HEIGHT1 / 17)];
+    UIView *userV = [[UIView alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 17, 30, LBVIEW_WIDTH1 / 1.1, LBVIEW_HEIGHT1 / 17)];
     // userV.backgroundColor = [UIColor redColor];
     userV.layer.borderColor = [[UIColor grayColor] CGColor];
     userV.layer.borderWidth = 1;
+    userV.layer.cornerRadius=5;
+    userV.clipsToBounds=YES;
     [self.view addSubview:userV];
     
     UILabel*userLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 4-6, LBVIEW_HEIGHT1 / 17)];
@@ -89,10 +91,12 @@
     self.userNameTF.text=_userName;
     [userV addSubview:self.userNameTF];
     
-    UIView *phoneV = [[UIView alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 17, LBVIEW_HEIGHT1 / 4.5, LBVIEW_WIDTH1 / 1.1, LBVIEW_HEIGHT1 / 17)];
+    UIView *phoneV = [[UIView alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 17, LBVIEW_HEIGHT1 / 17+50, LBVIEW_WIDTH1 / 1.1, LBVIEW_HEIGHT1 / 17)];
     //phoneV.backgroundColor = [UIColor redColor];
     phoneV.layer.borderColor = [[UIColor grayColor] CGColor];
     phoneV.layer.borderWidth = 1;
+    phoneV.layer.cornerRadius=5;
+    phoneV.clipsToBounds=YES;
     [self.view addSubview:phoneV];
     
     
@@ -113,9 +117,11 @@
     self.phoneTF.text=_phone;
     [phoneV addSubview:self.phoneTF];
     
-    UIView *proconV = [[UIView alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 17, LBVIEW_HEIGHT1 / 3.3, LBVIEW_WIDTH1 / 1.1, LBVIEW_HEIGHT1 / 17)];
+    UIView *proconV = [[UIView alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 17, 2*LBVIEW_HEIGHT1 / 17+70, LBVIEW_WIDTH1 / 1.1, LBVIEW_HEIGHT1 / 17)];
     proconV.layer.borderColor = [[UIColor grayColor] CGColor];
     proconV.layer.borderWidth = 1;
+    proconV.layer.cornerRadius=5;
+    proconV.clipsToBounds=YES;
     [self.view addSubview:proconV];
     
     UILabel*proconLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 4-6, LBVIEW_HEIGHT1 / 17)];
@@ -137,9 +143,11 @@
     [proconV addSubview:self.proconTF];
     
     UIView *adreV = [[UIView alloc] init];
-    adreV.frame = CGRectMake(LBVIEW_WIDTH1 / 17, LBVIEW_HEIGHT1 / 2.6+ LBVIEW_HEIGHT1 / 17, LBVIEW_WIDTH1 / 1.1, LBVIEW_HEIGHT1 / 17);
+    adreV.frame = CGRectMake(LBVIEW_WIDTH1 / 17, 3*LBVIEW_HEIGHT1 / 17+90, LBVIEW_WIDTH1 / 1.1, LBVIEW_HEIGHT1 / 17);
     adreV.layer.borderColor = [[UIColor grayColor] CGColor];
     adreV.layer.borderWidth = 1;
+    adreV.layer.cornerRadius=5;
+    adreV.clipsToBounds=YES;
     [self.view addSubview:adreV];
     
     
@@ -160,8 +168,14 @@
     self.adreTF.text=_adre;
     [adreV addSubview:self.adreTF];
     
-    UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 17, LBVIEW_HEIGHT1 / 2+LBVIEW_HEIGHT1 / 17, LBVIEW_WIDTH1 / 1.1, LBVIEW_HEIGHT1 / 17)];
-    [btn setImage:[UIImage imageNamed:@"hozon.png"] forState:UIControlStateNormal];
+    UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 17, 4*LBVIEW_HEIGHT1 / 17+130, LBVIEW_WIDTH1 / 1.1,40)];
+    //[btn setImage:[UIImage imageNamed:@"hozon.png"] forState:UIControlStateNormal];
+    [btn setTitle:@"保存" forState:UIControlStateNormal];
+    [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [btn setBackgroundColor:[UIColor redColor]];
+    btn.layer.cornerRadius=7;
+    btn.clipsToBounds=YES;
+
     [btn addTarget:self action:@selector(saveDetail) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btn];
 }
@@ -228,6 +242,21 @@
 -(void)saveDetail
 {
     //consignee，phone_mob，province，city，town，address
+    
+    if ([_userNameTF.text isEqualToString:@""]||[_phoneTF.text isEqualToString:@""]||[_proconTF.text isEqualToString:@""]||[_adreTF.text isEqualToString:@""])
+    {
+        UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"请完善信息" preferredStyle: UIAlertControllerStyleAlert];
+        UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action)
+                                     {
+                                     }];
+        UIAlertAction*cancal=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action)
+                              {
+                              }];
+        [alert addAction:defaultAction];
+        [alert addAction:cancal];
+        [self presentViewController:alert animated:YES completion:nil];
+        return;
+    }
     
     if ([_proconTF.text isEqualToString:@""])
     {

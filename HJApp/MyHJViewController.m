@@ -163,8 +163,11 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row==0&&indexPath.row==1)
+    if (indexPath.row==0)
     {
+        return 60;
+    }
+    if (indexPath.row==1) {
         return 60;
     }
     return LBVIEW_HEIGHT1 / 13.5;
@@ -180,16 +183,16 @@
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
     if (indexPath.row==0)
     {
-        self.oderImageV = [[UIImageView alloc] initWithFrame:CGRectMake(VIEW_WIDTH * 0.06, 15, VIEW_WIDTH * 0.06, 25)];
+        self.oderImageV = [[UIImageView alloc] initWithFrame:CGRectMake(VIEW_WIDTH * 0.06, 17.5, VIEW_WIDTH * 0.06, 25)];
         self.oderImageV.image = [UIImage imageNamed:@"myOder.PNG"];
         [cell addSubview:self.oderImageV];
         
-        self.myOderLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.oderImageV.frame.size.width * 2.3, 15, VIEW_WIDTH * 0.5, 25)];
+        self.myOderLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.oderImageV.frame.size.width * 2.3, 15, VIEW_WIDTH * 0.5, 30)];
         self.myOderLabel.text = @"我的订单";
         self.myOderLabel.font = [UIFont systemFontOfSize:17];
         [cell addSubview:self.myOderLabel];
         
-        UILabel*selectLabel=[[UILabel alloc]initWithFrame:CGRectMake(self.view.frame.size.width-15*VIEW_WIDTH * 0.043+10, 15, VIEW_WIDTH * 0.5, 25)];
+        UILabel*selectLabel=[[UILabel alloc]initWithFrame:CGRectMake(self.view.frame.size.width-15*VIEW_WIDTH * 0.043+10, 20, VIEW_WIDTH * 0.5, 20)];
         selectLabel.text=@"查看全部购买商品";
         selectLabel.textAlignment=NSTextAlignmentRight;
         selectLabel.font=[UIFont systemFontOfSize:14];
@@ -201,7 +204,7 @@
         [allBtn addTarget:self action:@selector(allOrder) forControlEvents:UIControlEventTouchUpInside];
         [cell addSubview:allBtn];
         
-        self.odJtImageV = [[UIImageView alloc] initWithFrame:CGRectMake(self.oderImageV.frame.size.width * 15, 15, VIEW_WIDTH * 0.043, VIEW_HEIGHT * 0.025)];
+        self.odJtImageV = [[UIImageView alloc] initWithFrame:CGRectMake(self.oderImageV.frame.size.width * 15,(60-VIEW_HEIGHT * 0.025)/2, VIEW_WIDTH * 0.043, VIEW_HEIGHT * 0.025)];
         self.odJtImageV.image = [UIImage imageNamed:@"jt.png"];
         [cell addSubview:self.odJtImageV];
         
@@ -215,18 +218,18 @@
         for (int i=0; i<3; i++)
         {
             
-            UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(i*LBVIEW_WIDTH1/3, 40, LBVIEW_WIDTH1/3, 20)];
+            UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(i*LBVIEW_WIDTH1/3, 35, LBVIEW_WIDTH1/3, 20)];
             label.text=array[i];
             label.textColor=[UIColor blackColor];
             label.textAlignment=NSTextAlignmentCenter;
             label.font=[UIFont systemFontOfSize:13];
             [cell addSubview:label];
             
-            UIImageView*imageV=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/7+i*LBVIEW_WIDTH1/3-5, 10, 30, 30)];
+            UIImageView*imageV=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/7+i*LBVIEW_WIDTH1/3-5, 5, 30, 30)];
             imageV.image=[UIImage imageNamed:[NSString stringWithFormat:@"order_state%d.png",i+1]];
             [cell addSubview:imageV];
             
-            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(i*LBVIEW_WIDTH1/3, 60, LBVIEW_WIDTH1/3, 60)];
+            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(i*LBVIEW_WIDTH1/3, 0, LBVIEW_WIDTH1/3, 60)];
             btn.tag=i+10;
             [btn addTarget:self action:@selector(chooseOrder:) forControlEvents:UIControlEventTouchUpInside];
             [cell addSubview:btn];
@@ -234,13 +237,13 @@
             
             if (i==0)
             {
-                UILabel*line1=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 10, 1, 40)];
+                UILabel*line1=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 10, 1, 37)];
                 line1.backgroundColor=[UIColor grayColor];
                 [cell addSubview:line1];
             }
             if (i==1)
             {
-                UILabel*line2=[[UILabel alloc]initWithFrame:CGRectMake(2*LBVIEW_WIDTH1/3, 10, 1, 40)];
+                UILabel*line2=[[UILabel alloc]initWithFrame:CGRectMake(2*LBVIEW_WIDTH1/3, 10, 1, 37)];
                 line2.backgroundColor=[UIColor grayColor];
                 [cell addSubview:line2];
             }
@@ -427,7 +430,7 @@
 {
     AboutMeViewController *aboutVC = [[AboutMeViewController alloc] init];
     [self hidesTabBar:YES];
-    [self.navigationController pushViewController:aboutVC animated:YES];
+    [self.navigationController pushViewController:aboutVC animated:NO];
 }
 
 
@@ -435,44 +438,57 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     //管理收货地址
-    if(indexPath.row==1)
+    if(indexPath.row==2)
     {
         AdressViewController *adressVC = [[AdressViewController alloc] init];
         [self hidesTabBar:YES];
-        [self.navigationController pushViewController:adressVC animated:YES];
+        [self.navigationController pushViewController:adressVC animated:NO];
     }
     //花集红包
-    if(indexPath.row==2)
+    if(indexPath.row==3)
     {
         FlowerMoneyViewController*flowerVC=[[FlowerMoneyViewController alloc]init];
         [self hidesTabBar:YES];
-        [self.navigationController pushViewController:flowerVC animated:YES];
+        [self.navigationController pushViewController:flowerVC animated:NO];
     }
     //消息中心
-    if(indexPath.row==3)
+    if(indexPath.row==4)
     {
         MessageCenterViewController*messageVC=[[MessageCenterViewController alloc]init];
-        [self.navigationController pushViewController:messageVC animated:YES];
+        [self.navigationController pushViewController:messageVC animated:NO];
         
     }
     //花集余额
-    if(indexPath.row==4)
-    {
-        UserMoneyViewController *userMVC = [[UserMoneyViewController alloc] init];
-        [self.navigationController pushViewController:userMVC animated:YES];
-    }
-    //我的售后
     if(indexPath.row==5)
     {
-        ComplainViewController*complainVC=[[ComplainViewController alloc]init];
-        [self.navigationController pushViewController:complainVC animated:YES];
+        UserMoneyViewController *userMVC = [[UserMoneyViewController alloc] init];
+        [self.navigationController pushViewController:userMVC animated:NO];
     }
-    //客服电话
+    //我的售后
     if(indexPath.row==6)
     {
-        //    跳转页面
-        NSString *allString = [NSString stringWithFormat:@"tel://057128980809"];
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:allString]];
+        ComplainViewController*complainVC=[[ComplainViewController alloc]init];
+        [self.navigationController pushViewController:complainVC animated:NO];
+    }
+    //客服电话
+    if(indexPath.row==7)
+    {
+        // 跳转页面
+        UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"是否拨打客服电话" preferredStyle: UIAlertControllerStyleAlert];
+        UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
+                              {
+                                  
+                              }];
+        UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
+                              {
+                                  NSString *allString = [NSString stringWithFormat:@"tel://057128980809"];
+                                  [[UIApplication sharedApplication] openURL:[NSURL URLWithString:allString]];
+                              }];
+        [alert addAction:cancel];
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
+        
+        
     }
 }
 
@@ -482,10 +498,17 @@
     UIView*view=[[UIView alloc]init];
     
     self.overButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    self.overButton.frame = CGRectMake(10,LBVIEW_HEIGHT1/20, LBVIEW_WIDTH1-20, LBVIEW_HEIGHT1 / 15);
-    UIImage *over = [UIImage imageNamed:@"over.png"];
-    over = [over imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    [self.overButton setImage:over forState:UIControlStateNormal];
+    self.overButton.frame = CGRectMake(10,LBVIEW_HEIGHT1/20, LBVIEW_WIDTH1-20, 40);
+//    UIImage *over = [UIImage imageNamed:@"over.png"];
+//    over = [over imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+//    [self.overButton setImage:over forState:UIControlStateNormal];
+    [self.overButton setTitle:@"退出登陆" forState:UIControlStateNormal];
+    self.overButton.titleLabel.font=[UIFont systemFontOfSize:19];
+    [self.overButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.overButton setBackgroundColor:[UIColor redColor]];
+    self.overButton.layer.cornerRadius=7;
+    self.overButton.clipsToBounds=YES;
+    
     [self.overButton addTarget:self action:@selector(goToSleep) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:self.overButton];
     

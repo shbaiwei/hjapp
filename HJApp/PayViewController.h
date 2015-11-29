@@ -10,5 +10,8 @@
 
 @interface PayViewController : UIViewController<UITableViewDataSource,UITableViewDelegate>
 
+@property(nonatomic,unsafe_unretained)int isTag;
+@property(nonatomic,unsafe_unretained)int isTagTime;
+@property(nonatomic,copy)NSString*isTagRedPacket;
 @end
 

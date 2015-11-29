@@ -13,6 +13,9 @@
 #import "ZhiFuBaoOrder.h"
 #import "DataSigner.h"
 #import "AdressViewController.h"
+#import "DistributionStyleViewController.h"
+#import "DistributionTimeViewController.h"
+#import "redPacketViewController.h"
 
 
 @interface PayViewController () <UIScrollViewDelegate>
@@ -46,6 +49,7 @@
 
 //配送时间
 @property(nonatomic,strong)UILabel*distributionLabel;
+@property(nonatomic,copy)NSString*distributionTimeStr;
 @property(nonatomic,strong)UIView*shadTimeView;
 
 //默认地址
@@ -78,6 +82,30 @@
          }
          
      }];
+    
+    //返回配送方式
+    if (_isTag==10)
+    {
+        _styleStr=@"送货上门";
+    }
+    if (_isTag==11)
+    {
+        _styleStr=@"上门自提";
+    }
+    //返回配送时间
+    if (_styleDic.count!=0)
+    {
+        if (_isTagTime!=0)
+        {
+            NSArray*array=_styleDic[@"deadline"];
+            _distributionTimeStr=array[_isTagTime-10];
+        }
+    }
+    //返回配送红包
+    if(_isTagRedPacket!=nil)
+    {
+        _redStr=_isTagRedPacket;
+    }
 
 }
 //获取地址
@@ -87,10 +115,25 @@
      {
          _defaultAddressDic=dataDic;
          NSLog(@"_defaultAddressArray==%@",_defaultAddressDic);
+         //[self judgeIsNull];
          [self judgeCity];
          [_tableView reloadData];
      }];
 }
+
+//-(void)judgeIsNull
+//{
+//    if (_defaultAddressDic.count==0)
+//    {
+//        [HttpEngine getAddress:^(NSArray *dataArray)
+//         {
+//             NSArray*array=dataArray;
+//             _defaultAddressDic=array[array.count-1];
+//             [_tableView reloadData];
+//        }];
+//    }
+//}
+
 -(void)judgeCity
 {
     NSString*defaultAdressId=[NSString stringWithFormat:@"%@",_defaultAddressDic[@"province"]];
@@ -155,6 +198,8 @@
 
         _dataArray=dataArray;
         _styleDic=allDic;
+        NSArray*array=_styleDic[@"deadline"];
+        _distributionTimeStr=array[0];
         _totalPrice=totalPrice;
         _paymentPrice=paymentPrice;
         _shippingFee=shippingFee;
@@ -427,35 +472,33 @@
         case 0:
         {
             UIView*view=[[UIView alloc]initWithFrame:CGRectMake(10, 0, 120,30)];
-            view.layer.borderWidth=1;
-            view.layer.borderColor=[UIColor grayColor].CGColor;
             [cell addSubview:view];
             
             _styleLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 0, 90, 30)];
             _styleLabel.text=_styleStr;
             _styleLabel.textColor=[UIColor blackColor];
-            _styleLabel.font=[UIFont systemFontOfSize:12];
+            _styleLabel.font=[UIFont systemFontOfSize:14];
             [view addSubview:_styleLabel];
             
-            UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(90, 10, 20, 10)];
-            image.image=[UIImage imageNamed:@"swiper-market-btn-b.png"];
+            UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-30, 5, 10, 20)];
+            image.image=[UIImage imageNamed:@"item-r.png"];
             [view addSubview:image];
             
-            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, 150, 30)];
+            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 30)];
             [btn addTarget:self action:@selector(cutAddress) forControlEvents:UIControlEventTouchUpInside];
-            [view addSubview:btn];
+            [cell addSubview:btn];
         }
             break;
         case 1:
         {
         _distributionAddrsNameLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, 5, 200, 25)];
         _distributionAddrsNameLabel.text=[NSString stringWithFormat:@"%@  %@",_defaultAddressDic[@"consignee"],_defaultAddressDic[@"phone_mob"]];
-        _distributionAddrsNameLabel.font=[UIFont systemFontOfSize:12];
+        _distributionAddrsNameLabel.font=[UIFont systemFontOfSize:14];
         [cell addSubview:_distributionAddrsNameLabel];
             
         _distributionAddrsDetailLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, 30, 200, 25)];
         _distributionAddrsDetailLabel.text=[NSString stringWithFormat:@"%@ %@ %@",_defaultAddressDic[@"chinese_province"],_defaultAddressDic[@"chinese_city"],_defaultAddressDic[@"chinese_town"]];
-        _distributionAddrsDetailLabel.font=[UIFont systemFontOfSize:12];
+        _distributionAddrsDetailLabel.font=[UIFont systemFontOfSize:14];
         [cell addSubview:_distributionAddrsDetailLabel];
             
         }
@@ -464,24 +507,19 @@
         case 2:
         {
             UIView*view=[[UIView alloc]initWithFrame:CGRectMake(10, 0, 200,30)];
-            view.layer.borderWidth=1;
-            view.layer.borderColor=[UIColor grayColor].CGColor;
             [cell addSubview:view];
             
             _distributionLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 0, 160, 30)];
-//            NSString*selfPickup=[NSString stringWithFormat:@"%@",_styleDic[@"self_pickup"]];
- 
-            NSArray*array=_styleDic[@"deadline"];
-            _distributionLabel.text=array[0];
+            _distributionLabel.text=_distributionTimeStr;
             _distributionLabel.textColor=[UIColor blackColor];
-            _distributionLabel.font=[UIFont systemFontOfSize:12];
+            _distributionLabel.font=[UIFont systemFontOfSize:14];
             [view addSubview:_distributionLabel];
             
-            UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(170, 10, 20, 10)];
-            image.image=[UIImage imageNamed:@"swiper-market-btn-b.png"];
+            UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-30, 5, 10, 20)];
+            image.image=[UIImage imageNamed:@"item-r.png"];
             [view addSubview:image];
             
-            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, 200, 30)];
+            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 30)];
             [btn addTarget:self action:@selector(distributionTime) forControlEvents:UIControlEventTouchUpInside];
             [view addSubview:btn];
         }
@@ -508,14 +546,20 @@
     
                 _redLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, 0, 120, 30)];
                 _redLabel.text=_redStr;
+                _redLabel.font=[UIFont systemFontOfSize:14];
                 _redLabel.textColor=[UIColor blackColor];
                 [cell addSubview:_redLabel];
             
-                UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, 150, 30)];
+            UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-20, 5, 10, 20)];
+            image.image=[UIImage imageNamed:@"item-r.png"];
+            [cell addSubview:image];
+            
+            if (![_redStr isEqualToString:@"未达到使用额度"]&&![_redStr isEqualToString:@"暂无红包"])
+            {
+                UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 30)];
                 [btn addTarget:self action:@selector(chooseRedPage) forControlEvents:UIControlEventTouchUpInside];
-                btn.layer.borderColor=[UIColor grayColor].CGColor;
-                btn.layer.borderWidth=1;
                 [cell addSubview:btn];
+            }
             
         }
             break;
@@ -537,7 +581,7 @@
             cell.textLabel.font=[UIFont systemFontOfSize:12];
             UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-50, 0, LBVIEW_WIDTH1*0.2, 30)];
             label.text=[NSString stringWithFormat:@"¥%@",_priceOrderArray[indexPath.row]];
-            label.font=[UIFont systemFontOfSize:12];
+            label.font=[UIFont systemFontOfSize:14];
             [cell addSubview:label];
             
         }
@@ -563,20 +607,20 @@
             }
             
             UILabel*nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(10,0, LBVIEW_WIDTH1*0.5, 30)];
-            nameLabel.font=[UIFont systemFontOfSize:12];
+            nameLabel.font=[UIFont systemFontOfSize:14];
             nameLabel.text=[NSString stringWithFormat:@"%@ %@",spCa.skuName,attributeStr] ;
             [cell addSubview:nameLabel];
             
             UILabel*picLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-50, 0, LBVIEW_WIDTH1*0.2, 30)];
             picLabel.text=[NSString stringWithFormat:@"¥%@",spCa.price];
             picLabel.textColor=[UIColor redColor];
-            picLabel.font=[UIFont systemFontOfSize:12];
+            picLabel.font=[UIFont systemFontOfSize:14];
             [cell addSubview:picLabel];
             
             UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.8, 0, 20, 30)];
             numLabel.text=[NSString stringWithFormat:@"x%@",spCa.number];
             numLabel.textAlignment=NSTextAlignmentCenter;
-            numLabel.font=[UIFont systemFontOfSize:12];
+            numLabel.font=[UIFont systemFontOfSize:14];
             [cell addSubview:numLabel];
         }
             break;
@@ -591,128 +635,29 @@
 //切换地址按钮
 -(void)cutAddress
 {
-    UIView*view=[[UIView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/6, 9*LBVIEW_HEIGHT1/20, 2*LBVIEW_WIDTH1/3, LBVIEW_HEIGHT1/10)];
-    NSArray*array=[[NSArray alloc]initWithObjects:@"送货上门",@"上门自提", nil];
-    for (int i=0; i<2; i++)
-    {
-        
-        UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(0, i*view.frame.size.height/2, view.frame.size.width, view.frame.size.height/2)];
-        label.text=array[i];
-        label.textColor=[UIColor blackColor];
-        label.tag=110+i;
-        label.backgroundColor=[UIColor whiteColor];
-        [view addSubview:label];
-        
-        UILabel*lineLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, view.frame.size.height/2, view.frame.size.width, 1)];
-        lineLabel.backgroundColor=[UIColor grayColor];
-        [view addSubview:lineLabel];
-        
-        UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, i*view.frame.size.height/2, view.frame.size.width, view.frame.size.height/2)];
-        [btn addTarget:self action:@selector(chooseStyle:) forControlEvents:UIControlEventTouchUpInside];
-        btn.tag=100+i;
-        [view addSubview:btn];
-    }
-    
-    
-    _shadView=[[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
-    _shadView.backgroundColor=[UIColor darkGrayColor];
-    _shadView.alpha=0.8;
-    
-    //找window
-    UIWindow *window=[[UIApplication sharedApplication]keyWindow];
-    [window addSubview:_shadView];
-    [_shadView addSubview:view];
-    
+    DistributionStyleViewController*distribuVC=[[DistributionStyleViewController alloc]init];
+    distribuVC.payVC=self;
+    [self.navigationController pushViewController:distribuVC animated:NO];
+
 }
--(void)chooseStyle:(UIButton*)sender
-{
-    UILabel*label=[_shadView viewWithTag:sender.tag+10];
-    _styleStr=label.text;
-    _styleLabel.text=_styleStr;
-    
-    [_shadView removeFromSuperview];
-}
+
 //配送时间
 -(void)distributionTime
 {
-   NSArray*timeArray=_styleDic[@"deadline"];
-    
-    UIView*view=[[UIView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/6,(LBVIEW_HEIGHT1-timeArray.count*LBVIEW_HEIGHT1/10)/2, 2*LBVIEW_WIDTH1/3,timeArray.count*LBVIEW_HEIGHT1/10)];
-    for (int i=0; i<timeArray.count; i++)
-    {
-        
-        UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(0, i*view.frame.size.height/(timeArray.count+1), view.frame.size.width, view.frame.size.height/(timeArray.count+1))];
-        label.text=timeArray[i];
-        label.textColor=[UIColor blackColor];
-        label.tag=300+i;
-        label.backgroundColor=[UIColor whiteColor];
-        [view addSubview:label];
-        
-        UILabel*lineLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, i*view.frame.size.height/(timeArray.count+1), view.frame.size.width, 1)];
-        lineLabel.backgroundColor=[UIColor grayColor];
-        [view addSubview:lineLabel];
-        
-        UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, i*view.frame.size.height/(timeArray.count+1), view.frame.size.width, view.frame.size.height/(timeArray.count+1))];
-        [btn addTarget:self action:@selector(chooseTime:) forControlEvents:UIControlEventTouchUpInside];
-        btn.tag=200+i;
-        [view addSubview:btn];
-    }
-    
-    
-    _shadTimeView=[[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
-    _shadTimeView.backgroundColor=[UIColor darkGrayColor];
-    _shadTimeView.alpha=0.8;
-    
-    //找window
-    UIWindow *window=[[UIApplication sharedApplication]keyWindow];
-    [window addSubview:_shadTimeView];
-    [_shadTimeView addSubview:view];
+    DistributionTimeViewController*disTimeVC=[[DistributionTimeViewController alloc]init];
+    disTimeVC.payVC=self;
+    disTimeVC.dataArray=_styleDic[@"deadline"];
+    [self.navigationController pushViewController:disTimeVC animated:NO];
 }
 //选择红包
 -(void)chooseRedPage
 {
-    
-    
-    UIView*view=[[UIView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/6,(LBVIEW_HEIGHT1-_redArray.count*LBVIEW_HEIGHT1/10)/2, 2*LBVIEW_WIDTH1/3,_redArray.count*LBVIEW_HEIGHT1/10)];
-    for (int i=0; i<_redArray.count; i++)
-    {
-        
-        UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(0, i*view.frame.size.height/(_redArray.count+1), view.frame.size.width, view.frame.size.height/(_redArray.count+1))];
-        NSDictionary*dic=_redArray[i];
-        label.text=[NSString stringWithFormat:@"%@元红包",dic[@"price"]];
-        label.textColor=[UIColor blackColor];
-        label.tag=900+i;
-        label.backgroundColor=[UIColor whiteColor];
-        [view addSubview:label];
-        
-        UILabel*lineLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, i*view.frame.size.height/(_redArray.count+1), view.frame.size.width, 1)];
-        lineLabel.backgroundColor=[UIColor grayColor];
-        [view addSubview:lineLabel];
-        
-        UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, i*view.frame.size.height/(_redArray.count+1), view.frame.size.width, view.frame.size.height/(_redArray.count+1))];
-        [btn addTarget:self action:@selector(chooseRed:) forControlEvents:UIControlEventTouchUpInside];
-        btn.tag=800+i;
-        [view addSubview:btn];
-    }
-    
-    
-    _shadTimeView=[[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
-    _shadTimeView.backgroundColor=[UIColor darkGrayColor];
-    _shadTimeView.alpha=0.8;
-    
-    //找window
-    UIWindow *window=[[UIApplication sharedApplication]keyWindow];
-    [window addSubview:_shadTimeView];
-    [_shadTimeView addSubview:view];
+    redPacketViewController*redPacketVC=[[redPacketViewController alloc]init];
+    redPacketVC.payVC=self;
+    redPacketVC.dataArray=_redArray;
+    [self.navigationController pushViewController:redPacketVC animated:YES];
 }
-//选择时间
--(void)chooseTime:(UIButton*)sender
-{
-    UILabel*label=[_shadTimeView viewWithTag:sender.tag+100];
-    _distributionLabel.text=label.text;
-    [_shadTimeView removeFromSuperview];
 
-}
 
 //选择支付方式
 -(void)choosePayStyle:(UIButton*)sender
@@ -725,17 +670,6 @@
     sender.selected=!sender.selected;
     _lastTag=(int)sender.tag;
 }
-
-//选择红包
--(void)chooseRed:(UIButton*)sender
-{
-    UILabel*label=[_shadTimeView viewWithTag:sender.tag+100];
-    _redStr=label.text;
-    _redLabel.text=_redStr;
-    [_shadTimeView removeFromSuperview];
-    
-}
-
 
 //区数
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -788,9 +722,18 @@
     UIView*view=[[UIView alloc]init];
     view.backgroundColor=[UIColor whiteColor];
     UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-120, 5, 120, 30)];
-    label.text=[NSString stringWithFormat:@"实际支付 ¥%@",_paymentPrice];
+    label.text=@"实际支付";
     label.textColor=[UIColor blackColor];
     [view addSubview:label];
+    
+    UIFont*font=[UIFont systemFontOfSize:17];
+    CGSize size=[label.text boundingRectWithSize:CGSizeMake(100, 30) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
+    
+    UILabel*labelp=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-115+size.width, 5, 50, 30)];
+    labelp.text=[NSString stringWithFormat:@"¥%@",_paymentPrice];
+    labelp.textColor=[UIColor redColor];
+    [view addSubview:labelp];
+    
     if (section==6)
     {
         return view;

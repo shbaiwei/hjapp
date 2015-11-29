@@ -107,7 +107,7 @@
     [self.topView addSubview:self.mouBtn];
     
     
-    self.flowerTV = [[UITableView alloc] initWithFrame:CGRectMake(0,self.topView.frame.size.height, LBVIEW_WIDTH1, LBVIEW_HEIGHT1) style:UITableViewStyleGrouped];
+    self.flowerTV = [[UITableView alloc] initWithFrame:CGRectMake(0,self.topView.frame.size.height, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-self.topView.frame.size.height) style:UITableViewStyleGrouped];
     self.flowerTV.delegate = self;
     self.flowerTV.dataSource = self;
     self.flowerTV.backgroundColor =[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
@@ -129,9 +129,12 @@
 {
     NSDictionary*dic=_dataArray[indexPath.row];
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    
+   // cell.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     if (cell == nil)
     {
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+        cell.selectionStyle=UITableViewCellSelectionStyleNone;
         UIImageView*redPageImage=[[UIImageView alloc]initWithFrame:CGRectMake(20, 5, LBVIEW_WIDTH1-40, 50)];
         redPageImage.image=[UIImage imageNamed:@"hongbao_bg.png"];
         [cell addSubview:redPageImage];

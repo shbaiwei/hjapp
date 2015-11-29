@@ -27,7 +27,7 @@
         
         self.suryouLabel = [[UILabel alloc] init];
         self.suryouLabel.textColor = [UIColor grayColor];
-        self.suryouLabel.font = [UIFont systemFontOfSize:12];
+        self.suryouLabel.font = [UIFont systemFontOfSize:14];
         //     self.suryouLabel.backgroundColor = [UIColor yellowColor];
         self.suryouLabel.alpha = 0.7;
         [self.contentView addSubview:self.suryouLabel];
@@ -36,7 +36,7 @@
         //self.moneyLabel.text = @"¥100";
         self.moneyLabel.textColor = [UIColor redColor];
         //        self.moneyLabel.backgroundColor = [UIColor cyanColor];
-        self.moneyLabel.font = [UIFont systemFontOfSize:15];
+        self.moneyLabel.font = [UIFont systemFontOfSize:16];
         [self.contentView addSubview:self.moneyLabel];
         
         self.X2Label = [[UILabel alloc] init];
@@ -60,8 +60,8 @@
     self.leftImageV.frame = CGRectMake(width * 0.2, height * 0.1, width * 0.85, height * 0.8);
     self.nameLabel.frame = CGRectMake(width * 1.2, height * 0.2, width * 2.4, height * 0.15);
     self.suryouLabel.frame = CGRectMake(width * 1.2, height * 0.45, width * 3, height * 0.1);
-    self.moneyLabel.frame = CGRectMake(width * 4.2, height * 0.05, width * 0.75, height * 0.14);
-    self.X2Label.frame = CGRectMake(width * 4.2, height * 0.19+10, width * 0.75, height * 0.13);
+    self.moneyLabel.frame = CGRectMake(width * 4.2, height * 0.05, width * 0.75+5, 25);
+    self.X2Label.frame = CGRectMake(width * 4.2, height * 0.19+10, width * 0.75, 20);
   
 }
 - (void)awakeFromNib

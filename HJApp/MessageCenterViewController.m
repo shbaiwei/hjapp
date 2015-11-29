@@ -36,6 +36,7 @@
     tableView.dataSource=self;
     tableView.delegate=self;
     tableView.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
+    tableView.tableFooterView=[[UIView alloc]initWithFrame:CGRectZero];
     [self.view addSubview:tableView];
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section

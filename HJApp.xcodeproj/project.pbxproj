@@ -178,6 +178,10 @@
 		3242B1501BE7155D00B29989 /* UIRefreshControl+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 3242B1461BE7155D00B29989 /* UIRefreshControl+AFNetworking.m */; };
 		3242B1511BE7155D00B29989 /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 3242B1481BE7155D00B29989 /* UIWebView+AFNetworking.m */; };
 		3244216A1C0A911500CA943A /* ChangeSexViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 324421691C0A911500CA943A /* ChangeSexViewController.m */; };
+		3244216D1C0AF3F300CA943A /* DistributionStyleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3244216C1C0AF3F300CA943A /* DistributionStyleViewController.m */; };
+		324421701C0AF9AA00CA943A /* DistributionTimeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3244216F1C0AF9AA00CA943A /* DistributionTimeViewController.m */; };
+		324421731C0AFE9C00CA943A /* redPacketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 324421721C0AFE9C00CA943A /* redPacketViewController.m */; };
+		324421751C0B240500CA943A /* 536a7024bd7b7.png in Resources */ = {isa = PBXBuildFile; fileRef = 324421741C0B240500CA943A /* 536a7024bd7b7.png */; };
 		325089DA1BFACD2800FD0CD3 /* HJNotifiton.m in Sources */ = {isa = PBXBuildFile; fileRef = 325089D91BFACD2700FD0CD3 /* HJNotifiton.m */; };
 		325AC5C51BE715DB00408525 /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 325AC5A51BE715DB00408525 /* MKAnnotationView+WebCache.m */; };
 		325AC5C61BE715DB00408525 /* NSData+ImageContentType.m in Sources */ = {isa = PBXBuildFile; fileRef = 325AC5A71BE715DB00408525 /* NSData+ImageContentType.m */; };
@@ -510,6 +514,13 @@
 		3242B1481BE7155D00B29989 /* UIWebView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+AFNetworking.m"; sourceTree = "<group>"; };
 		324421681C0A911500CA943A /* ChangeSexViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChangeSexViewController.h; sourceTree = "<group>"; };
 		324421691C0A911500CA943A /* ChangeSexViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangeSexViewController.m; sourceTree = "<group>"; };
+		3244216B1C0AF3F300CA943A /* DistributionStyleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DistributionStyleViewController.h; sourceTree = "<group>"; };
+		3244216C1C0AF3F300CA943A /* DistributionStyleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DistributionStyleViewController.m; sourceTree = "<group>"; };
+		3244216E1C0AF9AA00CA943A /* DistributionTimeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DistributionTimeViewController.h; sourceTree = "<group>"; };
+		3244216F1C0AF9AA00CA943A /* DistributionTimeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DistributionTimeViewController.m; sourceTree = "<group>"; };
+		324421711C0AFE9C00CA943A /* redPacketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = redPacketViewController.h; sourceTree = "<group>"; };
+		324421721C0AFE9C00CA943A /* redPacketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = redPacketViewController.m; sourceTree = "<group>"; };
+		324421741C0B240500CA943A /* 536a7024bd7b7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 536a7024bd7b7.png; sourceTree = "<group>"; };
 		325089D81BFACD2600FD0CD3 /* HJNotifiton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HJNotifiton.h; sourceTree = "<group>"; };
 		325089D91BFACD2700FD0CD3 /* HJNotifiton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HJNotifiton.m; sourceTree = "<group>"; };
 		325AC5A41BE715DB00408525 /* MKAnnotationView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKAnnotationView+WebCache.h"; sourceTree = "<group>"; };
@@ -858,6 +869,7 @@
 		320BBE461BF9D4DD004DE70A /* images */ = {
 			isa = PBXGroup;
 			children = (
+				324421741C0B240500CA943A /* 536a7024bd7b7.png */,
 				32E512191C05673100D08F02 /* agreeG.png */,
 				32E5121A1C05673100D08F02 /* agreeR.png */,
 				32E512151C05672500D08F02 /* huoqu1.png */,
@@ -1239,6 +1251,12 @@
 				32DDC1141BEC8E5B00649AE5 /* PayViewController.h */,
 				32DDC1151BEC8E5B00649AE5 /* PayViewController.m */,
 				32DDC1161BEC8E5B00649AE5 /* PayViewController.xib */,
+				3244216B1C0AF3F300CA943A /* DistributionStyleViewController.h */,
+				3244216C1C0AF3F300CA943A /* DistributionStyleViewController.m */,
+				3244216E1C0AF9AA00CA943A /* DistributionTimeViewController.h */,
+				3244216F1C0AF9AA00CA943A /* DistributionTimeViewController.m */,
+				324421711C0AFE9C00CA943A /* redPacketViewController.h */,
+				324421721C0AFE9C00CA943A /* redPacketViewController.m */,
 			);
 			name = ShopingPage;
 			sourceTree = "<group>";
@@ -1664,6 +1682,7 @@
 				320BBF361BF9DF95004DE70A /* navi.png in Resources */,
 				320BBEBE1BF9D4DD004DE70A /* hongbao_0.png in Resources */,
 				320BBEED1BF9D4DD004DE70A /* order_state2.png in Resources */,
+				324421751C0B240500CA943A /* 536a7024bd7b7.png in Resources */,
 				32E4DD811BEAF64B00EFC9C3 /* AssortTableViewCell.xib in Resources */,
 				320BBF1C1BF9DAAB004DE70A /* shopcarr.png in Resources */,
 				325AC5E21BE7412800408525 /* RegisterViewController.xib in Resources */,
@@ -1834,7 +1853,9 @@
 				32E4DD8F1BEB54A900EFC9C3 /* ShopingCar.m in Sources */,
 				3289AFB51BFADDE70037A728 /* TodayShopViewController.m in Sources */,
 				32E512291C05A9E600D08F02 /* FMDatabase.m in Sources */,
+				324421701C0AF9AA00CA943A /* DistributionTimeViewController.m in Sources */,
 				325AC5CB1BE715DB00408525 /* SDWebImageDownloaderOperation.m in Sources */,
+				324421731C0AFE9C00CA943A /* redPacketViewController.m in Sources */,
 				325AC5D11BE715DB00408525 /* UIImage+WebP.m in Sources */,
 				320BBE451BF9B65A004DE70A /* UIScrollView+SVPullToRefresh.m in Sources */,
 				325AC5CD1BE715DB00408525 /* SDWebImagePrefetcher.m in Sources */,
@@ -1846,6 +1867,7 @@
 				32DDC1131BEC7A6400649AE5 /* MyButton.m in Sources */,
 				32EFB1D41BF48C530065B475 /* NSDataEx.m in Sources */,
 				32D0317A1BE9B99A008CAC2B /* OderTableViewCell.m in Sources */,
+				3244216D1C0AF3F300CA943A /* DistributionStyleViewController.m in Sources */,
 				32B49CC41BE37BB500AB6D55 /* HttpEngine.m in Sources */,
 				320697931C02DA8700E77750 /* HZLocation.m in Sources */,
 				325AC5EA1BE769E000408525 /* ConsumerDetail.m in Sources */,
