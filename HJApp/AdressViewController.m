@@ -107,21 +107,21 @@
     
     AdressTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
    
+    
     if (cell == nil)
     {
-        cell.selectionStyle= UITableViewCellSelectionStyleNone;
-        cell = [[AdressTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellId];
         
+        cell = [[AdressTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellId];
+        cell.selectionStyle= UITableViewCellSelectionStyleNone;
         cell.numAddressLabel.text=[NSString stringWithFormat:@"%lu",indexPath.row+1];
         cell.numAddressLabel.textColor=[UIColor whiteColor];
         cell.numAddressLabel.font=[UIFont boldSystemFontOfSize:12];
         
-        cell.nameL.text=adress.consignee;
-        cell.numberL.text=adress.phoneMob;
-        cell.adressL.text=[NSString stringWithFormat:@"%@ %@ %@ %@",adress.chineseProvince,adress.chineseCity,adress.chineseTown,adress.address];
+        cell.nameL.text=[NSString stringWithFormat:@"%@   %@",adress.consignee,adress.phoneMob];
+        cell.nameL.font=[UIFont systemFontOfSize:18];
         
-       
-       
+        cell.adressL.text=[NSString stringWithFormat:@"%@ %@ %@ %@",adress.chineseProvince,adress.chineseCity,adress.chineseTown,adress.address];
+        cell.adressL.font=[UIFont systemFontOfSize:15];
         
         _chooseLable=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/5/1.1, 95, 2*LBVIEW_WIDTH1/5, 20)];
        
@@ -190,7 +190,12 @@
     UIView*view=[[UIView alloc]init];
     
     UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(20,LBVIEW_HEIGHT1 / 10-LBVIEW_HEIGHT1 / 17, LBVIEW_WIDTH1-40, LBVIEW_HEIGHT1 / 17)];
-    [btn setImage:[UIImage imageNamed:@"newadress.png"] forState:UIControlStateNormal];
+    //[btn setImage:[UIImage imageNamed:@"newadress.png"] forState:UIControlStateNormal];
+    [btn setTitle:@"新建收货地址" forState:UIControlStateNormal];
+    [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [btn setBackgroundColor:[UIColor redColor]];
+    btn.layer.cornerRadius=7;
+    btn.clipsToBounds=YES;
     [btn addTarget:self action:@selector(newadBtnAction:) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:btn];
     
@@ -215,12 +220,23 @@
 -(void)deleteBtn:(UIButton*)sender
 {
 
-    AllAdress*adress=_dataArray[sender.tag];
-    NSString*adr_id=adress.addrId;
-    [HttpEngine deleteAddress:adr_id];
-    
-    [self performSelector:@selector(shuaiXin) withObject:nil afterDelay:0.1];
-    
+    UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"是否删除" preferredStyle: UIAlertControllerStyleAlert];
+    UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
+                          {
+                              
+                          }];
+    UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
+                                 {
+                                     AllAdress*adress=_dataArray[sender.tag];
+                                     NSString*adr_id=adress.addrId;
+                                     [HttpEngine deleteAddress:adr_id];
+                                     
+                                     [self performSelector:@selector(shuaiXin) withObject:nil afterDelay:0.1];
+                                 }];
+    [alert addAction:cancel];
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
+   
 }
 
 //编辑操作

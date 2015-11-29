@@ -56,9 +56,10 @@
     if (cell==nil)
     {
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
-        
+        cell.selectionStyle=UITableViewCellSelectionStyleNone;
         UIFont*font=[UIFont systemFontOfSize:17];
-        NSString*orderStr=[NSString stringWithFormat:@"投诉类型:%@",complain.content];
+       // NSString*orderStr=[NSString stringWithFormat:@"投诉类型:%@",complain.content];
+        NSString*orderStr=@"投诉类型: 产品质量";
         CGSize size=[orderStr boundingRectWithSize:CGSizeMake(LBVIEW_WIDTH1-20, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
         UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(5, 5, LBVIEW_WIDTH1-20, size.height)];
         label.text=orderStr;
@@ -117,7 +118,7 @@
     orderLabel.textColor=[UIColor blackColor];
     [view addSubview:orderLabel];
     
-    UILabel*timeLabel=[[UILabel alloc]initWithFrame:CGRectMake(10+size.width, 5, 150, 30)];
+    UILabel*timeLabel=[[UILabel alloc]initWithFrame:CGRectMake(15+size.width, 5, 150, 30)];
     timeLabel.text=complain.dateCreated;
     timeLabel.font=[UIFont systemFontOfSize:13];
     timeLabel.textColor=[UIColor grayColor];

@@ -56,6 +56,7 @@
     [super viewDidLoad];
     self.navigationController.navigationBarHidden=NO;
     self.title=@"个人资料";
+    self.view.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     self.navigationController.navigationBar.translucent =NO;
     _titleArray=[[NSArray alloc]initWithObjects:@"会员",@"会员UID",@"真实姓名",@"性别",@"生日", nil];
     NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"ID"];
@@ -73,7 +74,7 @@
     _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1) style:UITableViewStyleGrouped];
     _tableView.delegate=self;
     _tableView.dataSource=self;
-    _tableView.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
+    //_tableView.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     [self.view addSubview:_tableView];
 }
 
@@ -107,7 +108,7 @@
 -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     UIView*view=[[UIView alloc]init];
-    UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(10, 30, LBVIEW_WIDTH1-20, 30)];
+    UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(10, 30, LBVIEW_WIDTH1-20, 40)];
     [btn setBackgroundColor:[UIColor redColor]];
     [btn setTitle:@"保存" forState:UIControlStateNormal];
     [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -136,10 +137,10 @@
 {
     ConsumerDetail*consumer=_dataArray[0];
     UITableViewCell*cell=[tableView cellForRowAtIndexPath:indexPath];
-    cell.selectionStyle=UITableViewCellSelectionStyleNone;
     if (cell==nil)
     {
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+        cell.selectionStyle=UITableViewCellSelectionStyleNone;
         cell.textLabel.text=_titleArray[indexPath.row];
         switch (indexPath.row)
         {
@@ -232,30 +233,29 @@
     _timeView.layer.cornerRadius=10;
     _timeView.clipsToBounds=YES;
     
-    _timeLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, 0, LBVIEW_WIDTH1*0.8-10, LBVIEW_HEIGHT1*0.1-1)];
+    _timeLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1*0.8, LBVIEW_HEIGHT1*0.05-1)];
     //_timeLabel.text=@"2015年1月3日周日";
     
+    _timeLabel.textAlignment=NSTextAlignmentCenter;
     _timeLabel.font=[UIFont systemFontOfSize:19];
     _timeLabel.textColor=[UIColor blueColor];
     [_timeView addSubview:_timeLabel];
     
-    UILabel*lineLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, LBVIEW_HEIGHT1*0.1-1, LBVIEW_WIDTH1*0.8, 1)];
-    lineLabel.textColor=[UIColor blueColor];
+    UILabel*lineLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, LBVIEW_HEIGHT1*0.05-1, LBVIEW_WIDTH1*0.8, 1)];
+    lineLabel.backgroundColor=[UIColor blueColor];
     [_timeView addSubview:lineLabel];
     
-    _datePicker = [[ UIDatePicker alloc] initWithFrame:CGRectMake(0, LBVIEW_HEIGHT1*0.1, LBVIEW_WIDTH1*0.8, LBVIEW_HEIGHT1*0.3)];
+    _datePicker = [[ UIDatePicker alloc] initWithFrame:CGRectMake(0, LBVIEW_HEIGHT1*0.05-1, LBVIEW_WIDTH1*0.8, LBVIEW_HEIGHT1*0.4)];
     _datePicker.datePickerMode = UIDatePickerModeDate;
     [_datePicker addTarget:self action:@selector(showTime) forControlEvents:UIControlEventValueChanged];
+    //_datePicker.backgroundColor=[UIColor blueColor];
     [_timeView addSubview:_datePicker];
-    
-    
-    
     
     UILabel*btnLineLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, LBVIEW_HEIGHT1*0.4-1, LBVIEW_WIDTH1*0.8, 1)];
     btnLineLabel.textColor=[UIColor grayColor];
     [_timeView addSubview:btnLineLabel];
     
-    UIButton*timeBtn=[[UIButton alloc]initWithFrame:CGRectMake(0, LBVIEW_HEIGHT1*0.4+1, LBVIEW_WIDTH1*0.8, LBVIEW_HEIGHT1*0.1)];
+    UIButton*timeBtn=[[UIButton alloc]initWithFrame:CGRectMake(0, LBVIEW_HEIGHT1*0.45, LBVIEW_WIDTH1*0.8, LBVIEW_HEIGHT1*0.05)];
     [timeBtn setTitle:@"完成" forState:UIControlStateNormal];
     [timeBtn setTintColor:[UIColor blackColor]];
     [timeBtn setBackgroundColor:[UIColor redColor]];
@@ -264,13 +264,14 @@
     
     
     _shadowView=[[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
-    _shadowView.backgroundColor=[UIColor darkGrayColor];
-    _shadowView.alpha=0.9;
+    _shadowView.backgroundColor=[UIColor grayColor];
+    _shadowView.alpha=1;
     
     //找window
     UIWindow *window=[[UIApplication sharedApplication]keyWindow];
     [window addSubview:_shadowView];
     [_shadowView addSubview:_timeView];
+    
     
     
 }
@@ -311,13 +312,16 @@
     {
        str=@"1";
     }
-    [HttpEngine updataConsumerDetailData:_trueNameTF.text with:str with:_birthdayLabel.text];
-    
-    UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"更新成功" preferredStyle: UIAlertControllerStyleAlert];
+    UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"确定更新吗" preferredStyle: UIAlertControllerStyleAlert];
     UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
                                  {
-                                    
+          [HttpEngine updataConsumerDetailData:_trueNameTF.text with:str with:_birthdayLabel.text];
                                  }];
+    UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
+                          {
+                              
+                          }];
+    [alert addAction:cancel];
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
     

@@ -18,14 +18,6 @@
 @property (nonatomic, strong) UIButton *wechatBth;
 @property (nonatomic, strong) UIButton *okBtn;
 
-
-
-@property (nonatomic, strong) UIImage *zfbOn;
-@property (nonatomic, strong) UIImage *zfbOff;
-
-@property (nonatomic, strong) UIImage *wechatOn;
-@property (nonatomic, strong) UIImage *wechatOff;
-
 @property (nonatomic, assign) BOOL btnStatus;
 @property (nonatomic, assign) BOOL btn2Status;
 
@@ -51,12 +43,12 @@
     self.title = @"账户余额";
     self.view.backgroundColor = [UIColor whiteColor];
     
-    UITapGestureRecognizer *tapGes = [[UITapGestureRecognizer alloc] init];
-    [tapGes addTarget:self action:@selector(keybordHideAction:)];
-    
-    tapGes.cancelsTouchesInView = NO;
-    
-    [self.view addGestureRecognizer:tapGes];
+//    UITapGestureRecognizer *tapGes = [[UITapGestureRecognizer alloc] init];
+//    [tapGes addTarget:self action:@selector(keybordHideAction:)];
+//    
+//    tapGes.cancelsTouchesInView = NO;
+//    
+//    [self.view addGestureRecognizer:tapGes];
     
 }
 
@@ -74,67 +66,64 @@
 
 }
 
-- (void)keybordHideAction:(UITapGestureRecognizer *)tap
-{
-    [self.monenyNum resignFirstResponder];
-    
-}
+//- (void)keybordHideAction:(UITapGestureRecognizer *)tap
+//{
+//    [self.monenyNum resignFirstResponder];
+//    
+//}
 
 - (void)thePage
 {
-    self.moneyLabel = [[UILabel alloc] initWithFrame:CGRectMake((LBVIEW_WIDTH1-LBVIEW_WIDTH1/1.5)/2, LBVIEW_HEIGHT1 / 6, LBVIEW_WIDTH1 / 1.5, LBVIEW_HEIGHT1 / 11)];
+    self.moneyLabel = [[UILabel alloc] initWithFrame:CGRectMake((LBVIEW_WIDTH1-LBVIEW_WIDTH1/1.5)/2, 40, LBVIEW_WIDTH1 / 1.5, LBVIEW_HEIGHT1 / 11)];
     // self.moneyLabel.backgroundColor = [UIColor redColor];
     self.moneyLabel.text = _dataDic[@"nmoney"];
     self.moneyLabel.textColor = [UIColor blackColor];
-    self.moneyLabel.font = [UIFont systemFontOfSize:42];
+    self.moneyLabel.font = [UIFont boldSystemFontOfSize:35];
     self.moneyLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:self.moneyLabel];
     
-    self.nokoLabel = [[UILabel alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 2.3, LBVIEW_HEIGHT1 / 4, LBVIEW_WIDTH1 * 0.2, LBVIEW_HEIGHT1 * 0.05)];
-    // self.nokoLabel.backgroundColor = [UIColor redColor];
+    self.nokoLabel = [[UILabel alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 2.3, 30+LBVIEW_HEIGHT1 / 11, LBVIEW_WIDTH1 * 0.2, LBVIEW_HEIGHT1 * 0.05)];
     self.nokoLabel.text = @"账户余额";
     self.nokoLabel.textColor = [UIColor blackColor];
     self.nokoLabel.font = [UIFont systemFontOfSize:13];
     [self.view addSubview:self.nokoLabel];
     
-    self.monenyNum = [[UITextField alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 13, + self.moneyLabel.frame.size.height + self.nokoLabel.frame.size.height + 120, LBVIEW_WIDTH1 / 1.2, LBVIEW_HEIGHT1 / 14)];
-    self.monenyNum.backgroundColor = [UIColor clearColor];
-    self.monenyNum.placeholder = @"请输入充值金额 如:10000";
+    self.monenyNum = [[UITextField alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 13, + self.moneyLabel.frame.size.height + self.nokoLabel.frame.size.height + 80, LBVIEW_WIDTH1 / 1.2, LBVIEW_HEIGHT1 / 14)];
+   // self.monenyNum.backgroundColor = [UIColor clearColor];
+    self.monenyNum.placeholder = @"请输入充值金额 如:8888";
     //    [self.monenyNum becomeFirstResponder];
-    self.monenyNum.borderStyle = UITextBorderStyleLine;
+    self.monenyNum.layer.borderColor=[UIColor grayColor].CGColor;
+    //self.monenyNum.borderStyle = UITextBorderStyleLine;
+    self.monenyNum.layer.borderWidth=1;
+    self.monenyNum.layer.cornerRadius=5;
+    self.monenyNum.clipsToBounds=YES;
     self.monenyNum.keyboardType = UIKeyboardTypeNumberPad;
     [self.view addSubview:self.monenyNum];
     
     //button点击之后本身换成另一张图片。此处用于支付按钮的切换
-    self.zfbBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    self.zfbBtn.frame = CGRectMake(LBVIEW_WIDTH1 / 13, + self.moneyLabel.frame.size.height + self.nokoLabel.frame.size.height + 120 + 65, LBVIEW_WIDTH1 / 2.5, LBVIEW_HEIGHT1 / 16);
-    self.zfbOn = [UIImage imageNamed:@"zfbBlue.png"];
-    self.zfbOff = [UIImage imageNamed:@"zfbGray.png"];
+    self.zfbBtn = [[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 13, + self.moneyLabel.frame.size.height + self.nokoLabel.frame.size.height + 80 + 65, LBVIEW_WIDTH1 / 2.5, LBVIEW_HEIGHT1 / 16)];
     self.zfbBtn.tag=1;
     [self.zfbBtn addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
-    [self.zfbBtn setBackgroundImage:self.zfbOn forState:UIControlStateSelected];
-    [self.zfbBtn setBackgroundImage:self.zfbOff forState:UIControlStateNormal];
+    [self.zfbBtn setBackgroundImage:[UIImage imageNamed:@"zfbBlue.png"] forState:UIControlStateSelected];
+    [self.zfbBtn setBackgroundImage:[UIImage imageNamed:@"zfbGray.png"] forState:UIControlStateNormal];
     [self.view addSubview:self.zfbBtn];
     
-    self.wechatBth = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    self.wechatBth.frame = CGRectMake(LBVIEW_WIDTH1 / 1.95, + self.moneyLabel.frame.size.height + self.nokoLabel.frame.size.height + 120 + 65, LBVIEW_WIDTH1 / 2.5, LBVIEW_HEIGHT1 / 16);
-    self.wechatOn = [UIImage imageNamed:@"wechatGreen.png"];
-    self.wechatOff = [UIImage imageNamed:@"wechatGray.png"];
+    self.wechatBth = [[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 1.95, + self.moneyLabel.frame.size.height + self.nokoLabel.frame.size.height + 80 + 65, LBVIEW_WIDTH1 / 2.5, LBVIEW_HEIGHT1 / 16)];
     [self.wechatBth addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
-    [self.wechatBth setBackgroundImage:self.wechatOff forState:UIControlStateNormal];
-    [self.wechatBth setBackgroundImage:self.wechatOn forState:UIControlStateSelected];
+    [self.wechatBth setBackgroundImage:[UIImage imageNamed:@"wechatGray.png"] forState:UIControlStateNormal];
+    [self.wechatBth setBackgroundImage:[UIImage imageNamed:@"wechatGreen.png"] forState:UIControlStateSelected];
     self.wechatBth.tag=2;
     [self.view addSubview:self.wechatBth];
     
 
-//    self.okBtn = [[UIButton alloc]init];
-//    self.okBtn.frame = CGRectMake(LBVIEW_WIDTH1 / 13, + self.moneyLabel.frame.size.height + self.nokoLabel.frame.size.height + 120 + 70 + 70, LBVIEW_WIDTH1 / 1.2, LBVIEW_HEIGHT1 / 19);
-//    UIImage *okimage = [UIImage imageNamed:@"ok.png"];
-//    okimage = [okimage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-//    [self.okBtn setImage:okimage forState:UIControlStateNormal];
-//    self.okBtn.layer.cornerRadius = 10;
-//    self.okBtn.clipsToBounds=YES;
-//    [self.view addSubview:self.okBtn];
+    self.okBtn = [[UIButton alloc]init];
+    self.okBtn.frame = CGRectMake(LBVIEW_WIDTH1 / 13, + self.moneyLabel.frame.size.height + self.nokoLabel.frame.size.height + 100 + 70 + 70, LBVIEW_WIDTH1 / 1.2, 40);
+    [self.okBtn setTitle:@"确定充值" forState:UIControlStateNormal];
+    [self.okBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.okBtn setBackgroundColor:[UIColor redColor]];
+    self.okBtn.layer.cornerRadius = 10;
+    self.okBtn.clipsToBounds=YES;
+    [self.view addSubview:self.okBtn];
     
     
 }

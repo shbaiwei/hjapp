@@ -11,5 +11,4 @@
 @interface UserMoneyViewController : UIViewController
 
 
-
 @end

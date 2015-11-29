@@ -19,6 +19,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.title=@"大图浏览";
     [HttpEngine complainServerPage:@"1" withPageSize:@"10" completion:^(NSArray *dataArray) {
         _dataArray=dataArray;
         [self showWebView];

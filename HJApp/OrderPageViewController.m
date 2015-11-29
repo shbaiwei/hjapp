@@ -320,7 +320,7 @@
     
     UILabel *timeLable=[[UILabel alloc]initWithFrame:CGRectMake(120+LBVIEW_HEIGHT1*0.025, LBVIEW_HEIGHT1*0.05-20, 140,20)];
     timeLable.text=dic[@"datetime"];
-    timeLable.font=[UIFont systemFontOfSize:13];
+    timeLable.font=[UIFont systemFontOfSize:14];
     timeLable.textColor=[UIColor grayColor];
     //dNamelable.textAlignment=NSTextAlignmentCenter;
     timeLable.backgroundColor=[UIColor clearColor];
