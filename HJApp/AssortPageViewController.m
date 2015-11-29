@@ -12,6 +12,7 @@
 #import "HttpEngine.h"
 #import "UIImageView+WebCache.h"
 #import "MyBtn.h"
+#import "MyPropBtn.h"
 #import "ShopingPageViewController.h"
 #import "LoginViewController.h"
 
@@ -83,7 +84,16 @@
     if (str==NULL)
     {
         LoginViewController*loginVC=[[LoginViewController alloc]init];
-        [self.navigationController pushViewController:loginVC animated:YES];
+        
+        //[self.navigationController popToViewController:loginVC animated:YES];
+        
+        //__weak AssortPageViewController *weakSelf = self;
+        
+        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginVC];
+        
+        [self presentViewController:navigationController animated:YES completion:^{
+            
+        }];
         return;
     }
 
@@ -216,21 +226,16 @@
     {
         NSArray*array=flower.catalogueArray;
         NSDictionary*dic=array[i];
-        MyBtn *btn=[[MyBtn alloc] initWithFrame:CGRectMake(65*i+5, 5, 60, 20)];
+        MyPropBtn *btn=[[MyPropBtn alloc] initWithFrame:CGRectMake(65*i+5, 5, 60, 20)];
         [btn setTitle:dic[@"aliasname"] forState:UIControlStateNormal];
-        [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        btn.titleLabel.font=[UIFont systemFontOfSize:14];
-        [btn.layer setMasksToBounds:YES];
-        [btn.layer setCornerRadius:5];
-        [btn.layer setBorderWidth:0.6];
-        
+        [btn.layer setBorderColor:[UIColor colorWithRed:0.6 green:0.6 blue:0.6 alpha:1].CGColor];
         btn.section=0;
         btn.row=i;
         btn.tag=1000+i;
         
-        [btn setBackgroundImage:[UIImage imageNamed:@"navi.png"] forState:UIControlStateSelected];
-        
+        //[btn setBackgroundImage:[UIImage imageNamed:@"navi.png"] forState:UIControlStateSelected];
         btn.selected=NO;
+        
         
         NSString*propStr=[NSString stringWithFormat:@"%@:%@",dic[@"props"],dic[@"id"]];
         NSLog(@"propStr===%@",propStr);
@@ -241,10 +246,10 @@
     }
     
     
-    _chooseBtn=[[MyBtn alloc]initWithFrame:CGRectMake((LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-100)/2, 40, 100, 70-20)];
+    _chooseBtn=[[MyBtn alloc]initWithFrame:CGRectMake((LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-100)/2, 35, 100, 70-20)];
     [_chooseBtn setTitle:@"更多筛选" forState:UIControlStateNormal];
     _chooseBtn.titleLabel.font=[UIFont systemFontOfSize:16];
-    [_chooseBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [_chooseBtn setTitleColor:[UIColor colorWithRed:37/255.0 green:119/255.0 blue:188/255.0 alpha:1] forState:UIControlStateNormal];
     [_chooseBtn addTarget:self action:@selector(shouSuo) forControlEvents:UIControlEventTouchUpInside];
     _chooseBtn.isOpen=NO;
     [_assortTopView addSubview:_chooseBtn];
@@ -252,8 +257,8 @@
 
     for (int i=0; i<2; i++)
     {
-        UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(5+((LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5)/2+45)*i, 70, (LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-110)/2, 1)];
-        label.backgroundColor=[UIColor grayColor];
+        UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(5+((LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5)/2+45)*i, 60, (LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-110)/2, 2)];
+        label.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
         [_assortTopView addSubview:label];
     }
     
@@ -266,8 +271,8 @@
     if (_chooseBtn.isOpen==NO)
     {
         [_chooseBtn setTitle:@"收起筛选" forState:UIControlStateNormal];
-        _headView=[[UIView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3.5, 70+20, LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5, 30*_catalogueArray.count)];
-        //_headView.backgroundColor=[UIColor redColor];
+        _headView=[[UIView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3.5, 70, LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5, 30*_catalogueArray.count)];
+        _headView.backgroundColor=[UIColor whiteColor];
         
         
         for (int i=1; i<_catalogueArray.count; i++)
@@ -280,7 +285,7 @@
             label.text=flower.name;
             
             
-            UIScrollView*btnScrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(70, 10+30*(i-1), LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-60, 30)];
+            UIScrollView*btnScrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(70, 5+30*(i-1), LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-60, 30)];
             btnScrollView.contentSize=CGSizeMake(65*flower.catalogueArray.count+40, 20);
             btnScrollView.showsHorizontalScrollIndicator=NO;
             btnScrollView.bounces=NO;
@@ -294,20 +299,13 @@
             {
                 NSDictionary*dic=flower.catalogueArray[j];
                 
-                MyBtn *btn=[[MyBtn alloc] initWithFrame:CGRectMake(65*j+5, 5, 60, 20)];
+                MyPropBtn *btn=[[MyPropBtn alloc] initWithFrame:CGRectMake(65*j+5, 5, 60, 20)];
                 [btn setTitle:dic[@"aliasname"] forState:UIControlStateNormal];
-                [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-                btn.titleLabel.font=[UIFont systemFontOfSize:14];
-                [btn.layer setMasksToBounds:YES];
-                [btn.layer setCornerRadius:5];
-                [btn.layer setBorderWidth:0.6];
-                
+                [btn.layer setBorderColor:[UIColor colorWithRed:0.6 green:0.6 blue:0.6 alpha:1].CGColor];
                 btn.section=i;
                 btn.row=j;
                 
                 btn.tag=1000+j;
-                
-                [btn setBackgroundImage:[UIImage imageNamed:@"navi.png"] forState:UIControlStateSelected];
                 
                 btn.selected=NO;
                 NSString*propStr=[NSString stringWithFormat:@"%@:%@",dic[@"props"],dic[@"id"]];
@@ -318,6 +316,8 @@
                 [btn addTarget:self action:@selector(selectBtnClick:) forControlEvents:UIControlEventTouchUpInside];
                 [btnScrollView addSubview:btn];
                 
+                
+                
             }
             
         }
@@ -325,12 +325,12 @@
         [self.view addSubview:_headView];
         
         
-        _rightTableV.frame=CGRectMake(LBVIEW_WIDTH1/3.5, 70+20+30*_catalogueArray.count, 5*LBVIEW_WIDTH1/6,LBVIEW_HEIGHT1-90-113-30*_catalogueArray.count);
+        _rightTableV.frame=CGRectMake(LBVIEW_WIDTH1/3.5, 70+30*_catalogueArray.count, 5*LBVIEW_WIDTH1/6,LBVIEW_HEIGHT1-70-113-30*_catalogueArray.count);
     }
     else
     {
         [_chooseBtn setTitle:@"更多筛选" forState:UIControlStateNormal];
-        _rightTableV.frame=CGRectMake(LBVIEW_WIDTH1/3.5, 20+70, 5*LBVIEW_WIDTH1/6, LBVIEW_HEIGHT1-90-113);
+        _rightTableV.frame=CGRectMake(LBVIEW_WIDTH1/3.5, 90, 5*LBVIEW_WIDTH1/6, LBVIEW_HEIGHT1-70-113);
         [_headView removeFromSuperview];
     }
     
@@ -339,17 +339,30 @@
     
 }
 
+-(void) setBottomBorder:(UIView *)view color:(UIColor *)color{
+    
+    [view sizeToFit];
+    
+    CALayer* layer = [view layer];
+    
+    CALayer *bottomBorder = [CALayer layer];
+    bottomBorder.borderWidth = 1;
+    bottomBorder.frame = CGRectMake(-1, layer.frame.size.height, layer.frame.size.width, 1);
+    [bottomBorder setBorderColor:color.CGColor];
+    [layer addSublayer:bottomBorder];
+}
+
 //左视图
 -(void)showLeftTableView
 {
     NSLog(@"_floerNameArray==%@",_floerNameArray);
-    self.leftTableV=[[UITableView alloc] initWithFrame:CGRectMake(0,0, self.view.frame.size.width/3.5,  self.view.bounds.size.height-LBVIEW_HEIGHT1/3) style:UITableViewStylePlain];
+    self.leftTableV=[[UITableView alloc] initWithFrame:CGRectMake(0,0, self.view.frame.size.width/3.5,  self.view.bounds.size.height * 0.75) style:UITableViewStylePlain];
     self.leftTableV.delegate=self;
     self.leftTableV.dataSource=self;
     //self.leftTableV.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     [self.view addSubview:self.leftTableV];
     
-    UIImageView*downImage=[[UIImageView alloc]initWithFrame:CGRectMake(30, 2*LBVIEW_HEIGHT1/3-60, LBVIEW_WIDTH1/6-20, 20)];
+    UIImageView*downImage=[[UIImageView alloc]initWithFrame:CGRectMake(30, self.view.bounds.size.height * 0.75 + 20, LBVIEW_WIDTH1/6-20, 20)];
     downImage.image=[UIImage imageNamed:@"swiper-market-btn-b.png"];
     [self.view addSubview:downImage];
     
@@ -393,7 +406,7 @@
 }
 
 //条件按钮
--(void)selectBtnClick:(MyBtn *)sender
+-(void)selectBtnClick:(MyPropBtn *)sender
 {
     AllFlower*flower=_floerNameArray[_isTag];
     NSString*locatioanStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
@@ -409,6 +422,8 @@
             
             sender.selected=!sender.selected;
             
+            [sender changeStyle];
+            
             [HttpEngine getProductDetail:flower.flowerId withLocation:locatioanStr withProps:_catalogueStrArray withPage:@"1" withPageSize:@"30" completion:^(NSArray *dataArray)
              {
                  //右uitableview
@@ -423,7 +438,9 @@
     
 //NSLog(@"sender.tag===%lu",sender.tag);
 //NSLog(@"str=====%@",str);
+    
     //将点击的不同行加到数组中
+    
     if (_catalogueStrArray.count==0)
     {
         [_catalogueStrArray addObject:str];
@@ -460,11 +477,11 @@
          
      }];
     
-    
     //选中状态与非选中的区别
     if (sender.tag==_lastTag[sender.section])
     {
         sender.selected=!sender.selected;
+        [sender changeStyle];
         return;
     }
     if (sender.section==0)
@@ -472,8 +489,9 @@
         if (_lastTag[0]!=0)
         {
             UIScrollView*scrollView=[_assortTopView viewWithTag:sender.section+100];
-            UIButton*btn=[scrollView viewWithTag:_lastTag[0]];
+            MyPropBtn*btn=[scrollView viewWithTag:_lastTag[0]];
             btn.selected=NO;
+            [btn removeSelectedStyle];
             
         }
         _lastTag[0]=(int)sender.tag;
@@ -483,23 +501,29 @@
         if (_lastTag[sender.section]!=0)
         {
             UIScrollView*scrollView=[_headView viewWithTag:sender.section+100];
-            UIButton*btn=[scrollView viewWithTag:_lastTag[sender.section]];
+            MyPropBtn*btn=[scrollView viewWithTag:_lastTag[sender.section]];
             btn.selected=NO;
+            [btn removeSelectedStyle];
+            
         }
         _lastTag[sender.section]=(int)sender.tag;
     }
     sender.selected=!sender.selected;
+    [sender changeStyle];
 }
 
 //左按钮
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([tableView isEqual:self.leftTableV]) {
-        cell.backgroundColor = [UIColor colorWithRed:0.97 green:0.973 blue:0.98 alpha:1];
+        cell.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
         UIColor *color = [[UIColor alloc] init];//通过RGB来定义自己的颜色
         color = [UIColor whiteColor];
         cell.selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
         cell.selectedBackgroundView.backgroundColor = [UIColor whiteColor];
+        
+         [cell.textLabel setHighlightedTextColor:[UIColor colorWithRed:37/255.0 green:119/255.0 blue:188/255.0 alpha:1]];
+        
     } else if ([tableView isEqual:self.rightTableV]) {
         cell.backgroundColor = [UIColor whiteColor];
         UIColor *color = [[UIColor alloc] init];//通过RGB来定义自己的颜色
@@ -608,8 +632,9 @@
             [cell addSubview:detailLabel];
             
             //添加按钮
-            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-30, 15, 20, 20)];
+            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-40, 5, 44, 44)];
             [btn setImage:[UIImage imageNamed:@"plus.png"] forState:UIControlStateNormal];
+            [btn setContentEdgeInsets:UIEdgeInsetsMake(10, 10, 10, 10)];
             [btn addTarget:self action:@selector(addBtnClick:) forControlEvents:UIControlEventTouchUpInside];
             btn.tag=indexPath.section+100;
             [cell addSubview:btn];
@@ -627,14 +652,16 @@
                      if ([flowerStr isEqualToString:shopCarStr])
                      {
                          //减少按钮
-                         UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-80, 15, 20, 20)];
+                         UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-90, 5, 44, 44)];
                          [btn setImage:[UIImage imageNamed:@"jian.png"] forState:UIControlStateNormal];
+                         [btn setContentEdgeInsets:UIEdgeInsetsMake(10, 10, 10, 10)];
+                         
                          [btn addTarget:self action:@selector(subBtnClick:) forControlEvents:UIControlEventTouchUpInside];
                          btn.tag=indexPath.section+500;
                          [cell addSubview:btn];
                          
                          UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-60, 15, 30, 20)];
-                         numLabel.text=[NSString stringWithFormat:@"x%@",shopCar.number];
+                         numLabel.text=[NSString stringWithFormat:@"%@",shopCar.number];
                          numLabel.textColor=[UIColor blackColor];
                          numLabel.font=[UIFont systemFontOfSize:15];
                          numLabel.textAlignment=NSTextAlignmentCenter;
@@ -694,7 +721,7 @@
     }];
     //找到当前点击的位置
     CGRect rect=[sender convertRect: sender.bounds toView:self.view];
-    UIImageView*anImage=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1, rect.origin.y, 20, 20)];
+    UIImageView*anImage=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-50, rect.origin.y, 20, 20)];
     [anImage sd_setImageWithURL:[NSURL URLWithString:dFlower.image]];
     //anImage.backgroundColor=[UIColor redColor];
     anImage.layer.cornerRadius=10;
@@ -702,11 +729,11 @@
     [self.view addSubview:anImage];
     
      //动画
-    [UIView animateKeyframesWithDuration:2 delay:0 options:UIViewKeyframeAnimationOptionCalculationModeCubic animations:^
+    [UIView animateKeyframesWithDuration:1 delay:0 options:UIViewKeyframeAnimationOptionCalculationModeCubicPaced animations:^
     {
         //anImage.frame=CGRectMake(4*LBVIEW_WIDTH1/5, 6*rect.origin.y/5, 10, 10);
         anImage.frame=CGRectMake(3.5*LBVIEW_WIDTH1/5, LBVIEW_HEIGHT1-54, 20, 20);
-        anImage.transform=CGAffineTransformMakeRotation(M_PI_2);
+        anImage.transform=CGAffineTransformMakeRotation((90.0f*M_PI) / 180.0f);
     } completion:^(BOOL finished)
      {
          
@@ -798,6 +825,24 @@
     
 }
 
+-(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    
+    if([tableView isEqual:self.rightTableV])
+    {
+       return 4;
+    }
+    
+    return 0;
+}
+
+-(UIView*) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+    UIView *footerBorder=[[UIView alloc] init];
+    
+    [footerBorder setBackgroundColor:[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1]];
+    //[self setBottomBorder:footerBorder color:[UIColor grayColor]];
+    return footerBorder;
+}
+
 //自定义区头
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
@@ -807,6 +852,8 @@
     }
     return 80;
 }
+
+
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if([tableView isEqual:self.leftTableV])
@@ -817,16 +864,18 @@
     {
         FlowerDetail*flow=_floerDetailArray[section];
         
+        //NSLog(@"%@",flow.propValue);
+        
         UIView*view=[[UIView alloc]init];
-        //view.backgroundColor=[UIColor lightGrayColor];
+        view.backgroundColor=[UIColor whiteColor];
         
         //图片
-        UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(10, LBVIEW_HEIGHT1*0.01,LBVIEW_WIDTH1/6, LBVIEW_HEIGHT1*0.1)];
-        [image sd_setImageWithURL:[NSURL URLWithString:flow.image]];
+        UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(10, LBVIEW_HEIGHT1*0.01,LBVIEW_WIDTH1/6, LBVIEW_WIDTH1/6)];
+        [image sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@@!l60",flow.image]]];
         [view addSubview:image];
         
         //名字
-        UILabel*nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(10+LBVIEW_WIDTH1/6, 0,LBVIEW_WIDTH1/2+10, 30)];
+        UILabel*nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(15+LBVIEW_WIDTH1/6, 0,LBVIEW_WIDTH1/2+10, 30)];
         nameLabel.text=flow.goodsName;
         nameLabel.numberOfLines=0;
         nameLabel.font=[UIFont systemFontOfSize:16];
@@ -835,7 +884,7 @@
         
         //属性
         UILabel*unitLabel=[[UILabel alloc]initWithFrame:CGRectMake(15+LBVIEW_WIDTH1/6, 30,45, 20)];
-        unitLabel.text=[NSString stringWithFormat:@"%@ / 扎",flow.standardNumber];
+        unitLabel.text=[NSString stringWithFormat:@"%@/扎",flow.standardNumber];
         unitLabel.font=[UIFont systemFontOfSize:12];
         unitLabel.textColor=[UIColor grayColor];
         [view addSubview:unitLabel];
@@ -845,7 +894,7 @@
         {
             for (int i=0; i<3; i++)
             {
-                UILabel*detailLabel=[[UILabel alloc]initWithFrame:CGRectMake(10+LBVIEW_WIDTH1/6+50+35*i,30, 30, 20)];
+                UILabel*detailLabel=[[UILabel alloc]initWithFrame:CGRectMake(15+LBVIEW_WIDTH1/6+50+35*i,30, 30, 20)];
                 detailLabel.text=attributeArray[i];
                 detailLabel.textAlignment=NSTextAlignmentCenter;
                 detailLabel.layer.cornerRadius=5;
@@ -855,15 +904,15 @@
                 detailLabel.textColor=[UIColor whiteColor];
                 if (i==0)
                 {
-                    detailLabel.backgroundColor=[UIColor colorWithRed:245/255.0 green:87/255.0 blue:105/255.0 alpha:1];
+                    detailLabel.backgroundColor=[UIColor colorWithRed:244/255.0 green:100/255.0 blue:108/255.0 alpha:1];
                 }
                 if (i==1)
                 {
-                     detailLabel.backgroundColor=[UIColor colorWithRed:215/255.0 green:0/255.0 blue:220/255.0 alpha:1];
+                     detailLabel.backgroundColor=[UIColor colorWithRed:104/255.0 green:179/255.0 blue:255/255.0 alpha:1];
                 }
                 if (i==2)
                 {
-                    detailLabel.backgroundColor=[UIColor colorWithRed:57/255.0 green:154/255.0 blue:246/255.0 alpha:1];
+                    detailLabel.backgroundColor=[UIColor colorWithRed:255/255.0 green:45/255.0 blue:75/255.0 alpha:1];
                 }
                 [view addSubview:detailLabel];
             }
@@ -872,7 +921,7 @@
         {
         for (int i=0; i<attributeArray.count; i++)
         {
-            UILabel*detailLabel=[[UILabel alloc]initWithFrame:CGRectMake(10+LBVIEW_WIDTH1/6+50+35*i, 30, 30, 20)];
+            UILabel*detailLabel=[[UILabel alloc]initWithFrame:CGRectMake(15+LBVIEW_WIDTH1/6+50+35*i, 30, 30, 20)];
             detailLabel.text=attributeArray[i];
             detailLabel.textAlignment=NSTextAlignmentCenter;
             detailLabel.layer.cornerRadius=5;
@@ -886,7 +935,7 @@
         }
 
         //价格
-        UILabel*picLabel=[[UILabel alloc]initWithFrame:CGRectMake(10+LBVIEW_WIDTH1/6, 50, 100, 20)];
+        UILabel*picLabel=[[UILabel alloc]initWithFrame:CGRectMake(15+LBVIEW_WIDTH1/6, 50, 100, 20)];
         NSDictionary*dic=flow.dataArray[0];
         if (flow.dataArray.count>1)
         {
@@ -900,8 +949,12 @@
         picLabel.font=[UIFont systemFontOfSize:13];
         [view addSubview:picLabel];
         //展开按钮
-        UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-30,50, 20, 20)];
-        [btn setBackgroundImage:[UIImage imageNamed:@"category-arrow2.png"] forState:UIControlStateNormal];
+        UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-90,40, 94, 34)];
+        //[btn setBackgroundImage:[UIImage imageNamed:@"category-arrow2.png"] forState:UIControlStateNormal];
+        [btn setImage:[UIImage imageNamed:@"category-arrow2.png"] forState:UIControlStateNormal];
+        [btn setContentMode:UIViewContentModeCenter];
+        [btn setContentEdgeInsets:UIEdgeInsetsMake(10, 60, 0, 10)];
+        
         btn.tag=section;
         [btn addTarget:self action:@selector(showDetail:) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:btn];

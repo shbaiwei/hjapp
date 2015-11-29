@@ -294,6 +294,10 @@
 		32EFB1DB1BF48C730065B475 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32EFB1D91BF48C730065B475 /* libssl.a */; };
 		32F17A571C069FEF00328629 /* area.plist in Resources */ = {isa = PBXBuildFile; fileRef = 32F17A561C069FEF00328629 /* area.plist */; };
 		32F7E77C1C041099008DC1FE /* Map.png in Resources */ = {isa = PBXBuildFile; fileRef = 32F7E77B1C041099008DC1FE /* Map.png */; };
+		32F877B81C0AD56300CC9C3A /* ico_item0.png in Resources */ = {isa = PBXBuildFile; fileRef = 32F877B71C0AD56300CC9C3A /* ico_item0.png */; };
+		32F877C11C0AE90300CC9C3A /* HJViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32F877C01C0AE90300CC9C3A /* HJViewController.m */; };
+		32F877C31C0B003A00CC9C3A /* select11.png in Resources */ = {isa = PBXBuildFile; fileRef = 32F877C21C0B003A00CC9C3A /* select11.png */; };
+		32F877C61C0B065B00CC9C3A /* MyPropBtn.m in Sources */ = {isa = PBXBuildFile; fileRef = 32F877C51C0B065B00CC9C3A /* MyPropBtn.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -786,6 +790,12 @@
 		32EFB1D91BF48C730065B475 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssl.a; sourceTree = "<group>"; };
 		32F17A561C069FEF00328629 /* area.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = area.plist; sourceTree = "<group>"; };
 		32F7E77B1C041099008DC1FE /* Map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Map.png; sourceTree = "<group>"; };
+		32F877B71C0AD56300CC9C3A /* ico_item0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ico_item0.png; sourceTree = "<group>"; };
+		32F877BF1C0AE90300CC9C3A /* HJViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HJViewController.h; sourceTree = "<group>"; };
+		32F877C01C0AE90300CC9C3A /* HJViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HJViewController.m; sourceTree = "<group>"; };
+		32F877C21C0B003A00CC9C3A /* select11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = select11.png; sourceTree = "<group>"; };
+		32F877C41C0B065B00CC9C3A /* MyPropBtn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyPropBtn.h; sourceTree = "<group>"; };
+		32F877C51C0B065B00CC9C3A /* MyPropBtn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyPropBtn.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -858,6 +868,8 @@
 		320BBE461BF9D4DD004DE70A /* images */ = {
 			isa = PBXGroup;
 			children = (
+				32F877C21C0B003A00CC9C3A /* select11.png */,
+				32F877B71C0AD56300CC9C3A /* ico_item0.png */,
 				32E512191C05673100D08F02 /* agreeG.png */,
 				32E5121A1C05673100D08F02 /* agreeR.png */,
 				32E512151C05672500D08F02 /* huoqu1.png */,
@@ -1130,6 +1142,8 @@
 				32B49B881BE30D3500AB6D55 /* FlashViewController.m */,
 				32B49B5A1BE30CE400AB6D55 /* ViewController.h */,
 				32B49B5B1BE30CE400AB6D55 /* ViewController.m */,
+				32F877BF1C0AE90300CC9C3A /* HJViewController.h */,
+				32F877C01C0AE90300CC9C3A /* HJViewController.m */,
 				32B49B5D1BE30CE400AB6D55 /* Main.storyboard */,
 				32B49CBE1BE36B6C00AB6D55 /* Model */,
 				32B49B8B1BE30DBF00AB6D55 /* HomePage */,
@@ -1208,6 +1222,8 @@
 				32E4DD821BEAF6D400EFC9C3 /* RightAssortTableViewCell.h */,
 				32E4DD831BEAF6D400EFC9C3 /* RightAssortTableViewCell.m */,
 				32E4DD841BEAF6D400EFC9C3 /* RightAssortTableViewCell.xib */,
+				32F877C41C0B065B00CC9C3A /* MyPropBtn.h */,
+				32F877C51C0B065B00CC9C3A /* MyPropBtn.m */,
 			);
 			name = AssortPage;
 			sourceTree = "<group>";
@@ -1673,6 +1689,7 @@
 				3289AFB61BFADDE70037A728 /* TodayShopViewController.xib in Resources */,
 				320BBEDD1BF9D4DD004DE70A /* index_kangnaixing.png in Resources */,
 				320BBEB91BF9D4DD004DE70A /* head.png in Resources */,
+				32F877C31C0B003A00CC9C3A /* select11.png in Resources */,
 				320BBEFD1BF9D4DD004DE70A /* select3.png in Resources */,
 				320BBF221BF9DC27004DE70A /* kessan.png in Resources */,
 				32D031831BE9E480008CAC2B /* OrderDetailViewController.xib in Resources */,
@@ -1759,6 +1776,7 @@
 				320BBED81BF9D4DD004DE70A /* index_baihe.png in Resources */,
 				3206979D1C0319C100E77750 /* wechatGreen.png in Resources */,
 				32DDC1181BEC8E5B00649AE5 /* PayViewController.xib in Resources */,
+				32F877B81C0AD56300CC9C3A /* ico_item0.png in Resources */,
 				32DDC1281BECB43900649AE5 /* ChangCityViewController.xib in Resources */,
 				320BBEE31BF9D4DD004DE70A /* my-order-ico.png in Resources */,
 				320BBEB81BF9D4DD004DE70A /* h-search.png in Resources */,
@@ -1885,6 +1903,7 @@
 				32E5123A1C05B1C500D08F02 /* AreaModel.m in Sources */,
 				320697911C02DA8700E77750 /* HZAreaPickerView.m in Sources */,
 				32DDC1271BECB43900649AE5 /* ChangCityViewController.m in Sources */,
+				32F877C61C0B065B00CC9C3A /* MyPropBtn.m in Sources */,
 				32E512351C05AD4D00D08F02 /* GroupTableModel.m in Sources */,
 				32EFB1D51BF48C530065B475 /* openssl_wrapper.m in Sources */,
 				325AC5D01BE715DB00408525 /* UIImage+MultiFormat.m in Sources */,
@@ -1902,6 +1921,7 @@
 				32DDC1041BEC3A0200649AE5 /* NewAdViewController.m in Sources */,
 				3242B14F1BE7155D00B29989 /* UIProgressView+AFNetworking.m in Sources */,
 				32B49BA71BE30F0000AB6D55 /* MyHJViewController.m in Sources */,
+				32F877C11C0AE90300CC9C3A /* HJViewController.m in Sources */,
 				325AC5CF1BE715DB00408525 /* UIImage+GIF.m in Sources */,
 				325AC5F31BE772F900408525 /* CooperateViewController.m in Sources */,
 				325AC5CA1BE715DB00408525 /* SDWebImageDownloader.m in Sources */,

@@ -31,6 +31,16 @@
     [super viewDidLoad];
    
     
+    self.navigationController.navigationBar.barStyle = UIStatusBarStyleDefault;
+    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor ]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1]];
+    
+    NSDictionary * dict=[NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
+    [self.navigationController.navigationBar setTitleTextAttributes:dict];
+    
+    UIBarButtonItem *closeItem = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(closeTouched:)];
+    self.navigationItem.leftBarButtonItem = closeItem;
+    
     self.navigationController.navigationBarHidden=NO;
     self.navigationController.navigationBar.translucent=NO;
     self.title=@"登陆";
@@ -113,6 +123,14 @@
     
 }
 
+
+- (void) closeTouched:(UIBarButtonItem *) sender{
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+}
+
 //取消按钮
 //-(void)backBtn:(UIButton*)sender
 //{
@@ -191,7 +209,10 @@
                      
                  }];
                  
-               [self.navigationController popToRootViewControllerAnimated:YES];
+                 [self dismissViewControllerAnimated:YES completion:^{
+                 }];
+
+               //[self.navigationController popToRootViewControllerAnimated:YES];
 //                 MyHJViewController*myHJ=[[MyHJViewController alloc]init];
 //                 [self.navigationController pushViewController:myHJ animated:YES];
              }

@@ -212,12 +212,13 @@
     
     [session GET:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
-         NSLog(@"分类产品  JSON:%@",responseObject);
+         //NSLog(@"分类产品  JSON:%@",responseObject);
          NSArray*array=responseObject[@"data"];
          for (int i=0; i<array.count; i++)
          {
              NSDictionary*dic=array[i];
              FlowerDetail*flow=[FlowerDetail getAllFlowerDictionary:dic];
+             //NSLog(@"~~~~~%@",dic);
              [datArray addObject:flow];
          }
          complete(datArray);

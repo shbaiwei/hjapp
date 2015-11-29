@@ -84,7 +84,7 @@
     self.navigationController.navigationBarHidden=YES;
     [self hidesTabBar:NO];
     self.cityLabel.text=[[NSUserDefaults standardUserDefaults]objectForKey:@"CITYNAME"];
-    NSLog(@"沙河路径=====%@",NSHomeDirectory());
+    NSLog(@"沙盒路径=====%@",NSHomeDirectory());
     
 }
 
@@ -97,7 +97,7 @@
     
     self.title=@"首页";
     self.view.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
-    
+
     
     
     [HttpEngine getCityNameBackcompletion:^(NSArray *dataArray)
@@ -193,7 +193,7 @@
     self.mainScroll = [[UIScrollView alloc] init];
     self.mainScroll.bounces=NO;
     self.mainScroll.frame = CGRectMake(0, LBVIEW_HEIGHT1 / 11.5-20, LBVIEW_WIDTH1, LBVIEW_HEIGHT1);
-    self.mainScroll.contentSize = CGSizeMake(VIEW_WIDTH, LBVIEW_HEIGHT1-LBVIEW_HEIGHT1 / 11.5+LBVIEW_HEIGHT1*0.15);
+    self.mainScroll.contentSize = CGSizeMake(VIEW_WIDTH, LBVIEW_HEIGHT1-40);
     [self.view addSubview:self.mainScroll];
 }
 
@@ -414,7 +414,7 @@
     
     [[NSUserDefaults standardUserDefaults]setObject:isTag forKey:@"TWOTAG"];
     
-     _tabBarVC.selectedIndex=1;
+     self.tabBarVC.selectedIndex=1;
 }
 
 
@@ -429,13 +429,13 @@
     
     UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, (LBVIEW_HEIGHT1 / 13- LBVIEW_HEIGHT1 / 15)/2, VIEW_WIDTH / 4, LBVIEW_HEIGHT1 / 15)];
     label.text=@"花集公告";
-    label.textColor=[UIColor blueColor];
+    label.textColor=[UIColor colorWithRed:37/255.0 green:119/255.0 blue:188/255.0 alpha:1];
     label.textAlignment=NSTextAlignmentCenter;
     label.font=[UIFont boldSystemFontOfSize:18];
     [self.oneMoneyView addSubview:label];
     
     UILabel*lineLabel=[[UILabel alloc]initWithFrame:CGRectMake(10+VIEW_WIDTH / 4-1,(LBVIEW_HEIGHT1 / 13- LBVIEW_HEIGHT1 / 20)/2, 1, LBVIEW_HEIGHT1 / 20)];
-    lineLabel.backgroundColor=[UIColor grayColor];
+    lineLabel.backgroundColor=[UIColor colorWithRed:200/255.0 green:200/255.0 blue:200/255.0 alpha:1];
     [self.oneMoneyView addSubview:lineLabel];
     
     [HttpEngine getNotifition:^(NSArray *dataArray)
@@ -531,7 +531,7 @@
         [self.mainScroll addSubview:view];
 
         
-        UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/10, (view.frame.size.height-30)/2, 30, 30)];
+        UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/10, (view.frame.size.height-16)/2, 20, 20)];
         image.image=[UIImage imageNamed:[NSString stringWithFormat:@"other_service_%d.png",i+1]];
         [view addSubview:image];
         

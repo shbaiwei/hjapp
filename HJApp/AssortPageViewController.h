@@ -7,15 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HJViewController.h"
 #import "FlashViewController.h"
 
-
-@interface AssortPageViewController : UIViewController
+@interface AssortPageViewController : HJViewController
 
 {
     BOOL _isOpen[666];
     int _lastTag[666];
 }
 @property(nonatomic,unsafe_unretained)int isTag;
-@property(nonatomic,strong)UITabBarController*tabBarVC;
+//@property(nonatomic,strong)UITabBarController*tabBarVC;
 @end

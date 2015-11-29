@@ -29,6 +29,7 @@
     [self goToPage];
     
 }
+
 -(void)goToPage
 {
     //TabBar
@@ -45,60 +46,60 @@
     MyHJViewController *myHuaJiVC = [[MyHJViewController alloc] init];
     
     //设置首页tabbar   选中前和选中后
-    UIImage *HomeImage = [UIImage imageNamed:@"home2.png"];
+    UIImage *HomeImage = [UIImage imageNamed:@"ico_item0"];
     HomeImage = [HomeImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     
     homeVC.tabBarItem.image = HomeImage;
     homeVC.title = @"首页";
     homeVC.tabBarItem.selectedImage = HomeImage;
     
-    UIImage *homeImage2 = [UIImage imageNamed:@"Home.png"];
+    UIImage *homeImage2 = [UIImage imageNamed:@"ico_item0_active"];
     homeImage2 = [homeImage2 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     homeVC.tabBarItem.selectedImage = homeImage2;
     
-    UIImage *AssortImage = [UIImage imageNamed:@"assort2.png"];
+    UIImage *AssortImage = [UIImage imageNamed:@"ico_item1"];
     AssortImage = [AssortImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     
     assortVC.tabBarItem.image = AssortImage;
     assortVC.title = @"分类";
     assortVC.tabBarItem.selectedImage = AssortImage;
     
-    UIImage *assortImage2 = [UIImage imageNamed:@"Assort.png"];
+    UIImage *assortImage2 = [UIImage imageNamed:@"ico_item1_active"];
     assortImage2 = [assortImage2 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     assortVC.tabBarItem.selectedImage = assortImage2;
     
-    UIImage *OderImage = [UIImage imageNamed:@"oder2.png"];
+    UIImage *OderImage = [UIImage imageNamed:@"ico_item2"];
     OderImage = [OderImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     
     oderVC.tabBarItem.image = OderImage;
     oderVC.title = @"订单";
     oderVC.tabBarItem.selectedImage = OderImage;
     
-    UIImage *oderImage2 = [UIImage imageNamed:@"Oder.png"];
+    UIImage *oderImage2 = [UIImage imageNamed:@"ico_item2_active"];
     oderImage2 = [oderImage2 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     oderVC.tabBarItem.selectedImage = oderImage2;
     
     
-    UIImage *ShopImage = [UIImage imageNamed:@"shop2.png"];
+    UIImage *ShopImage = [UIImage imageNamed:@"ico_item3"];
     ShopImage = [ShopImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     
     shopVC.tabBarItem.image = ShopImage;
     shopVC.title = @"购物车";
     shopVC.tabBarItem.selectedImage = ShopImage;
     
-    UIImage *shopImage2 = [UIImage imageNamed:@"shop.png"];
+    UIImage *shopImage2 = [UIImage imageNamed:@"ico_item3_active"];
     shopImage2 = [shopImage2 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     shopVC.tabBarItem.selectedImage = shopImage2;
     
     
-    UIImage *MyHuaJiImage = [UIImage imageNamed:@"myhuaji2.png"];
+    UIImage *MyHuaJiImage = [UIImage imageNamed:@"ico_item4"];
     MyHuaJiImage = [MyHuaJiImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     
     myHuaJiVC.tabBarItem.image = MyHuaJiImage;
     myHuaJiVC.title = @"我的花集";
     myHuaJiVC.tabBarItem.selectedImage = MyHuaJiImage;
     
-    UIImage *MyhuajiImage2 = [UIImage imageNamed:@"MyHuaJi.PNG"];
+    UIImage *MyhuajiImage2 = [UIImage imageNamed:@"ico_item4_active"];
     MyhuajiImage2 = [MyhuajiImage2 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     myHuaJiVC.tabBarItem.selectedImage = MyhuajiImage2;
     //TabBar字体颜色
@@ -137,6 +138,19 @@
     
     [naviShop.navigationBar setTitleTextAttributes:@{NSFontAttributeName :[UIFont boldSystemFontOfSize:19], NSForegroundColorAttributeName: [UIColor whiteColor]}];
     [naviAssprt.navigationBar setTitleTextAttributes:@{NSFontAttributeName :[UIFont boldSystemFontOfSize:19], NSForegroundColorAttributeName: [UIColor whiteColor]}];
+    
+    //pushed view's back color = white
+    [naviHome.navigationBar setTintColor:[UIColor whiteColor ]];
+    [naviMyHuaJi.navigationBar setTintColor:[UIColor whiteColor ]];
+    [naviOder.navigationBar setTintColor:[UIColor whiteColor ]];
+    [naviShop.navigationBar setTintColor:[UIColor whiteColor ]];
+    [naviAssprt.navigationBar setTintColor:[UIColor whiteColor ]];
+    
+    naviHome.tabBarItem.tag = 1;
+    naviAssprt.tabBarItem.tag = 2;
+    naviOder.tabBarItem.tag = 3;
+    naviShop.tabBarItem.tag = 4;
+    naviMyHuaJi.tabBarItem.tag = 5;
    
     
 }

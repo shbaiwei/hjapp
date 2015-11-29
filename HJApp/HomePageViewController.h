@@ -7,12 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HJViewController.h"
 #import "AssortPageViewController.h"
 
-@interface HomePageViewController : UIViewController
+@interface HomePageViewController : HJViewController
 
 @property (nonatomic, strong) UILabel *cityLabel;
 
 //@property(nonatomic,strong)AssortPageViewController*assortPageVC;
-@property(nonatomic,strong)UITabBarController*tabBarVC;
+//@property(nonatomic,strong)UITabBarController*tabBarVC;
 @end
