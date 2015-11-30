@@ -36,7 +36,7 @@
 -(void)showPage
 {
     UIScrollView*scrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1)];
-    scrollView.contentSize=CGSizeMake(LBVIEW_WIDTH1, LBVIEW_HEIGHT1+LBVIEW_HEIGHT1/5);
+    scrollView.contentSize=CGSizeMake(LBVIEW_WIDTH1, LBVIEW_HEIGHT1+220);
     [self.view addSubview:scrollView];
     
     NSArray*nameArray=[[NSArray alloc]initWithObjects:@"姓名＊",@"手机号＊",@"E-Mail＊",@"单位名称＊", nil];
