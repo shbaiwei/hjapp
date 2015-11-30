@@ -67,4 +67,25 @@
     return result;
 }
 
++(MBProgressHUD *) getHUD{
+    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[BWCommon getCurrentVC].view animated:YES];
+    
+    UIView *loadingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 60, 62)];
+    UIImageView *loadingLogo =[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"loading_logo.png"]];
+    loadingLogo.frame = CGRectMake(0, 0, 59, 62);
+    [loadingView addSubview:loadingLogo];
+    //loadingLogo.frame = CGRectMake(10, 0, 40, 40);
+    /*UILabel *loadingText = [[UILabel alloc] initWithFrame:CGRectMake(0, 65, 60, 20)];
+    [loadingText setTextAlignment:NSTextAlignmentCenter];
+    [loadingText setTextColor:[UIColor whiteColor]];
+    [loadingText setText:@"加载中.."];
+    [loadingText setFont:[UIFont systemFontOfSize:12]];
+    [loadingView addSubview:loadingText];*/
+    hud.customView = loadingView;
+    hud.mode = MBProgressHUDModeCustomView;
+    
+    return hud;
+}
+
 @end
