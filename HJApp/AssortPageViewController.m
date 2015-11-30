@@ -145,14 +145,14 @@
     NSString*isTagStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"TWOTAG"];
     if (isTagStr!=NULL)
     {
-        _isTag=[isTagStr intValue];
+        //_isTag=[isTagStr intValue];
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"TWOTAG"];
-        NSLog(@"_isTag===%d",_isTag);
+        //NSLog(@"_isTag===%d",_isTag);
         
-        AllFlower*flower=_floerNameArray[_isTag];
+        //AllFlower*flower=_floerNameArray[_isTag];
         NSString*locatioanStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
         NSLog(@"locatioanStr===%@",locatioanStr);
-        [HttpEngine getProductDetail:flower.flowerId withLocation:locatioanStr withProps:nil withPage:@"1" withPageSize:@"30" completion:^(NSArray *dataArray)
+        [HttpEngine getProductDetail:isTagStr withLocation:locatioanStr withProps:nil withPage:@"1" withPageSize:@"30" completion:^(NSArray *dataArray)
          {
              //右uitableview
              _floerDetailArray=dataArray;
@@ -722,7 +722,7 @@
     //找到当前点击的位置
     CGRect rect=[sender convertRect: sender.bounds toView:self.view];
     UIImageView*anImage=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-50, rect.origin.y, 20, 20)];
-    [anImage sd_setImageWithURL:[NSURL URLWithString:dFlower.image]];
+    [anImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@@!l60",dFlower.image]]];
     //anImage.backgroundColor=[UIColor redColor];
     anImage.layer.cornerRadius=10;
     anImage.clipsToBounds=YES;
