@@ -80,22 +80,22 @@
     [self hidesTabBar:NO];
     
     //判断是否需要登陆
-    NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
-    if (str==NULL)
-    {
-        LoginViewController*loginVC=[[LoginViewController alloc]init];
-        
-        //[self.navigationController popToViewController:loginVC animated:YES];
-        
-        //__weak AssortPageViewController *weakSelf = self;
-        
-        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginVC];
-        
-        [self presentViewController:navigationController animated:YES completion:^{
-            
-        }];
-        return;
-    }
+//    NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+//    if (str==NULL)
+//    {
+//        LoginViewController*loginVC=[[LoginViewController alloc]init];
+//        
+//        //[self.navigationController popToViewController:loginVC animated:YES];
+//        
+//        //__weak AssortPageViewController *weakSelf = self;
+//        
+//        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginVC];
+//        
+//        [self presentViewController:navigationController animated:YES completion:^{
+//            
+//        }];
+//        return;
+//    }
 
     
     [HttpEngine getAllFlower:^(NSArray *dataArray)
@@ -330,7 +330,7 @@
     else
     {
         [_chooseBtn setTitle:@"更多筛选" forState:UIControlStateNormal];
-        _rightTableV.frame=CGRectMake(LBVIEW_WIDTH1/3.5, 90, 5*LBVIEW_WIDTH1/6, LBVIEW_HEIGHT1-70-113);
+        _rightTableV.frame=CGRectMake(LBVIEW_WIDTH1/3.5, 90, 5*LBVIEW_WIDTH1/6, LBVIEW_HEIGHT1-90-113);
         [_headView removeFromSuperview];
     }
     

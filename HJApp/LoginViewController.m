@@ -108,6 +108,8 @@
             [lgBtn setBackgroundColor:[UIColor grayColor]];
         }
         lgBtn.tag=i;
+        lgBtn.layer.cornerRadius=7;
+        lgBtn.clipsToBounds=YES;
         [lgBtn setTitle:btnNameArray[i] forState:UIControlStateNormal];
         [lgBtn addTarget:self action:@selector(lgBtnClick:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:lgBtn];

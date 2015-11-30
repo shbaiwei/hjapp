@@ -40,15 +40,6 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    //判断是否需要登陆
-    NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
-    if (str==NULL)
-    {
-        LoginViewController*loginVC=[[LoginViewController alloc]init];
-        [self.navigationController pushViewController:loginVC animated:YES];
-        return;
-    }
-    
     [self hidesTabBar:NO];
     self.navigationController.navigationBarHidden=YES;
     //self.navigationController.navigationBar.translucent=NO;

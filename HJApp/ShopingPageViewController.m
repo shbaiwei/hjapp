@@ -44,16 +44,6 @@
     self.navigationController.navigationBarHidden=NO;
     self.navigationController.navigationBar.translucent =NO;
     
-    
-    //判断是否需要登陆
-    NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
-    if (str==NULL)
-    {
-        LoginViewController*loginVC=[[LoginViewController alloc]init];
-        [self.navigationController pushViewController:loginVC animated:YES];
-        return;
-    }
-
     [HttpEngine getSimpleCart:^(NSArray *array) {
         _dataArray=array;
         [self showTableView];
@@ -281,15 +271,13 @@
 //删除
 -(void)sub:(NSInteger)tag
 {
-    
-    ShopingCar*spCa=_dataArray[tag];
-    NSString*numer=spCa.number;
-    numer=[NSString stringWithFormat:@"%lu",[numer integerValue]-1];
-    if (numer==0)
+    if (_dataArray.count==0)
     {
         return;
     }
-   // NSLog(@"----%@",numer);
+    ShopingCar*spCa=_dataArray[tag];
+    NSString*numer=spCa.number;
+    numer=[NSString stringWithFormat:@"%lu",[numer integerValue]-1];
     //添加
     NSLog(@"===%@,===%@",spCa.skuId,spCa.supplierId);
     NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
