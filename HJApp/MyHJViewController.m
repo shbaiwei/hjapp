@@ -104,14 +104,6 @@
     self.navigationController.navigationBarHidden=YES;
     self.navigationController.navigationBar.translucent =NO;
     [self hidesTabBar:NO];
-    //判断是否需要登陆
-    NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
-    if (str==NULL)
-    {
-        LoginViewController*loginVC=[[LoginViewController alloc]init];
-        [self.navigationController pushViewController:loginVC animated:YES];
-        return;
-    }
 
     UIView*headView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1,64)];
     headView.backgroundColor=[UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1];

@@ -484,14 +484,14 @@
     {
         case 0:
         {
-            UIView*view=[[UIView alloc]initWithFrame:CGRectMake(10, 0, 120,30)];
-            [cell addSubview:view];
+//            UIView*view=[[UIView alloc]initWithFrame:CGRectMake(10, 0, 120,40)];
+//            [cell addSubview:view];
             
-            _styleLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 0, 90, 30)];
+            _styleLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 5, 90, 30)];
             _styleLabel.text=_styleStr;
             _styleLabel.textColor=[UIColor blackColor];
             _styleLabel.font=[UIFont systemFontOfSize:14];
-            [view addSubview:_styleLabel];
+            [cell addSubview:_styleLabel];
             
             cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
             
@@ -499,19 +499,19 @@
             //image.image=[UIImage imageNamed:@"item-r.png"];
             //[view addSubview:image];
             
-            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 30)];
+            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 40)];
             [btn addTarget:self action:@selector(cutAddress) forControlEvents:UIControlEventTouchUpInside];
             [cell addSubview:btn];
         }
             break;
         case 1:
         {
-        _distributionAddrsNameLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, 5, 200, 25)];
+        _distributionAddrsNameLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 5, 200, 25)];
         _distributionAddrsNameLabel.text=[NSString stringWithFormat:@"%@  %@",_defaultAddressDic[@"consignee"],_defaultAddressDic[@"phone_mob"]];
         _distributionAddrsNameLabel.font=[UIFont systemFontOfSize:14];
         [cell addSubview:_distributionAddrsNameLabel];
             
-        _distributionAddrsDetailLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, 30, 200, 25)];
+        _distributionAddrsDetailLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 30, 200, 25)];
         _distributionAddrsDetailLabel.text=[NSString stringWithFormat:@"%@ %@ %@",_defaultAddressDic[@"chinese_province"],_defaultAddressDic[@"chinese_city"],_defaultAddressDic[@"chinese_town"]];
         _distributionAddrsDetailLabel.font=[UIFont systemFontOfSize:14];
         [cell addSubview:_distributionAddrsDetailLabel];
@@ -523,14 +523,14 @@
             
         case 2:
         {
-            UIView*view=[[UIView alloc]initWithFrame:CGRectMake(10, 0, 200,30)];
-            [cell addSubview:view];
+//            UIView*view=[[UIView alloc]initWithFrame:CGRectMake(10, 0, 200,30)];
+//            [cell addSubview:view];
             
-            _distributionLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 0, 160, 30)];
+            _distributionLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 5, 160, 30)];
             _distributionLabel.text=_distributionTimeStr;
             _distributionLabel.textColor=[UIColor blackColor];
             _distributionLabel.font=[UIFont systemFontOfSize:14];
-            [view addSubview:_distributionLabel];
+            [cell addSubview:_distributionLabel];
             
             cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
             
@@ -538,9 +538,9 @@
             //image.image=[UIImage imageNamed:@"item-r.png"];
             //[view addSubview:image];
             
-            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 30)];
+            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 40)];
             [btn addTarget:self action:@selector(distributionTime) forControlEvents:UIControlEventTouchUpInside];
-            [view addSubview:btn];
+            [cell addSubview:btn];
         }
             break;
             
@@ -568,7 +568,7 @@
         case 4:
         {
     
-                _redLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, 0, 120, 30)];
+                _redLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 5, 120, 30)];
                 _redLabel.text=_redStr;
                 _redLabel.font=[UIFont systemFontOfSize:14];
                 _redLabel.textColor=[UIColor blackColor];
@@ -581,7 +581,7 @@
             
             if (![_redStr isEqualToString:@"未达到使用额度"]&&![_redStr isEqualToString:@"暂无红包"])
             {
-                UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 30)];
+                UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 40)];
                 [btn addTarget:self action:@selector(chooseRedPage) forControlEvents:UIControlEventTouchUpInside];
                 [cell addSubview:btn];
             }
@@ -603,7 +603,7 @@
         case 6:
         {
             cell.textLabel.text=_orderArray[indexPath.row];
-            cell.textLabel.font=[UIFont systemFontOfSize:12];
+            cell.textLabel.font=[UIFont systemFontOfSize:14];
             UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-50, 0, LBVIEW_WIDTH1*0.2, 30)];
             label.text=[NSString stringWithFormat:@"¥%@",_priceOrderArray[indexPath.row]];
             label.font=[UIFont systemFontOfSize:14];
@@ -631,7 +631,7 @@
                 attributeStr=[NSString stringWithFormat:@"%@ %@",attributeStr,attributeArray[i]];
             }
             
-            UILabel*nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(10,0, LBVIEW_WIDTH1*0.5, 30)];
+            UILabel*nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(20,0, LBVIEW_WIDTH1*0.5, 30)];
             nameLabel.font=[UIFont systemFontOfSize:14];
             nameLabel.text=[NSString stringWithFormat:@"%@ %@",spCa.skuName,attributeStr] ;
             [cell addSubview:nameLabel];
