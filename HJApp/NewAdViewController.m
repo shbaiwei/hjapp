@@ -74,21 +74,26 @@
     userV.clipsToBounds=YES;
     [self.view addSubview:userV];
     
-    UILabel*userLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 4-6, LBVIEW_HEIGHT1 / 17)];
-    userLabel.text=@"收货人";
-    userLabel.textColor=[UIColor blackColor];
-    userLabel.font=[UIFont systemFontOfSize:14];
+    UILabel*userLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 4+4, LBVIEW_HEIGHT1 / 17)];
+    userLabel.text=@"  收货人";
+    userLabel.textColor=[UIColor grayColor];
+    //userLabel.font=[UIFont systemFontOfSize:14];
     [userV addSubview:userLabel];
     
-    UILabel*line1=[[UILabel alloc]initWithFrame:CGRectMake( LBVIEW_WIDTH1 / 4-6, 3, 1,  LBVIEW_HEIGHT1 / 17-6)];
-    line1.backgroundColor=[UIColor grayColor];
+    UILabel*line1=[[UILabel alloc]initWithFrame:CGRectMake( LBVIEW_WIDTH1 / 4+4, 3, 1,  LBVIEW_HEIGHT1 / 17-6)];
+    line1.backgroundColor=[UIColor lightGrayColor];
     [userV addSubview:line1];
     
-    self.userNameTF = [[UITextField alloc] initWithFrame: CGRectMake(LBVIEW_WIDTH1 / 4, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 1.6, LBVIEW_HEIGHT1 / 17)];
+    self.userNameTF = [[UITextField alloc] initWithFrame: CGRectMake(LBVIEW_WIDTH1 / 4+10, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 1.6, LBVIEW_HEIGHT1 / 17)];
     self.userNameTF.backgroundColor = [UIColor clearColor];
     self.userNameTF.borderStyle = UITextBorderStyleNone;
     self.userNameTF.textColor = [UIColor blackColor];
     self.userNameTF.text=_userName;
+    UIView * leftView1= [[UIView alloc] initWithFrame:CGRectMake(10,0,10,LBVIEW_HEIGHT1 / 17)];
+    leftView1.backgroundColor = [UIColor clearColor];
+    self.userNameTF.leftView = leftView1;
+    self.userNameTF.leftViewMode = UITextFieldViewModeAlways;
+    
     [userV addSubview:self.userNameTF];
     
     UIView *phoneV = [[UIView alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 17, LBVIEW_HEIGHT1 / 17+50, LBVIEW_WIDTH1 / 1.1, LBVIEW_HEIGHT1 / 17)];
@@ -100,21 +105,25 @@
     [self.view addSubview:phoneV];
     
     
-    UILabel*phoneLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 4-6, LBVIEW_HEIGHT1 / 17)];
-    phoneLabel.text=@"手机";
-    phoneLabel.textColor=[UIColor blackColor];
-    phoneLabel.font=[UIFont systemFontOfSize:14];
+    UILabel*phoneLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 4+4, LBVIEW_HEIGHT1 / 17)];
+    phoneLabel.text=@"  手机";
+    phoneLabel.textColor=[UIColor grayColor];
+   // phoneLabel.font=[UIFont systemFontOfSize:14];
     [phoneV addSubview:phoneLabel];
     
-    UILabel*line2=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 4-6, 3, 1,  LBVIEW_HEIGHT1 / 17-6)];
-    line2.backgroundColor=[UIColor grayColor];
+    UILabel*line2=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 4+4, 3, 1,  LBVIEW_HEIGHT1 / 17-6)];
+    line2.backgroundColor=[UIColor lightGrayColor];
     [phoneV addSubview:line2];
     
-    self.phoneTF = [[UITextField alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 4, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 1.6, LBVIEW_HEIGHT1 / 17)];
+    self.phoneTF = [[UITextField alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 4+10, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 1.6, LBVIEW_HEIGHT1 / 17)];
     self.phoneTF.backgroundColor = [UIColor clearColor];
     self.phoneTF.borderStyle = UITextBorderStyleNone;
     self.phoneTF.textColor = [UIColor blackColor];
     self.phoneTF.text=_phone;
+    UIView * leftView2= [[UIView alloc] initWithFrame:CGRectMake(10,0,10,LBVIEW_HEIGHT1 / 17)];
+    leftView2.backgroundColor = [UIColor clearColor];
+    self.phoneTF.leftView = leftView2;
+    self.phoneTF.leftViewMode = UITextFieldViewModeAlways;
     [phoneV addSubview:self.phoneTF];
     
     UIView *proconV = [[UIView alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 17, 2*LBVIEW_HEIGHT1 / 17+70, LBVIEW_WIDTH1 / 1.1, LBVIEW_HEIGHT1 / 17)];
@@ -124,22 +133,27 @@
     proconV.clipsToBounds=YES;
     [self.view addSubview:proconV];
     
-    UILabel*proconLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 4-6, LBVIEW_HEIGHT1 / 17)];
-    proconLabel.text=@"所在地区";
-    proconLabel.textColor=[UIColor blackColor];
-    proconLabel.font=[UIFont systemFontOfSize:14];
+    UILabel*proconLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 4+4, LBVIEW_HEIGHT1 / 17)];
+    proconLabel.text=@"  所在地区";
+    proconLabel.textColor=[UIColor grayColor];
+    //proconLabel.font=[UIFont systemFontOfSize:14];
     [proconV addSubview:proconLabel];
     
-    UILabel*line3=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 4-6, 3, 1,  LBVIEW_HEIGHT1 / 17-6)];
-    line3.backgroundColor=[UIColor grayColor];
+    UILabel*line3=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 4+4, 3, 1,  LBVIEW_HEIGHT1 / 17-6)];
+    line3.backgroundColor=[UIColor lightGrayColor];
     [proconV addSubview:line3];
     
-    self.proconTF = [[UITextField alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1 /4, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 1.6, LBVIEW_HEIGHT1 / 17)];
+    self.proconTF = [[UITextField alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1 /4+10, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 1.6, LBVIEW_HEIGHT1 / 17)];
     self.proconTF.backgroundColor = [UIColor clearColor];
     self.proconTF.borderStyle = UITextBorderStyleNone;
     self.proconTF.textColor = [UIColor blackColor];
     self.proconTF.text=_procon;
+    UIView * leftView3= [[UIView alloc] initWithFrame:CGRectMake(10,0,10,LBVIEW_HEIGHT1 / 17)];
+    leftView3.backgroundColor = [UIColor clearColor];
+    self.proconTF.leftView = leftView3;
+    self.proconTF.leftViewMode = UITextFieldViewModeAlways;
     self.proconTF.delegate=self;
+    
     [proconV addSubview:self.proconTF];
     
     UIView *adreV = [[UIView alloc] init];
@@ -151,21 +165,25 @@
     [self.view addSubview:adreV];
     
     
-    UILabel*adreLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 4-6, LBVIEW_HEIGHT1 / 17)];
-    adreLabel.text=@"详细地址";
-    adreLabel.textColor=[UIColor blackColor];
-    adreLabel.font=[UIFont systemFontOfSize:14];
+    UILabel*adreLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 4+4, LBVIEW_HEIGHT1 / 17)];
+    adreLabel.text=@"  详细地址";
+    adreLabel.textColor=[UIColor grayColor];
+   // adreLabel.font=[UIFont systemFontOfSize:14];
     [adreV addSubview:adreLabel];
     
-    UILabel*line4=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 4-6, 3, 1,  LBVIEW_HEIGHT1 / 17-6)];
-    line4.backgroundColor=[UIColor grayColor];
+    UILabel*line4=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 4+4, 3, 1,  LBVIEW_HEIGHT1 / 17-6)];
+    line4.backgroundColor=[UIColor lightGrayColor];
     [adreV addSubview:line4];
     
-    self.adreTF = [[UITextField alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 4, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 1.6, LBVIEW_HEIGHT1 / 17)];
+    self.adreTF = [[UITextField alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 4+10, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 1.6, LBVIEW_HEIGHT1 / 17)];
     self.adreTF.backgroundColor = [UIColor clearColor];
     self.adreTF.borderStyle = UITextBorderStyleNone;
     self.adreTF.textColor = [UIColor blackColor];
     self.adreTF.text=_adre;
+    UIView * leftView4= [[UIView alloc] initWithFrame:CGRectMake(10,0,10,LBVIEW_HEIGHT1 / 17)];
+    leftView4.backgroundColor = [UIColor clearColor];
+    self.adreTF.leftView = leftView4;
+    self.adreTF.leftViewMode = UITextFieldViewModeAlways;
     [adreV addSubview:self.adreTF];
     
     UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1 / 17, 4*LBVIEW_HEIGHT1 / 17+130, LBVIEW_WIDTH1 / 1.1,40)];

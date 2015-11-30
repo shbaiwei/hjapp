@@ -10,10 +10,13 @@
 #import "BWCommon.h"
 #import "HttpEngine.h"
 
+
 @interface ForgetPasswordViewController ()
 
 @property(nonatomic,strong)UIButton*yzmBtn;
 @property(nonatomic,strong)UITextField*phone;
+@property (nonatomic, strong) UITextField *pswTF;
+@property (nonatomic, strong) UITextField *psw2TF;
 @property(nonatomic,strong)UITextField*yzmTF;
 
 @property (nonatomic, strong) UIImage *hqOn;
@@ -79,6 +82,37 @@
     [self.timeLimitLabel setTextColor:[UIColor whiteColor]];
     [self.timeLimitLabel setTextAlignment:NSTextAlignmentCenter];
     [self.yzmBtn addSubview:self.timeLimitLabel];
+    
+    
+    self.pswTF = [[UITextField alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.05, LBVIEW_HEIGHT1 * 0.21+35, LBVIEW_WIDTH1*0.9, LBVIEW_HEIGHT1*0.06)];
+    self.pswTF.backgroundColor = [UIColor clearColor];
+    [self.pswTF setBorderStyle:UITextBorderStyleLine];
+    [self.pswTF.layer setBorderWidth:1];
+    [self.pswTF.layer setBorderColor:[UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1].CGColor];
+    self.pswTF.textColor = [UIColor blackColor];
+    self.pswTF.placeholder=@"请输入新密码";
+    self.pswTF.secureTextEntry=YES;
+    [self.view addSubview:self.pswTF];
+    
+    self.psw2TF = [[UITextField alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.05, LBVIEW_HEIGHT1 * 0.27+45, LBVIEW_WIDTH1*0.9, LBVIEW_HEIGHT1*0.06)];
+    self.psw2TF.backgroundColor = [UIColor clearColor];
+    [self.psw2TF setBorderStyle:UITextBorderStyleLine];
+    [self.psw2TF.layer setBorderWidth:1];
+    [self.psw2TF.layer setBorderColor:[UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1].CGColor];
+    self.psw2TF.textColor = [UIColor blackColor];
+    self.psw2TF.placeholder=@"确认密码";
+    self.psw2TF.secureTextEntry=YES;
+    [self.view addSubview:self.psw2TF];
+    
+    UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1* 0.05, LBVIEW_HEIGHT1 * 0.33+55, LBVIEW_WIDTH1*0.9, LBVIEW_HEIGHT1*0.06)];
+    [btn setTitle:@"确定" forState:UIControlStateNormal];
+    [btn setBackgroundColor:[UIColor redColor]];
+    [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(nextPage) forControlEvents:UIControlEventTouchUpInside];
+    btn.layer.cornerRadius=5;
+    btn.clipsToBounds=YES;
+    [self.view addSubview:btn];
+
 }
 - (void)click2:(id)sender
 {
@@ -109,8 +143,41 @@
     //self.hqStatus = !self.hqStatus;
 }
 
--(void)click
+-(void)nextPage
 {
-    NSLog(@"1234");
+    NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"LPASSWORD"];
+    if (![_yzmTF.text isEqualToString:str])
+    {
+        [self alert:@"验证码错误"];
+    }
+    else
+    {
+        [HttpEngine momodifyPasswordUser:_phone.text withPassword:_pswTF.text complete:^(NSString *fail)
+        {
+            if ([fail isEqualToString:@"true"])
+            {
+                [self alert:@"修改成功"];
+            }
+            else
+            {
+                [self alert:@"修改失败"];
+            }
+        }];
+    }
+}
+-(void)alert:(NSString*)str
+{
+    UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:str preferredStyle: UIAlertControllerStyleAlert];
+    UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
+                          {
+                              
+                          }];
+    UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
+                                 {
+                                     
+                                 }];
+    [alert addAction:cancel];
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 @end

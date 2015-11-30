@@ -288,7 +288,7 @@
 //设置区头
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return LBVIEW_HEIGHT1*0.05;
+    return 50;
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -298,19 +298,19 @@
     UIView*view=[[UIView alloc]init];
     //view.backgroundColor=[UIColor  lightGrayColor];
     
-    UIImageView*blueImageV = [[UIImageView alloc]initWithFrame:CGRectMake(10, LBVIEW_HEIGHT1*0.05-20, LBVIEW_HEIGHT1*0.025, LBVIEW_HEIGHT1*0.025)];
+    UIImageView*blueImageV = [[UIImageView alloc]initWithFrame:CGRectMake(10, 15, 20, 20)];
     blueImageV.image = [UIImage imageNamed:@"my-order-ico.png"];
     [view addSubview:blueImageV];
     
     
-    UILabel *dNamelable=[[UILabel alloc]initWithFrame:CGRectMake(20+LBVIEW_HEIGHT1*0.025, LBVIEW_HEIGHT1*0.05-20, 100,20)];
+    UILabel *dNamelable=[[UILabel alloc]initWithFrame:CGRectMake(20+LBVIEW_HEIGHT1*0.025, 15, 100,20)];
     dNamelable.text=dic[@"to_florist_name"];
     //dNamelable.textAlignment=NSTextAlignmentCenter;
     dNamelable.backgroundColor=[UIColor clearColor];
     [view addSubview:dNamelable];
     
     
-    UILabel *timeLable=[[UILabel alloc]initWithFrame:CGRectMake(120+LBVIEW_HEIGHT1*0.025, LBVIEW_HEIGHT1*0.05-20, 140,20)];
+    UILabel *timeLable=[[UILabel alloc]initWithFrame:CGRectMake(120+LBVIEW_HEIGHT1*0.025, 15, 140,20)];
     timeLable.text=dic[@"datetime"];
     timeLable.font=[UIFont systemFontOfSize:14];
     timeLable.textColor=[UIColor grayColor];
@@ -318,7 +318,7 @@
     timeLable.backgroundColor=[UIColor clearColor];
     [view addSubview:timeLable];
     
-    UILabel *jyLable=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-90, LBVIEW_HEIGHT1*0.05-20, 80,20)];
+    UILabel *jyLable=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-90, 15, 80,20)];
     jyLable.text=@"交易关闭";
     jyLable.textColor=[UIColor colorWithRed:43/255.0 green:152/255.0 blue:225/255.0 alpha:1];
     jyLable.font=[UIFont systemFontOfSize:14];
@@ -363,7 +363,7 @@
 //设置区尾
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    return LBVIEW_HEIGHT1*0.12;
+    return LBVIEW_HEIGHT1*0.1;
 }
 -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
@@ -405,7 +405,7 @@
     btn.layer.borderWidth=1;
     btn.layer.cornerRadius=5;
     btn.clipsToBounds=YES;
-    btn.frame=CGRectMake(LBVIEW_WIDTH1-90, LBVIEW_HEIGHT1*0.12-40, 80, 30);
+    btn.frame=CGRectMake(LBVIEW_WIDTH1-90, LBVIEW_HEIGHT1*0.1-35, 80, 30);
     [btn setTitle:@"再次购买" forState:UIControlStateNormal];
     [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     btn.tag=section+500;

@@ -254,8 +254,22 @@
         //[self.yzmBtn setBackgroundColor:[UIColor redColor]];
     } else
     {
-        //TODO 发送验证码
-        [HttpEngine sendMessageMoblie:_phoneTF.text withKind:1];
+        
+        [HttpEngine checkUserPhone:_phoneTF.text with:^(NSString *existe)
+        {
+            NSString*str=existe;
+            if (![str isEqualToString:@"true"])
+            {
+                //TODO 发送验证码
+                [HttpEngine sendMessageMoblie:_phoneTF.text withKind:1];
+            }
+            else
+            {
+                [self alert:@"该用户已存在"];
+            }
+            
+        }];
+        
         self.hqStatus = NO;
         
         [self.yzmBtn setTitle:@"" forState:UIControlStateNormal];
@@ -276,8 +290,6 @@
 //去注册
 -(void)goRegiseter
 {
-    [HttpEngine checkUser];
-    
         if ([_pswTF.text isEqualToString:@""]||[_phoneTF.text isEqualToString:@""]||[_yzmTF.text isEqualToString:@""])
         {
             [self alert:@"请完善信息"];
@@ -303,7 +315,17 @@
            }
        }
     
-[HttpEngine registerRequestPassword:_pswTF.text withMobile:_phoneTF.text withRegIp:@"192" withFlorist:@"1"];
+    [HttpEngine registerRequestPassword:_pswTF.text withMobile:_phoneTF.text withRegIp:@"192.168.12.23" withFlorist:@"1" complete:^(NSString *fail) {
+        if ([fail isEqualToString:@"true"])
+        {
+            [self alert:@"注册成功"];
+        }
+        else
+        {
+            [self alert:@"用户已注册"];
+        }
+    }];
+   
 }
 -(void)alert:(NSString*)str;
 {

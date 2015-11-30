@@ -306,6 +306,7 @@
 		32F877D11C0B6CF500CC9C3A /* PayTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 32F877D01C0B6CF500CC9C3A /* PayTableViewCell.m */; };
 		32F978871C0BF21A003F2393 /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 32F978861C0BF21A003F2393 /* NSString+MD5.m */; };
 		32F9788A1C0C0D76003F2393 /* ForgetPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32F978891C0C0D76003F2393 /* ForgetPasswordViewController.m */; };
+		32F9788D1C0C4108003F2393 /* ModifyDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32F9788C1C0C4108003F2393 /* ModifyDataViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -821,6 +822,8 @@
 		32F978861C0BF21A003F2393 /* NSString+MD5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5.m"; sourceTree = "<group>"; };
 		32F978881C0C0D76003F2393 /* ForgetPasswordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ForgetPasswordViewController.h; sourceTree = "<group>"; };
 		32F978891C0C0D76003F2393 /* ForgetPasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForgetPasswordViewController.m; sourceTree = "<group>"; };
+		32F9788B1C0C4108003F2393 /* ModifyDataViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModifyDataViewController.h; sourceTree = "<group>"; };
+		32F9788C1C0C4108003F2393 /* ModifyDataViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModifyDataViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1115,6 +1118,8 @@
 				325AC5E01BE7412800408525 /* RegisterViewController.xib */,
 				32F978881C0C0D76003F2393 /* ForgetPasswordViewController.h */,
 				32F978891C0C0D76003F2393 /* ForgetPasswordViewController.m */,
+				32F9788B1C0C4108003F2393 /* ModifyDataViewController.h */,
+				32F9788C1C0C4108003F2393 /* ModifyDataViewController.m */,
 			);
 			name = "登陆注册";
 			sourceTree = "<group>";
@@ -1314,8 +1319,8 @@
 				323648B11BFC279E007D6EF5 /* MessageCenterViewController.xib */,
 				323648B41BFC2F31007D6EF5 /* MessageDetailViewController.h */,
 				323648B51BFC2F31007D6EF5 /* MessageDetailViewController.m */,
-				32DDC1071BEC3ABD00649AE5 /* 信息修改 */,
 				325AC5D81BE7403400408525 /* 登陆注册 */,
+				32DDC1071BEC3ABD00649AE5 /* 信息修改 */,
 				32DDC1061BEC3A6800649AE5 /* 管理地址 */,
 				32DDC1191BECA9B300649AE5 /* 花集红包 */,
 				32DDC10B1BEC74B000649AE5 /* 账户余额 */,
@@ -1932,6 +1937,7 @@
 				323648AB1BFC136C007D6EF5 /* ComplainServe.m in Sources */,
 				320BBE441BF9B65A004DE70A /* UIScrollView+SVInfiniteScrolling.m in Sources */,
 				32B49B9D1BE30EDA00AB6D55 /* OrderPageViewController.m in Sources */,
+				32F9788D1C0C4108003F2393 /* ModifyDataViewController.m in Sources */,
 				323648B61BFC2F31007D6EF5 /* MessageDetailViewController.m in Sources */,
 				3244216A1C0A911500CA943A /* ChangeSexViewController.m in Sources */,
 				32B49BA21BE30EF100AB6D55 /* ShopingPageViewController.m in Sources */,

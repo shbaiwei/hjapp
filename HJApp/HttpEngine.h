@@ -46,16 +46,16 @@
 +(void)sendMessageMoblie:(NSString*)mobliePhone withKind:(int)tag;
 
 //查询手机号是否存在
-+(void)checkUser;
++(void)checkUserPhone:(NSString*)phone with:(void(^)(NSString*existe))complete;
 
 //用户注册
-+(void)registerRequestPassword:(NSString*)password withMobile:(NSString*)mobile withRegIp:(NSString*)regIp withFlorist:(NSString*)isFlorist;
++(void)registerRequestPassword:(NSString*)password withMobile:(NSString*)mobile withRegIp:(NSString*)regIp withFlorist:(NSString*)isFlorist complete:(void(^)(NSString*fail))complete;
 
 //登陆请求
 +(void)loginRequest:(NSString*)name with:(NSString*)pas complete:(void(^)(NSString*fail))complete;
 
 //修改密码
-//+(void)momodifyPasswordUser:(NSString*)user;
++(void)momodifyPasswordUser:(NSString*)user withPassword:(NSString*)password complete:(void(^)(NSString*fail))complete;
 
 
 //产品分类

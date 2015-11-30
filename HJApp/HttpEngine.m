@@ -386,20 +386,17 @@
     
 }
 //查询手机号是否存在
-+(void)checkUser
++(void)checkUserPhone:(NSString*)phone with:(void(^)(NSString*existe))complete
 {
     
-    NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
-    NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
-    
     AFHTTPSessionManager*magager=[AFHTTPSessionManager manager];
-    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/auth/checkUser/"];
-    [magager.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
-    NSString*nameStr=@"hj_17756405242";
+    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/auth/queryUser/"];
+    NSString*nameStr=phone;
     NSDictionary*parameters=@{@"username":nameStr};
     [magager GET:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
          NSLog(@"JSON:%@",responseObject);
+         complete(@"true");
          
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
      {
@@ -408,39 +405,38 @@
     NSData*data=userInfo[@"com.alamofire.serialization.response.error.data"];
          NSString*str=[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
          NSLog(@"str====%@",str);
+         complete(@"false");
      }];
     
     
 }
 
 //用户注册
-+(void)registerRequestPassword:(NSString*)password withMobile:(NSString*)mobile withRegIp:(NSString*)regIp withFlorist:(NSString*)isFlorist;
++(void)registerRequestPassword:(NSString*)password withMobile:(NSString*)mobile withRegIp:(NSString*)regIp withFlorist:(NSString*)isFlorist complete:(void(^)(NSString*fail))complete;
 {
     
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
-    
-    
-    NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
-    NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
-    [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
+
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/auth/register/"];
-    
     NSString*username=[NSString stringWithFormat:@"hj_%@",mobile];
     
     //username,password,mobile,reg_ip
-    NSDictionary*parameters=@{@"username":username,@"password":password,@"mobile":mobile,@"is_florist":@"1"};
+    NSDictionary*parameters=@{@"username":username,@"password":password,@"mobile":mobile};
     
-    [session POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
+    
+    NSLog(@"parameters ==  %@",parameters);
+
+    [session POST:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
          NSLog(@"JSON:%@",responseObject);
+         complete(@"true");
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
          NSLog(@"Error:%@",error);
          NSDictionary*dic=error.userInfo;
          NSData*data=dic[@"com.alamofire.serialization.response.error.data"];
          NSString*strr=[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
          NSLog(@"strr====%@",strr);
+         complete(@"flase");
      }];
     
     
@@ -475,6 +471,42 @@
          NSLog(@"Error: %@", error);
      }];
     
+}
+
+//修改密码
++(void)momodifyPasswordUser:(NSString*)user withPassword:(NSString*)password complete:(void(^)(NSString*fail))complete;
+{
+
+    AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
+    
+    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/auth/password/"];
+    NSString*username=[NSString stringWithFormat:@"hj_%@",user];
+    
+    NSDate *localDate = [NSDate date]; //获取当前时间
+    NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[localDate timeIntervalSince1970]];
+    NSString*pinjie=[NSString stringWithFormat:@"%@|%@|Zaq1Xsw2",username,timeSp];
+    NSString*token=[pinjie MD5];
+    //username,password,mobile,reg_ip
+    NSDictionary*parameters=@{@"username":username,@"password":password,@"time":timeSp,@"token":token};
+    
+    
+    NSLog(@"parameters ==  %@",parameters);
+    
+    [session POST:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
+     {
+         NSLog(@"JSON:%@",responseObject);
+         complete(@"true");
+     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+         NSLog(@"Error:%@",error);
+         NSDictionary*dic=error.userInfo;
+         NSData*data=dic[@"com.alamofire.serialization.response.error.data"];
+         NSString*strr=[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+         NSLog(@"strr====%@",strr);
+         complete(@"flase");
+     }];
+ 
+
+
 }
 
 //获取用户详细信息

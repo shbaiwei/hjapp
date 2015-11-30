@@ -118,15 +118,16 @@
         cell.numAddressLabel.font=[UIFont boldSystemFontOfSize:12];
         
         cell.nameL.text=[NSString stringWithFormat:@"%@   %@",adress.consignee,adress.phoneMob];
-        cell.nameL.font=[UIFont systemFontOfSize:18];
+        cell.nameL.font=[UIFont systemFontOfSize:16];
         
         cell.adressL.text=[NSString stringWithFormat:@"%@ %@ %@ %@",adress.chineseProvince,adress.chineseCity,adress.chineseTown,adress.address];
-        cell.adressL.font=[UIFont systemFontOfSize:15];
+        cell.adressL.font=[UIFont systemFontOfSize:16];
         
-        _chooseLable=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/5/1.1, 95, 2*LBVIEW_WIDTH1/5, 20)];
+        _chooseLable=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/5, 95, 2*LBVIEW_WIDTH1/5, 20)];
        
         _chooseLable.tag=indexPath.row+500;
         _chooseLable.font = [UIFont systemFontOfSize:14];
+        _chooseLable.textColor=[UIColor grayColor];
         [cell addSubview:_chooseLable];
         
         
@@ -143,13 +144,13 @@
         if (indexPath.row==_defaultIndex)
         {
             _chooseLable.text=@"默认地址";
-            [cell.morenBtn setImage:[UIImage imageNamed:@"Dg.png"] forState:UIControlStateNormal];
+            [cell.morenBtn setImage:[UIImage imageNamed:@"agreeR.png"] forState:UIControlStateNormal];
             
         }
         else
         {
             _chooseLable.text= @"设为默认地址";
-            [cell.morenBtn setImage:[UIImage imageNamed:@"maru.png"] forState:UIControlStateNormal];
+            [cell.morenBtn setImage:[UIImage imageNamed:@"agreeG.png"] forState:UIControlStateNormal];
         }
         
         

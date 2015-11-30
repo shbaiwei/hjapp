@@ -25,6 +25,9 @@
 @property (nonatomic, strong) UIButton *bjBtn;
 @property (nonatomic, strong) UIButton *deleBtn;
 
+@property (nonatomic, strong) UILabel*bjLab;
+@property (nonatomic, strong) UILabel *deLab;
+
 @property (nonatomic,strong)  UIButton *morenBtn;
 
 @end
