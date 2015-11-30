@@ -15,6 +15,12 @@
 #import "MyPropBtn.h"
 #import "ShopingPageViewController.h"
 #import "LoginViewController.h"
+#import "SVPullToRefresh.h"
+
+#define NJTitleFont [UIFont systemFontOfSize:14]
+#define NJNameFont [UIFont systemFontOfSize:12]
+#define NJTextFont [UIFont systemFontOfSize:10.5]
+#define NJFontColor [UIColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1]
 
 
 @interface AssortPageViewController ()<UITableViewDataSource, UITableViewDelegate, UICollectionViewDelegate, UIScrollViewDelegate>
@@ -42,7 +48,7 @@
 
 ////////
 @property(nonatomic,strong)NSArray*floerNameArray;
-@property(nonatomic,strong)NSArray*floerDetailArray;
+@property(nonatomic,strong)NSMutableArray*floerDetailArray;
 //@property(nonatomic,strong)UILabel*numLabel;
 @property(nonatomic,strong)UIView*headView;
 @property(nonatomic,strong)NSArray*catalogueArray;
@@ -57,6 +63,8 @@
 @property(nonatomic,strong)NSArray*btnCarArray;
 @property(nonatomic,unsafe_unretained)int addNum;
 
+@property(nonatomic,strong)NSMutableArray *cartList;
+
 
 @end
 
@@ -69,6 +77,10 @@
 
 @implementation AssortPageViewController
 
+NSInteger page;
+NSString *cid;
+NSString *locatioanStr;
+
 
 //视图将要出现  刷新数据
 -(void)viewWillAppear:(BOOL)animated
@@ -77,26 +89,7 @@
     self.navigationController.navigationBar.translucent =NO;
     self.navigationItem.hidesBackButton=YES;
     self.title=@"选择品类";
-    [self hidesTabBar:NO];
-    
-    //判断是否需要登陆
-//    NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
-//    if (str==NULL)
-//    {
-//        LoginViewController*loginVC=[[LoginViewController alloc]init];
-//        
-//        //[self.navigationController popToViewController:loginVC animated:YES];
-//        
-//        //__weak AssortPageViewController *weakSelf = self;
-//        
-//        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginVC];
-//        
-//        [self presentViewController:navigationController animated:YES completion:^{
-//            
-//        }];
-//        return;
-//    }
-
+    //[self hidesTabBar:NO];
     
     [HttpEngine getAllFlower:^(NSArray *dataArray)
      {
@@ -105,6 +98,7 @@
          [self judgeIsTag];
      }];
     
+
     
     //获取购物车物品总数量
 //    [HttpEngine getSimpleCart:^(NSArray *array) {
@@ -145,19 +139,13 @@
     NSString*isTagStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"TWOTAG"];
     if (isTagStr!=NULL)
     {
+        cid = isTagStr;
         //_isTag=[isTagStr intValue];
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"TWOTAG"];
         //NSLog(@"_isTag===%d",_isTag);
         
-        //AllFlower*flower=_floerNameArray[_isTag];
-        NSString*locatioanStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
-        NSLog(@"locatioanStr===%@",locatioanStr);
-        [HttpEngine getProductDetail:isTagStr withLocation:locatioanStr withProps:nil withPage:@"1" withPageSize:@"30" completion:^(NSArray *dataArray)
-         {
-             //右uitableview
-             _floerDetailArray=dataArray;
-             [_rightTableV reloadData];
-         }];
+        page = 1;
+        [self loadDetailData];
         
     }
 
@@ -171,20 +159,23 @@
     
     _addNum=0;
     
+    page=1;
+    
+    cid = @"1";
+    
+    _cartList = [[NSMutableArray alloc] init];
+    
+    locatioanStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
+    
 }
 
 //获取右边tableview数据
 -(void)getRightData
 {
-    AllFlower*flower=_floerNameArray[_isTag];
-    NSString*locatioanStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
-    [HttpEngine getProductDetail:flower.flowerId withLocation:locatioanStr withProps:nil withPage:@"1" withPageSize:@"30" completion:^(NSArray *dataArray)
-     {
-         //右uitableview
-        _floerDetailArray=dataArray;
-        [self showRightTableView];
-         
-     }];
+    [self showRightTableView];
+    
+    page = 1;
+    [self loadDetailData];
     
 }
 
@@ -204,15 +195,15 @@
 {
     FlowerCatalogue*flower=_catalogueArray[0];
     
-    _assortTopView=[[UIView alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1/3.5, 0, LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5, 70+20)];
+    _assortTopView=[[UIView alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1/3.5, 0, LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5, 70+10)];
     _assortTopView.backgroundColor=[UIColor whiteColor];
     [self.view addSubview:_assortTopView];
     
     _colorLable=[[UILabel alloc] initWithFrame:CGRectMake(5, 15,60, 20)];
     _colorLable.text=flower.name;
     _colorLable.textAlignment=NSTextAlignmentCenter;
-    _colorLable.textColor=[UIColor blackColor];
-    _colorLable.font=[UIFont boldSystemFontOfSize:14];
+    _colorLable.textColor=NJFontColor;
+    _colorLable.font=NJTitleFont;
     [_assortTopView addSubview:_colorLable];
     
     _titleBtnScrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(70, 10, LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-60, 30)];
@@ -233,7 +224,8 @@
         btn.row=i;
         btn.tag=1000+i;
         
-        //[btn setBackgroundImage:[UIImage imageNamed:@"navi.png"] forState:UIControlStateSelected];
+        [btn.titleLabel setTextColor:NJFontColor];
+        [btn.titleLabel setFont:NJNameFont];
         btn.selected=NO;
         
         
@@ -248,7 +240,7 @@
     
     _chooseBtn=[[MyBtn alloc]initWithFrame:CGRectMake((LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-100)/2, 35, 100, 70-20)];
     [_chooseBtn setTitle:@"更多筛选" forState:UIControlStateNormal];
-    _chooseBtn.titleLabel.font=[UIFont systemFontOfSize:16];
+    _chooseBtn.titleLabel.font=[UIFont systemFontOfSize:14];
     [_chooseBtn setTitleColor:[UIColor colorWithRed:37/255.0 green:119/255.0 blue:188/255.0 alpha:1] forState:UIControlStateNormal];
     [_chooseBtn addTarget:self action:@selector(shouSuo) forControlEvents:UIControlEventTouchUpInside];
     _chooseBtn.isOpen=NO;
@@ -305,6 +297,9 @@
                 btn.section=i;
                 btn.row=j;
                 
+                [btn.titleLabel setTextColor:NJFontColor];
+                [btn.titleLabel setFont:NJNameFont];
+                
                 btn.tag=1000+j;
                 
                 btn.selected=NO;
@@ -325,12 +320,12 @@
         [self.view addSubview:_headView];
         
         
-        _rightTableV.frame=CGRectMake(LBVIEW_WIDTH1/3.5, 70+30*_catalogueArray.count, 5*LBVIEW_WIDTH1/6,LBVIEW_HEIGHT1-70-113-30*_catalogueArray.count);
+        _rightTableV.frame=CGRectMake(LBVIEW_WIDTH1/3.5, 70+30*_catalogueArray.count, 5*LBVIEW_WIDTH1/6,LBVIEW_HEIGHT1-60-113-30*_catalogueArray.count);
     }
     else
     {
         [_chooseBtn setTitle:@"更多筛选" forState:UIControlStateNormal];
-        _rightTableV.frame=CGRectMake(LBVIEW_WIDTH1/3.5, 90, 5*LBVIEW_WIDTH1/6, LBVIEW_HEIGHT1-90-113);
+        _rightTableV.frame=CGRectMake(LBVIEW_WIDTH1/3.5, 80, 5*LBVIEW_WIDTH1/6, LBVIEW_HEIGHT1-80-113);
         [_headView removeFromSuperview];
     }
     
@@ -366,42 +361,55 @@
     downImage.image=[UIImage imageNamed:@"swiper-market-btn-b.png"];
     [self.view addSubview:downImage];
     
-//    //购物车
-//    self.shopCarIV = [[UIImageView alloc] init];
-//    self.shopCarIV.image = [UIImage imageNamed:@"shopcarr.png"];
-//    self.shopCarIV.frame = CGRectMake(VIEW_WIDTH * 0.05, LBVIEW_HEIGHT1 / 1.36, VIEW_WIDTH * 0.142, VIEW_HEIGHT * 0.08);
-//    [self.view addSubview:self.shopCarIV];
-//    
-//    UIButton*shopBtn=[[UIButton alloc]initWithFrame:CGRectMake(VIEW_WIDTH * 0.05, LBVIEW_HEIGHT1 / 1.36, VIEW_WIDTH * 0.142, VIEW_HEIGHT * 0.08)];
-//    [shopBtn addTarget:self action:@selector(goShopCar) forControlEvents:UIControlEventTouchUpInside];
-//    //[shopBtn setBackgroundColor:[UIColor redColor]];
-//    [self.view addSubview:shopBtn];
-//    
-//    _numLabel=[[UILabel alloc]initWithFrame:CGRectMake(VIEW_WIDTH * 0.05+VIEW_WIDTH * 0.142-VIEW_HEIGHT*0.02, LBVIEW_HEIGHT1 / 1.36, VIEW_HEIGHT * 0.02, VIEW_HEIGHT * 0.02)];
-//    _numLabel.backgroundColor=[UIColor redColor];
-//    _numLabel.layer.cornerRadius=VIEW_HEIGHT*0.01;
-//    _numLabel.clipsToBounds=YES;
-//    _numLabel.font=[UIFont systemFontOfSize:10];
-//    _numLabel.textAlignment=NSTextAlignmentCenter;
-//    _numLabel.textColor=[UIColor whiteColor];
-//    [self.view addSubview:_numLabel];
-//    
+  
 }
-//////去购物车
-//-(void)goShopCar
-//{
-//    _tabBarVC.selectedIndex=3;
-//}
 
 
 //右视图
 -(void)showRightTableView
 {
-    self.rightTableV=[[UITableView alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1/3.5, 20+70, 5*LBVIEW_WIDTH1/6, LBVIEW_HEIGHT1-90-113) style:UITableViewStylePlain];
+    self.rightTableV=[[UITableView alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1/3.5, 10+70, 5*LBVIEW_WIDTH1/6, LBVIEW_HEIGHT1-80-113) style:UITableViewStylePlain];
     self.rightTableV.delegate=self;
     self.rightTableV.dataSource=self;
     [self.view addSubview:self.rightTableV];
     
+    
+    __weak AssortPageViewController *weakSelf = self;
+    [self.rightTableV addInfiniteScrollingWithActionHandler:^{
+        [weakSelf insertRowAtBottom];
+    }];
+    
+    
+}
+
+- (void) loadDetailData{
+    
+    [HttpEngine getProductDetail:cid withLocation:locatioanStr withProps:_catalogueStrArray withPage:[NSString stringWithFormat:@"%ld",page] withPageSize:@"10" completion:^(NSArray *dataArray)
+     {
+         //右uitableview
+         if(page == 1){
+             _floerDetailArray = [dataArray mutableCopy];
+         }else{
+             [_floerDetailArray addObjectsFromArray:[dataArray mutableCopy]];
+         }
+         [_rightTableV reloadData];
+         
+     }];
+}
+
+- (void)insertRowAtBottom
+{
+    if (_floerDetailArray.count==0)
+    {
+        return;
+    }
+    __weak AssortPageViewController *weakSelf = self;
+    [weakSelf.rightTableV beginUpdates];
+    page++;
+    [self loadDetailData];
+    
+    [weakSelf.rightTableV endUpdates];
+    [weakSelf.rightTableV.infiniteScrollingView stopAnimating];
     
 }
 
@@ -409,7 +417,8 @@
 -(void)selectBtnClick:(MyPropBtn *)sender
 {
     AllFlower*flower=_floerNameArray[_isTag];
-    NSString*locatioanStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
+    
+    cid = flower.flowerId;
     
     NSString*str=sender.accessibilityLabel;
     
@@ -424,20 +433,13 @@
             
             [sender changeStyle];
             
-            [HttpEngine getProductDetail:flower.flowerId withLocation:locatioanStr withProps:_catalogueStrArray withPage:@"1" withPageSize:@"30" completion:^(NSArray *dataArray)
-             {
-                 //右uitableview
-                 _floerDetailArray=dataArray;
-                 [_rightTableV reloadData];
-                 
-             }];
+            page = 1;
+            [self loadDetailData];
             
             return;
         }
     }
     
-//NSLog(@"sender.tag===%lu",sender.tag);
-//NSLog(@"str=====%@",str);
     
     //将点击的不同行加到数组中
     
@@ -469,13 +471,8 @@
         }
     }
 
-    [HttpEngine getProductDetail:flower.flowerId withLocation:locatioanStr withProps:_catalogueStrArray withPage:@"1" withPageSize:@"30" completion:^(NSArray *dataArray)
-     {
-         //右uitableview
-         _floerDetailArray=dataArray;
-         [_rightTableV reloadData];
-         
-     }];
+    page = 1;
+    [self loadDetailData];
     
     //选中状态与非选中的区别
     if (sender.tag==_lastTag[sender.section])
@@ -522,7 +519,9 @@
         cell.selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
         cell.selectedBackgroundView.backgroundColor = [UIColor whiteColor];
         
+        [cell.textLabel setTextColor:NJFontColor];
          [cell.textLabel setHighlightedTextColor:[UIColor colorWithRed:37/255.0 green:119/255.0 blue:188/255.0 alpha:1]];
+        [cell.textLabel setFont:NJTitleFont];
         
     } else if ([tableView isEqual:self.rightTableV]) {
         cell.backgroundColor = [UIColor whiteColor];
@@ -530,6 +529,7 @@
         color = [UIColor whiteColor];
         cell.selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
         cell.selectedBackgroundView.backgroundColor = [UIColor whiteColor];
+        
     }
 }
 
@@ -560,7 +560,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([tableView isEqual:self.leftTableV]) {
-        return 60;
+        return 50;
     }
     
     else if ([tableView isEqual:self.rightTableV]) {
@@ -602,8 +602,8 @@
         cell.textLabel.text=flower.name;
         cell.textLabel.textAlignment=NSTextAlignmentCenter;
         cell.textLabel.adjustsFontSizeToFitWidth=YES;
-        cell.textLabel.textColor=[UIColor blackColor];
-        cell.textLabel.font=[UIFont systemFontOfSize:16];
+        cell.textLabel.textColor=NJFontColor;
+        cell.textLabel.font=NJNameFont;
         return cell;
     }
     else if ([tableView isEqual:self.rightTableV]){
@@ -643,11 +643,9 @@
             //获取购物车信息
             NSString*flowerStr=[NSString stringWithFormat:@"%@",dFlower.Id];
             
-            [HttpEngine getSimpleCart:^(NSArray *array)
-             {
-                 for (int i=0; i<array.count; i++)
+                 for (int i=0; i<_cartList.count; i++)
                  {
-                     ShopingCar*shopCar=array[i];
+                     ShopingCar*shopCar=_cartList[i];
                      NSString*shopCarStr=[NSString stringWithFormat:@"%@",shopCar.skuId];
                      if ([flowerStr isEqualToString:shopCarStr])
                      {
@@ -670,8 +668,6 @@
                      }
                      
                  }
-
-            }];
         }
         
         return cell;
@@ -687,17 +683,18 @@
     NSDictionary*dic=dFlower.dataArray[0];
     NSString*locatioanStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
     NSString*flowerStr=[NSString stringWithFormat:@"%@",dic[@"sku"]];
-    //获取商品在购物车里面的数量
-    [HttpEngine getSimpleCart:^(NSArray *array) {
-        if (array.count==0)
+
+        
+        if (_cartList.count==0)
         {
             [HttpEngine addGoodsLocation:locatioanStr withSku:dic[@"sku"] withSupplier:dic[@"supplier"] withNumber:@"1"];
+            
         }
         else
         {
-            for (int i=0; i<array.count; i++)
+            for (int i=0; i<_cartList.count; i++)
             {
-                ShopingCar*shopCar=array[i];
+                ShopingCar*shopCar=_cartList[i];
                 NSString*shopCarStr=[NSString stringWithFormat:@"%@",shopCar.skuId];
                 
                 if ([flowerStr isEqualToString:shopCarStr])
@@ -706,11 +703,12 @@
                     _addNum=[shopCar.number intValue]+1;
                     NSString*addStr=[NSString stringWithFormat:@"%d",_addNum];
                     [HttpEngine addGoodsLocation:locatioanStr withSku:dic[@"sku"] withSupplier:dic[@"supplier"] withNumber:addStr];
-                    return ;
+                    //return ;
+                    break;
                 }
                 else
                 {
-                    if (i==array.count-1)
+                    if (i==_cartList.count-1)
                     {
                         [HttpEngine addGoodsLocation:locatioanStr withSku:dic[@"sku"] withSupplier:dic[@"supplier"] withNumber:@"1"];
                     }
@@ -718,7 +716,6 @@
             }
         }
 
-    }];
     //找到当前点击的位置
     CGRect rect=[sender convertRect: sender.bounds toView:self.view];
     UIImageView*anImage=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-50, rect.origin.y, 20, 20)];
@@ -752,28 +749,41 @@
     NSString*flowerStr=[NSString stringWithFormat:@"%@",dFlower.Id];
     
     NSString*locatioanStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
-    //获取商品在购物车里面的数量
-    [HttpEngine getSimpleCart:^(NSArray *array) {
-        for (int i=0; i<array.count; i++)
-        {
-            ShopingCar*shopCar=array[i];
-            NSString*shopCarStr=[NSString stringWithFormat:@"%@",shopCar.skuId];
-            if ([flowerStr isEqualToString:shopCarStr])
-            {
-                _addNum=[shopCar.number intValue]-1;
-                NSString*addStr=[NSString stringWithFormat:@"%d",_addNum];
-                [HttpEngine addGoodsLocation:locatioanStr withSku:dic[@"sku"] withSupplier:dic[@"supplier"] withNumber:addStr];
-            }
-        }
-    }];
     
+    for (int i=0; i<_cartList.count; i++)
+    {
+        ShopingCar*shopCar=_cartList[i];
+        NSString*shopCarStr=[NSString stringWithFormat:@"%@",shopCar.skuId];
+        if ([flowerStr isEqualToString:shopCarStr])
+        {
+            _addNum=[shopCar.number intValue]-1;
+            NSString*addStr=[NSString stringWithFormat:@"%d",_addNum];
+            [HttpEngine addGoodsLocation:locatioanStr withSku:dic[@"sku"] withSupplier:dic[@"supplier"] withNumber:addStr];
+        }
+    }
+
+    //更新数量
     [self performSelector:@selector(refreshData) withObject:nil afterDelay:0.5];
 }
 
 //刷新表
 -(void)refreshData
 {
-    [_rightTableV reloadData];
+    [HttpEngine getSimpleCart:^(NSArray *array) {
+        _cartList = [array mutableCopy];
+        
+        NSInteger number = 0;
+        for (NSInteger i=0; i<array.count; i++) {
+            ShopingCar*shCa=array[i];
+            number += [shCa.number integerValue];
+        }
+        if(number>0){
+            [self updateCartCount:[NSString stringWithFormat:@"%ld",number]];
+        }
+        
+        [_rightTableV reloadData];
+    }];
+    
 }
 
 //选中cell调用
@@ -796,16 +806,11 @@
         {
             _isOpen[i]=NO;
         }
+        
+        cid = flower.flowerId;
        
-        //获取产品
-        NSString*locatioanStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
-        [HttpEngine getProductDetail:flower.flowerId withLocation:locatioanStr withProps:nil withPage:@"1" withPageSize:@"30" completion:^(NSArray *dataArray)
-         {
-             _floerDetailArray=dataArray;
-             
-             [_rightTableV reloadData];
-             
-         }];
+        page = 1;
+        [self loadDetailData];
         
         //获取产品分类
         [HttpEngine getProduct:flower.flowerId completion:^(NSArray *dataArray)
@@ -878,14 +883,14 @@
         UILabel*nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(15+LBVIEW_WIDTH1/6, 0,LBVIEW_WIDTH1/2+10, 30)];
         nameLabel.text=flow.goodsName;
         nameLabel.numberOfLines=0;
-        nameLabel.font=[UIFont systemFontOfSize:16];
-        nameLabel.textColor=[UIColor blackColor];
+        nameLabel.font=NJTitleFont;
+        nameLabel.textColor=NJFontColor;
         [view addSubview:nameLabel];
         
         //属性
         UILabel*unitLabel=[[UILabel alloc]initWithFrame:CGRectMake(15+LBVIEW_WIDTH1/6, 30,45, 20)];
         unitLabel.text=[NSString stringWithFormat:@"%@/扎",flow.standardNumber];
-        unitLabel.font=[UIFont systemFontOfSize:12];
+        unitLabel.font=NJTextFont;
         unitLabel.textColor=[UIColor grayColor];
         [view addSubview:unitLabel];
         

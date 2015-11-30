@@ -182,6 +182,7 @@
 		324421701C0AF9AA00CA943A /* DistributionTimeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3244216F1C0AF9AA00CA943A /* DistributionTimeViewController.m */; };
 		324421731C0AFE9C00CA943A /* redPacketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 324421721C0AFE9C00CA943A /* redPacketViewController.m */; };
 		325089DA1BFACD2800FD0CD3 /* HJNotifiton.m in Sources */ = {isa = PBXBuildFile; fileRef = 325089D91BFACD2700FD0CD3 /* HJNotifiton.m */; };
+		3257DC691C0C93C2001BC879 /* loading_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 3257DC681C0C93C2001BC879 /* loading_logo.png */; };
 		325AC5C51BE715DB00408525 /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 325AC5A51BE715DB00408525 /* MKAnnotationView+WebCache.m */; };
 		325AC5C61BE715DB00408525 /* NSData+ImageContentType.m in Sources */ = {isa = PBXBuildFile; fileRef = 325AC5A71BE715DB00408525 /* NSData+ImageContentType.m */; };
 		325AC5C71BE715DB00408525 /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 325AC5A91BE715DB00408525 /* SDImageCache.m */; };
@@ -532,6 +533,7 @@
 		324421721C0AFE9C00CA943A /* redPacketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = redPacketViewController.m; sourceTree = "<group>"; };
 		325089D81BFACD2600FD0CD3 /* HJNotifiton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HJNotifiton.h; sourceTree = "<group>"; };
 		325089D91BFACD2700FD0CD3 /* HJNotifiton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HJNotifiton.m; sourceTree = "<group>"; };
+		3257DC681C0C93C2001BC879 /* loading_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loading_logo.png; sourceTree = "<group>"; };
 		325AC5A41BE715DB00408525 /* MKAnnotationView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKAnnotationView+WebCache.h"; sourceTree = "<group>"; };
 		325AC5A51BE715DB00408525 /* MKAnnotationView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKAnnotationView+WebCache.m"; sourceTree = "<group>"; };
 		325AC5A61BE715DB00408525 /* NSData+ImageContentType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+ImageContentType.h"; sourceTree = "<group>"; };
@@ -899,7 +901,6 @@
 			isa = PBXGroup;
 			children = (
 				32A377661C0C558C00DE7D8C /* buy_btn.png */,
-				32F877D21C0C046500CC9C3A /* loading_logo.png */,
 				32F877C21C0B003A00CC9C3A /* select11.png */,
 				32F877B71C0AD56300CC9C3A /* ico_item0.png */,
 				32E512191C05673100D08F02 /* agreeG.png */,
@@ -915,6 +916,7 @@
 				320697761C02C29B00E77750 /* hozon.png */,
 				322776251BFEDCDD00C249FD /* icon.png */,
 				322776231BFEDC9C00C249FD /* loader_icon_03.png */,
+				3257DC681C0C93C2001BC879 /* loading_logo.png */,
 				320CB98D1BFC579600E8E54F /* maru.png */,
 				320CB98B1BFC571B00E8E54F /* Dg.png */,
 				322776271BFEFB4E00C249FD /* newadress.png */,
@@ -1774,7 +1776,6 @@
 				320BBEF01BF9D4DD004DE70A /* other_service_2.png in Resources */,
 				320BBED41BF9D4DD004DE70A /* icons-my-huaji-6.png in Resources */,
 				320BBF161BF9D8AC004DE70A /* myhuaji2.png in Resources */,
-				32F877D31C0C046500CC9C3A /* loading_logo.png in Resources */,
 				320697981C0319AC00E77750 /* zfbBlue.png in Resources */,
 				320697921C02DA8700E77750 /* HZAreaPickerView.xib in Resources */,
 				320BBF111BF9D8AC004DE70A /* Assort.png in Resources */,
@@ -1831,6 +1832,7 @@
 				32E512181C05672500D08F02 /* huoqu2.png in Resources */,
 				320BBEAB1BF9D4DD004DE70A /* banner2.jpg in Resources */,
 				322776261BFEDCDD00C249FD /* icon.png in Resources */,
+				3257DC691C0C93C2001BC879 /* loading_logo.png in Resources */,
 				320BBEC81BF9D4DD004DE70A /* ico_item3_active.png in Resources */,
 				320BBECC1BF9D4DD004DE70A /* ico_tswt.png in Resources */,
 				320BBEF41BF9D4DD004DE70A /* pay1.png in Resources */,
