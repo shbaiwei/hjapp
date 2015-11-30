@@ -55,8 +55,8 @@
     chooseCityLabel.backgroundColor=[UIColor whiteColor];
     [scrollView addSubview:chooseCityLabel];
     
-    UILabel*titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 60, LBVIEW_WIDTH1, 40)];
-    titleLabel.textAlignment=NSTextAlignmentCenter;
+    UILabel*titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, 60, LBVIEW_WIDTH1, 40)];
+    titleLabel.textAlignment=NSTextAlignmentLeft;
     titleLabel.text=@"热门城市";
     
     [scrollView addSubview:titleLabel];
@@ -73,7 +73,7 @@
         int Y=i/3;
         
         NSDictionary*dic=_dataArray[i];
-        UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake((LBVIEW_WIDTH1-180)/4+X*((LBVIEW_WIDTH1-180)/4+60), Y*60, 60, 30)];
+        UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake((LBVIEW_WIDTH1-180)/4+X*((LBVIEW_WIDTH1-180)/4+60), Y*40, 60, 30)];
         
         [btn setTitle:dic[@"name"] forState:UIControlStateNormal];
         [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];

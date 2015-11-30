@@ -10,7 +10,7 @@
 
 @interface HJNotifiton : NSObject
 
-@property(nonatomic,copy)NSString *content,*title,*author,*dateCreated;
+@property(nonatomic,copy)NSString *article_id,*content,*title,*author,*dateCreated;
 
 +(id)getPicWithDictionary:(NSDictionary*)dic;
 -(id)initWithDictionary:(NSDictionary*)dic;

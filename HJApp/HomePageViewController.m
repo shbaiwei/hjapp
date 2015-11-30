@@ -13,6 +13,8 @@
 #import "CooperateViewController.h"
 #import "ChangCityViewController.h"
 #import "TodayShopViewController.h"
+#import "LoginViewController.h"
+
 
 @interface HomePageViewController ()<UIScrollViewDelegate>
 
@@ -78,6 +80,14 @@
 #define LBVIEW_WIDTH1 [UIScreen mainScreen].bounds.size.width
 #define LBVIEW_HEIGHT1 [UIScreen mainScreen].bounds.size.height
 
+NSInteger homePicNumber=0;
+NSInteger timeGap;
+NSTimer *promotionTimer;
+UIButton *promotionBtn;
+UILabel *hourLabel;
+UILabel *minuteLabel;
+UILabel *secondLabel;
+
 -(void)viewWillAppear:(BOOL)animated
 {
   
@@ -92,30 +102,47 @@
 {
     [super viewDidLoad];
     
-    //发送短信
-    //[HttpEngine sendMessage];
     
     self.title=@"首页";
     self.view.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
-
+    
+    self.manager = [[CLLocationManager alloc] init];
+    self.manager.delegate = self;
+    self.manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
+    self.manager.distanceFilter = 5.0f;
+    
+    if ([self.manager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+        [self.manager requestWhenInUseAuthorization];
+        
+    }
+    if([CLLocationManager locationServicesEnabled]){
+        [self.manager startUpdatingLocation];
+    }else{
+        NSLog(@"Please enable location service.");
+    }
     
     
-    [HttpEngine getCityNameBackcompletion:^(NSArray *dataArray)
+    
+    /*[HttpEngine getCityNameBackcompletion:^(NSArray *dataArray)
      {
          _cityNameArray=dataArray;
          //显示顶部视图
          [self theTopView];
          
      }];
+     */
     
     //主scrollView
     [self ScrollViewMain];
     
+    
+    
     //滑动轮播图部分
     [HttpEngine getPicture:^(NSArray *dataArray)
      {
-         
+         [self theTopView];
          _picDataArray=dataArray;
+         //NSLog(@"pic  ===  %@",_picDataArray);
          [self scrollViewAndPageControl];
          
          
@@ -127,11 +154,55 @@
     
 }
 
+-(void) locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations{
+    
+    CLLocation *newLocation = [locations lastObject];
+    CLLocation *oldLocation;
+    if (locations.count > 1)
+    {
+        oldLocation = [locations objectAtIndex:locations.count-2];
+    }
+    else
+    {
+        oldLocation = nil;
+    }
+    NSLog(@"didUpdateToLocation %@ from %@", newLocation, oldLocation);
+    
+    NSString*cityName=[[NSUserDefaults standardUserDefaults]objectForKey:@"CITYNAME"];
+    if(cityName != nil){
+        [self.manager stopUpdatingLocation];
+        return;
+    }
+    
+    //获取城市定位
+    NSString *lat = [NSString stringWithFormat:@"%f",newLocation.coordinate.latitude];
+    NSString *lng = [NSString stringWithFormat:@"%f",newLocation.coordinate.longitude];
+    [HttpEngine convertCityName:lat withLng:lng complete:^(NSDictionary *dataDic) {
+        NSLog(@"%@",dataDic);
+
+        [[NSUserDefaults standardUserDefaults]setObject:dataDic[@"code"] forKey:@"CODE"];
+        [[NSUserDefaults standardUserDefaults]setObject:dataDic[@"name"] forKey:@"CITYNAME"];
+        self.cityLabel.text = dataDic[@"name"];
+    
+    } failure:^(NSError *error) {
+        [self changeCityBtn];
+    }];
+    
+    
+    // 停止位置更新
+    [self.manager stopUpdatingLocation];
+}
+
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
+{
+    NSLog(@"%@",error);
+}
+
 //显示顶部视图
 - (void)theTopView
 {
     
-    self.topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1 / 11.5)];
+    self.topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1 / 11)];
     
     self.topView.backgroundColor = [UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1];
     [self.view addSubview:self.topView];
@@ -144,25 +215,16 @@
     self.cityLabel = [[UILabel alloc] init];
     self.cityLabel.frame = CGRectMake(VIEW_WIDTH * 0.085, VIEW_HEIGHT * 0.042, VIEW_WIDTH * 0.21, VIEW_HEIGHT * 0.035);
     
-    NSDictionary*dic=_cityNameArray[0];
-    NSString*code=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
-    if (code==NULL)
-    {
-        [[NSUserDefaults standardUserDefaults]setObject:dic[@"code"] forKey:@"CODE"];
-    }
-    
+
     
     NSString*cityName=[[NSUserDefaults standardUserDefaults]objectForKey:@"CITYNAME"];
-    if (cityName==NULL)
+    if (cityName!=NULL)
     {
-       [[NSUserDefaults standardUserDefaults]setObject:dic[@"name"] forKey:@"CITYNAME"];
-        self.cityLabel.text = dic[@"name"];
+        self.cityLabel.text = cityName;
     }
-    
     else
-    {
-    self.cityLabel.text = cityName;
-    }
+        self.cityLabel.text = @"获取中";
+    
     self.cityLabel.textColor = [UIColor whiteColor];
     self.cityLabel.backgroundColor = [UIColor clearColor];
     self.cityLabel.font = [UIFont systemFontOfSize:18];
@@ -170,10 +232,12 @@
     [self.topView addSubview:self.cityLabel];
     
     self.downButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    self.downButton.frame = CGRectMake(self.cityLabel.frame.size.width + 2, VIEW_HEIGHT * 0.053, VIEW_WIDTH * 0.052, VIEW_HEIGHT * 0.015);
+    self.downButton.frame = CGRectMake(5, VIEW_HEIGHT * 0.053, 100, 30);
     UIImage *downImage = [UIImage imageNamed:@"swiper-market-btn-b.png"];
     downImage = [downImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     [self.downButton setImage:downImage forState:UIControlStateNormal];
+    [self.downButton setContentEdgeInsets:UIEdgeInsetsMake(0, 80, 20, 0)];
+    
     [self.downButton addTarget:self action:@selector(changeCityBtn) forControlEvents:UIControlEventTouchUpInside];
     [self.topView addSubview:self.downButton];
     
@@ -201,8 +265,17 @@
 
 - (void)scrollViewAndPageControl
 {
+    
+    homePicNumber=0;
+    for (NSInteger i = 0; i < _picDataArray.count; i++)
+    {
+        GetPic*getpic=_picDataArray[i];
+        if(![getpic.position isEqualToString: @"home"]) continue;
+        homePicNumber++;
+    }
+    
     self.scrollPic = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1 / 4.5)];
-    self.scrollPic.contentSize = CGSizeMake(LBVIEW_WIDTH1 * (_picDataArray.count-2),LBVIEW_HEIGHT1/4.5);
+    self.scrollPic.contentSize = CGSizeMake(LBVIEW_WIDTH1 * (homePicNumber-1),LBVIEW_HEIGHT1/4.5);
     self.scrollPic.pagingEnabled = YES;
     self.scrollPic.delegate = self;
     self.scrollPic.bounces=NO;
@@ -210,19 +283,25 @@
     self.scrollPic.showsHorizontalScrollIndicator = FALSE;
     [self.mainScroll addSubview:self.scrollPic];
     //使用for循环创建imageView
-    for (NSInteger i = 2; i < _picDataArray.count; i++)
+    NSInteger j=0;
+    for (NSInteger i = 0; i < _picDataArray.count; i++)
     {
-        UIImageView *scrollImage = [[UIImageView alloc] initWithFrame:CGRectMake(0+LBVIEW_WIDTH1*(i-2), 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1 / 4.5)];
-        [self.scrollPic addSubview:scrollImage];
         GetPic*getpic=_picDataArray[i];
+        if(![getpic.position isEqualToString: @"home"]) continue;
+        
+        UIImageView *scrollImage = [[UIImageView alloc] initWithFrame:CGRectMake(0+LBVIEW_WIDTH1*j, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1 / 4.5)];
+        [self.scrollPic addSubview:scrollImage];
+        
         NSURL*urlStr=[NSURL URLWithString:getpic.pictureUrlStr];
         [scrollImage sd_setImageWithURL:urlStr];
+        j++;
+
         
     }
     //pageControl
     
     self.pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(100,self.scrollPic.frame.size.height*0.8, VIEW_WIDTH-200, VIEW_HEIGHT * 0.03)];
-    self.pageControl.numberOfPages = _picDataArray.count-2;
+    self.pageControl.numberOfPages = homePicNumber;
     self.pageControl.currentPageIndicatorTintColor=[UIColor whiteColor];
     self.pageControl.pageIndicatorTintColor=[UIColor grayColor];
     [self.pageControl addTarget:self action:@selector(pageAction:) forControlEvents:UIControlEventValueChanged];
@@ -268,7 +347,7 @@
     [self.baiheButton setImage:baiheImage forState:UIControlStateNormal];
     self.baiheButton.layer.cornerRadius = 20;
     self.baiheButton.clipsToBounds = YES;
-    self.baiheButton.tag=2;
+    self.baiheButton.tag=5;
     [_baiheButton addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.flowerView addSubview:self.baiheButton];
     
@@ -281,7 +360,7 @@
     [self.KNXButton setImage:knxImage forState:UIControlStateNormal];
     self.KNXButton.layer.cornerRadius = 20;
     self.KNXButton.clipsToBounds = YES;
-    self.KNXButton.tag=3;
+    self.KNXButton.tag=6;
     [_KNXButton addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.flowerView addSubview:self.KNXButton];
     
@@ -294,7 +373,7 @@
     [self.DTJButton setImage:dtjImage forState:UIControlStateNormal];
     self.DTJButton.layer.cornerRadius = 20;
     self.DTJButton.clipsToBounds = YES;
-    self.DTJButton.tag=4;
+    self.DTJButton.tag=7;
     [_DTJButton addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.flowerView addSubview:self.DTJButton];
     
@@ -307,7 +386,7 @@
     [self.huacaoButton setImage:huacaoImage forState:UIControlStateNormal];
     self.huacaoButton.layer.cornerRadius = 20;
     self.huacaoButton.clipsToBounds = YES;
-    self.huacaoButton.tag=5;
+    self.huacaoButton.tag=8;
     [_huacaoButton addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.flowerView addSubview:self.huacaoButton];
     
@@ -320,7 +399,7 @@
     [self.baoButton setImage:baoImage forState:UIControlStateNormal];
     self.baoButton.layer.cornerRadius = 20;
     self.baoButton.clipsToBounds = YES;
-    self.baoButton.tag=6;
+    self.baoButton.tag=9;
     [_baoButton addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.flowerView addSubview:self.baoButton];
     
@@ -333,7 +412,7 @@
     [self.yshButton setImage:yshImage forState:UIControlStateNormal];
     self.yshButton.layer.cornerRadius = 20;
     self.yshButton.clipsToBounds = YES;
-    self.yshButton.tag=7;
+    self.yshButton.tag=10;
     [_yshButton addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.flowerView addSubview:self.yshButton];
     
@@ -346,7 +425,7 @@
     [self.jkhButton setImage:jkhImage forState:UIControlStateNormal];
     self.jkhButton.layer.cornerRadius = 20;
     self.jkhButton.clipsToBounds = YES;
-    self.jkhButton.tag=8;
+    self.jkhButton.tag=11;
     [_jkhButton addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.flowerView addSubview:self.jkhButton];
     //花名
@@ -410,7 +489,22 @@
 }
 -(void)btnClick:(UIButton*)sender
 {
-     NSString*isTag=[NSString stringWithFormat:@"%lu",sender.tag-1];
+    
+    //判断是否需要登陆
+    NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+    if (str==NULL )
+    {
+        LoginViewController*loginVC=[[LoginViewController alloc]init];
+        
+        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginVC];
+        
+        [self presentViewController:navigationController animated:YES completion:^{
+            
+        }];
+        return;
+    }
+    
+     NSString*isTag=[NSString stringWithFormat:@"%lu",sender.tag];
     
     [[NSUserDefaults standardUserDefaults]setObject:isTag forKey:@"TWOTAG"];
     
@@ -462,7 +556,7 @@
         UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0,i*LBVIEW_HEIGHT1 / 15, 3*VIEW_WIDTH/4-20,LBVIEW_HEIGHT1/15)];
         [btn setTitle:hjn.title forState:UIControlStateNormal];
         [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        btn.tag=1000+i;
+        btn.tag=hjn.article_id.integerValue;
         [btn addTarget:self action:@selector(gotoNotifition:) forControlEvents:UIControlEventTouchUpInside];
         [_notifitionScroll addSubview:btn];
         
@@ -474,7 +568,7 @@
 -(void)gotoNotifition:(UIButton*)sender
 {
     TodayShopViewController*todayVC=[[TodayShopViewController alloc]init];
-    todayVC.tag=(int)sender.tag-1000;
+    todayVC.tag=(int)sender.tag;
     [self.navigationController pushViewController:todayVC animated:YES];
     
 }
@@ -484,7 +578,7 @@
 {
     //上面
     _count++;
-    if (_count>_picDataArray.count-3)
+    if (_count>homePicNumber-1)
     {
         _count=0;
     }
@@ -507,16 +601,116 @@
 -(void)theOneMoney
 {
     
-    self.oneMoneyImageView = [[UIImageView alloc] init];
-    GetPic*getpic=_picDataArray[1];
-    NSURL*urlStr=[NSURL URLWithString:getpic.pictureUrlStr];
-    [self.oneMoneyImageView sd_setImageWithURL:urlStr];
-    self.oneMoneyImageView.frame = CGRectMake(0,LBVIEW_WIDTH1 / 2+ LBVIEW_HEIGHT1 / 4.5+LBVIEW_HEIGHT1/13, VIEW_WIDTH, VIEW_HEIGHT / 6);
-    [self.mainScroll addSubview:self.oneMoneyImageView];
+    UIView *oneMoneyView = [[UIView alloc] initWithFrame:CGRectMake(0,LBVIEW_WIDTH1 / 2+ LBVIEW_HEIGHT1 / 4.5+LBVIEW_HEIGHT1/13, VIEW_WIDTH, VIEW_HEIGHT / 6)];
+
+    self.oneMoneyImageView = [[UIImageView alloc] initWithFrame:oneMoneyView.bounds];
+    NSString *deadline = @"";
+    for(NSInteger i=0;i<[_picDataArray count];i++){
+        GetPic*getpic=_picDataArray[i];
+        if([getpic.position isEqualToString:@"promotion"]){
+            NSURL*urlStr=[NSURL URLWithString:getpic.pictureUrlStr];
+            [self.oneMoneyImageView sd_setImageWithURL:urlStr];
+            deadline=[getpic.deadline stringByReplacingOccurrencesOfString:@"T" withString:@" "];
+            break;
+        }
+    }
+    [oneMoneyView addSubview:self.oneMoneyImageView];
     
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateStyle:NSDateFormatterMediumStyle];
+    [formatter setTimeStyle:NSDateFormatterShortStyle];
+    [formatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+    NSDate *datenow = [formatter dateFromString:deadline];
+    NSInteger timestamp = [datenow timeIntervalSince1970];
+    timeGap = timestamp - [[NSDate date] timeIntervalSince1970];
+    
+    //timeGap = 9999;
+    
+    CGFloat hourX = VIEW_WIDTH * 0.6;
+    CGFloat hourY = oneMoneyView.bounds.size.height / 2 - 20;
+    CGFloat hourW = VIEW_WIDTH * 0.1;
+    
+    UIImageView *hourView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"number-bg"]];
+    hourView.frame = CGRectMake(hourX, hourY, hourW, hourW);
+    [oneMoneyView addSubview:hourView];
+    hourLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, hourW, hourW)];
+    [hourLabel setTextAlignment:NSTextAlignmentCenter];
+    [hourLabel setFont:[UIFont systemFontOfSize:14]];
+    [hourView addSubview:hourLabel];
+    
+    CGFloat minuteX = hourX+hourW+15;
+    CGFloat minuteY = hourY;
+    CGFloat minuteW = hourW;
+    
+    UILabel *dotLabel = [[UILabel alloc] initWithFrame:CGRectMake(hourX+hourW, hourY+2, 15, 30)];
+    [oneMoneyView addSubview:dotLabel];
+    [dotLabel setTextAlignment:NSTextAlignmentCenter];
+    [dotLabel setText:@":"];
+    
+    UIImageView *minuteView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"number-bg"]];
+    minuteView.frame = CGRectMake(minuteX, minuteY, minuteW, minuteW);
+    [oneMoneyView addSubview:minuteView];
+    minuteLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, minuteW, minuteW)];
+    [minuteLabel setTextAlignment:NSTextAlignmentCenter];
+    [minuteLabel setFont:[UIFont systemFontOfSize:14]];
+    [minuteView addSubview:minuteLabel];
+    
+    CGFloat secondX = minuteX+minuteW+15;
+    CGFloat secondY = minuteY;
+    CGFloat secondW = hourW;
+    
+    UILabel *dot2Label = [[UILabel alloc] initWithFrame:CGRectMake(minuteX+minuteW, minuteY+2, 15, 30)];
+    [oneMoneyView addSubview:dot2Label];
+    [dot2Label setTextAlignment:NSTextAlignmentCenter];
+    [dot2Label setText:@":"];
+    
+    UIImageView *secondView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"number-bg"]];
+    secondView.frame = CGRectMake(secondX, secondY, secondW, secondW);
+    [oneMoneyView addSubview:secondView];
+    secondLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, secondW, secondW)];
+    [secondLabel setTextAlignment:NSTextAlignmentCenter];
+    [secondLabel setFont:[UIFont systemFontOfSize:14]];
+    [secondView addSubview:secondLabel];
+    
+    CGFloat promotionW = VIEW_WIDTH * 0.4;
+    CGFloat promotionH = promotionW * 117/387;
+    promotionBtn = [[UIButton alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - promotionW - 10, (oneMoneyView.bounds.size.height - promotionH)/2, promotionW, promotionH)];
+    [promotionBtn setImage:[UIImage imageNamed:@"buy_btn"] forState:UIControlStateNormal];
+    [oneMoneyView addSubview:promotionBtn];
+    promotionBtn.tag = 19;
+    [promotionBtn addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [promotionBtn setHidden:YES];
+
+    //加入倒计时
+    promotionTimer=[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(promotionAnimation) userInfo:nil repeats:YES];
+        
+
+    
+    [self.mainScroll addSubview:oneMoneyView];
     
 }
 
+
+-(void)promotionAnimation{
+    
+    if(timeGap>0){
+        NSLog(@"%ld",timeGap);
+        
+        int hour = (int)floor(timeGap / 3600);
+        int minute = (int)floor((timeGap - hour * 3600) / 60);
+        int second = (int)(timeGap - hour * 3600 - minute * 60);
+        hour = MIN(hour, 99);
+        [hourLabel setText:[NSString stringWithFormat:@"%@%d",hour>=10?@"":@"0",hour]];
+        [minuteLabel setText:[NSString stringWithFormat:@"%@%d",minute>=10?@"":@"0",minute]];
+        [secondLabel setText:[NSString stringWithFormat:@"%@%d",second>=10?@"":@"0",second]];
+        timeGap--;
+        return;
+    }
+    
+    [promotionBtn setHidden:NO];
+    promotionTimer = nil;
+}
 
 
 //意见反馈以及商务合作部分

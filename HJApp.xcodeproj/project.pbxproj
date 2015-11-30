@@ -212,6 +212,7 @@
 		325AC5F41BE772F900408525 /* CooperateViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 325AC5F21BE772F900408525 /* CooperateViewController.xib */; };
 		3289AFB51BFADDE70037A728 /* TodayShopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3289AFB31BFADDE70037A728 /* TodayShopViewController.m */; };
 		3289AFB61BFADDE70037A728 /* TodayShopViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3289AFB41BFADDE70037A728 /* TodayShopViewController.xib */; };
+		32A377671C0C558C00DE7D8C /* buy_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 32A377661C0C558C00DE7D8C /* buy_btn.png */; };
 		32B49B561BE30CE400AB6D55 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 32B49B551BE30CE400AB6D55 /* main.m */; };
 		32B49B591BE30CE400AB6D55 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 32B49B581BE30CE400AB6D55 /* AppDelegate.m */; };
 		32B49B5C1BE30CE400AB6D55 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32B49B5B1BE30CE400AB6D55 /* ViewController.m */; };
@@ -584,6 +585,7 @@
 		3289AFB21BFADDE70037A728 /* TodayShopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodayShopViewController.h; sourceTree = "<group>"; };
 		3289AFB31BFADDE70037A728 /* TodayShopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodayShopViewController.m; sourceTree = "<group>"; };
 		3289AFB41BFADDE70037A728 /* TodayShopViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TodayShopViewController.xib; sourceTree = "<group>"; };
+		32A377661C0C558C00DE7D8C /* buy_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buy_btn.png; sourceTree = "<group>"; };
 		32B49B511BE30CE400AB6D55 /* HJApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HJApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32B49B551BE30CE400AB6D55 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32B49B571BE30CE400AB6D55 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -888,6 +890,7 @@
 		320BBE461BF9D4DD004DE70A /* images */ = {
 			isa = PBXGroup;
 			children = (
+				32A377661C0C558C00DE7D8C /* buy_btn.png */,
 				32F877D21C0C046500CC9C3A /* loading_logo.png */,
 				32F877C21C0B003A00CC9C3A /* select11.png */,
 				32F877B71C0AD56300CC9C3A /* ico_item0.png */,
@@ -1788,6 +1791,7 @@
 				320BBF151BF9D8AC004DE70A /* MyHuaJi.PNG in Resources */,
 				320BBEC31BF9D4DD004DE70A /* ico_item1.png in Resources */,
 				320BBEE71BF9D4DD004DE70A /* number-bg.png in Resources */,
+				32A377671C0C558C00DE7D8C /* buy_btn.png in Resources */,
 				320BBEBC1BF9D4DD004DE70A /* hongbao.png in Resources */,
 				320CB98E1BFC579600E8E54F /* maru.png in Resources */,
 				320BBEDF1BF9D4DD004DE70A /* index_peihuapeicao.png in Resources */,

@@ -10,6 +10,27 @@
 
 @implementation HttpEngine
 
+//定位城市
++(void)convertCityName:(NSString *)lat withLng:(NSString *)lng complete:(void (^)(NSDictionary *dataDic))complete failure:(void (^)(NSError * error))failure
+{
+    MBProgressHUD *hud = [BWCommon getHUD];
+    
+    AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
+    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/location/convert/"];
+    [session GET:str parameters:@{@"latitude":lat,@"longitude":lng} success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
+     {
+         [hud removeFromSuperview];
+         NSLog(@"JSON:%@",responseObject);
+         NSDictionary *dict=responseObject;
+         complete(dict);
+         
+     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
+     {
+         [hud removeFromSuperview];
+         failure(error);
+         NSLog(@"location Error:%@",error);
+     }];
+}
 //获取城市
 +(void)getCityNameBackcompletion:(void(^)(NSArray*dataArray))complete
 {
@@ -36,8 +57,15 @@
 //广告图
 +(void)getPicture:(void(^)(NSArray*dataArray))complete
 {
+    
+    NSDate *now = [NSDate date];
+    NSDateFormatter *dformat = [[NSDateFormatter alloc] init];
+    [dformat setDateFormat:@"YYYY-MM-dd%20HH:mm"];
+    
+    NSString *now_str = [dformat stringFromDate:now];
+    
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
-    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/advertisement/"];
+    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/advertisement/?ordering=-sort_order&start_date=%@&end_date=%@",now_str,now_str];
     [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
          NSLog(@"JSON:%@",responseObject);
@@ -50,6 +78,9 @@
              NSDictionary*dic=array[i];
              getPic.pictureUrlStr=dic[@"image"];
              getPic.title=dic[@"title"];
+             getPic.deadline=dic[@"deadline"];
+             getPic.position=dic[@"position"];
+             getPic.linkurl=dic[@"linkurl"];
              [dataArray addObject:getPic];
              
          }

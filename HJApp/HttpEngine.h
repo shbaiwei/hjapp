@@ -25,7 +25,7 @@
 
 @interface HttpEngine : NSObject
 
-
++(void)convertCityName:(NSString*)lat withLng:(NSString *)lng complete:(void(^)(NSDictionary*dataDic))complete failure:(void (^)(NSError *error))failure;
 
 //获取城市
 +(void)getCityNameBackcompletion:(void(^)(NSArray*dataArray))complete;

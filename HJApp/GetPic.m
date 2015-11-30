@@ -22,6 +22,9 @@
     {
         _title=[dic[@"title"]copy];
         _pictureUrlStr=[dic[@"image"]copy];
+        _deadline=[dic[@"deadline"]copy];
+        _position=[dic[@"position"]copy];
+        _linkurl=[dic[@"linkurl"]copy];
     }
     return self;
 }

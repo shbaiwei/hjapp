@@ -10,7 +10,7 @@
 
 @interface GetPic : NSObject
 
-@property(nonatomic,copy)NSString *pictureUrlStr,*title;
+@property(nonatomic,copy)NSString *pictureUrlStr,*title,*deadline,*position,*linkurl;
 
 +(id)getPicWithDictionary:(NSDictionary*)dic;
 -(id)initWithDictionary:(NSDictionary*)dic;

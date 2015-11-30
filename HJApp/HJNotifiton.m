@@ -24,6 +24,7 @@
         _author=[dic[@"author"]copy];
         _dateCreated=[dic[@"date_created"]copy];
         _content=[dic[@"content"]copy];
+        _article_id = [dic[@"id"] copy];
     }
     return self;
 }
