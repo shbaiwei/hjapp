@@ -896,6 +896,7 @@
 		320BBE461BF9D4DD004DE70A /* images */ = {
 			isa = PBXGroup;
 			children = (
+				32F877D21C0C046500CC9C3A /* loading_logo.png */,
 				32F877C21C0B003A00CC9C3A /* select11.png */,
 				32F877B71C0AD56300CC9C3A /* ico_item0.png */,
 				32E512191C05673100D08F02 /* agreeG.png */,
@@ -1770,6 +1771,7 @@
 				320BBEF01BF9D4DD004DE70A /* other_service_2.png in Resources */,
 				320BBED41BF9D4DD004DE70A /* icons-my-huaji-6.png in Resources */,
 				320BBF161BF9D8AC004DE70A /* myhuaji2.png in Resources */,
+				32F877D31C0C046500CC9C3A /* loading_logo.png in Resources */,
 				320697981C0319AC00E77750 /* zfbBlue.png in Resources */,
 				320697921C02DA8700E77750 /* HZAreaPickerView.xib in Resources */,
 				320BBF111BF9D8AC004DE70A /* Assort.png in Resources */,
@@ -2159,6 +2161,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2186,6 +2189,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

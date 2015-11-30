@@ -9,8 +9,12 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import <CommonCrypto/CommonDigest.h>
+#import "MBProgressHUD.h"
 
 @interface BWCommon : NSObject
 + (void)verificationCode:(void(^)())blockYes blockNo:(void(^)(id time))blockNo;
 + (UIViewController *)getCurrentVC;
+
++(MBProgressHUD *)getHUD;
+
 @end

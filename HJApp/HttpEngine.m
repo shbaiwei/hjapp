@@ -14,10 +14,14 @@
 //获取城市
 +(void)getCityNameBackcompletion:(void(^)(NSArray*dataArray))complete
 {
+    
+    MBProgressHUD *hud = [BWCommon getHUD];
+    
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/location/full/"];
     [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
+         [hud removeFromSuperview];
          NSLog(@"JSON:%@",responseObject);
          NSArray*array=responseObject;
          complete(array);
@@ -25,6 +29,7 @@
          
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
      {
+         [hud removeFromSuperview];
          NSLog(@"Error:%@",error);
      }];
 }
@@ -211,10 +216,7 @@
     
     NSMutableArray*datArray=[[NSMutableArray alloc]init];
     
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[BWCommon getCurrentVC].view animated:YES];
-    hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"head.png"]];
-    hud.mode = MBProgressHUDModeCustomView;
-    
+    MBProgressHUD *hud = [BWCommon getHUD];
     
     [session GET:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
