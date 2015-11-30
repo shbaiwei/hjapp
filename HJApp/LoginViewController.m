@@ -11,6 +11,7 @@
 #import "HttpEngine.h"
 #import "RegisterViewController.h"
 #import "MyHJViewController.h"
+#import "ForgetPasswordViewController.h"
 
 
 //宏定义宽高
@@ -118,14 +119,20 @@
     //忘记密码按钮
     UIButton*disBtn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-LBVIEW_WIDTH1/4.0-10, 40+2*LBVIEW_HEIGHT1/15.0+10, LBVIEW_WIDTH1/4.0, LBVIEW_WIDTH1/15.0)];
     [disBtn setTitle:@"忘记密码?" forState:UIControlStateNormal];
+    [disBtn addTarget:self action:@selector(disPassword) forControlEvents:UIControlEventTouchUpInside];
     [disBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     [disBtn.titleLabel setFont:[UIFont systemFontOfSize:14]];
     [self.view addSubview:disBtn];
     
-    
-    
 }
 
+//忘记密码
+-(void)disPassword
+{
+    ForgetPasswordViewController*forgetVC=[[ForgetPasswordViewController alloc]init];
+    [self.navigationController pushViewController:forgetVC animated:NO];
+
+}
 
 - (void) closeTouched:(UIBarButtonItem *) sender{
     

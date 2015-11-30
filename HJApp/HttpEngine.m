@@ -7,6 +7,7 @@
 //
 
 #import "HttpEngine.h"
+#import "NSString+Encryption.h"
 
 @implementation HttpEngine
 
@@ -340,14 +341,35 @@
 }
 
 //发送短信
-+(void)sendMessage
++(void)sendMessageMoblie:(NSString*)mobliePhone  withKind:(int)tag
 {
     AFHTTPSessionManager*manager=[AFHTTPSessionManager manager];
     
+    NSLog(@"mobliePhone==%@",mobliePhone);
     NSString *str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/sms/send/"];
+    NSString*srt=@"";
+    for (int i=0; i<6; i++)
+    {
+        int num=arc4random()%10;
+        srt=[NSString stringWithFormat:@"%@%d",srt,num];
+    }
     
-    //mobile,message
-    NSDictionary*parameters=@{@"mobile":@"15300661865",@"message":@"nishihujinglima"};
+    NSString*message;
+    if (tag==1)
+    {
+        [[NSUserDefaults standardUserDefaults]setObject:srt forKey:@"TEXTNUM"];
+        message=[NSString stringWithFormat:@"欢迎您注册花集网会员。注册验证码：%@，三十分钟内有效",srt];
+    }
+    if (tag==2)
+    {
+        [[NSUserDefaults standardUserDefaults]setObject:srt forKey:@"LPASSWORD"];
+        message=[NSString stringWithFormat:@"亲爱的用户，您提交了找回登陆密码申请，验证码：%@，30分钟内有效。",srt];
+    }
+    
+    
+    NSString*pinjie=[NSString stringWithFormat:@"%@|%@|Zaq1Xsw2",mobliePhone,message];
+    NSString*token=[pinjie MD5];
+    NSDictionary*parameters=@{@"mobile":mobliePhone,@"message":message,@"token":token};
     [manager POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
@@ -358,11 +380,7 @@
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
      {
          NSLog(@"12345Error: %@", error);
-         NSDictionary*dic=error.userInfo;
-         NSLog(@"dic====%@",dic);
-         NSString*errorStr=[self errorData:dic];
-         //NSLog(@"errorStr===%@",errorStr);
-         
+
         
      }];
     
@@ -377,26 +395,26 @@
     AFHTTPSessionManager*magager=[AFHTTPSessionManager manager];
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/auth/checkUser/"];
     [magager.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
-    NSString*nameStr=@"18226984903";
+    NSString*nameStr=@"hj_17756405242";
     NSDictionary*parameters=@{@"username":nameStr};
     [magager GET:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
          NSLog(@"JSON:%@",responseObject);
-         //         NSString*idStr=responseObject[@"id"];
-         //
-         //         [[NSUserDefaults standardUserDefaults]setObject:idStr forKey:@"ID"];
-         
          
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
      {
          NSLog(@"Error:%@",error);
+         NSDictionary*userInfo=error.userInfo;
+    NSData*data=userInfo[@"com.alamofire.serialization.response.error.data"];
+         NSString*str=[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+         NSLog(@"str====%@",str);
      }];
     
     
 }
 
 //用户注册
-+(void)registerRequestUsername:(NSString*)username withPassword:(NSString*)password withMobile:(NSString*)mobile withRegIp:(NSString*)regIp withFlorist:(NSString*)isFlorist;
++(void)registerRequestPassword:(NSString*)password withMobile:(NSString*)mobile withRegIp:(NSString*)regIp withFlorist:(NSString*)isFlorist;
 {
     
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
@@ -407,8 +425,10 @@
     [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/auth/register/"];
     
+    NSString*username=[NSString stringWithFormat:@"hj_%@",mobile];
+    
     //username,password,mobile,reg_ip
-    NSDictionary*parameters=@{@"username":username,@"password":password,@"mobile":mobile};
+    NSDictionary*parameters=@{@"username":username,@"password":password,@"mobile":mobile,@"is_florist":@"1"};
     
     [session POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         
@@ -417,6 +437,10 @@
          NSLog(@"JSON:%@",responseObject);
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
          NSLog(@"Error:%@",error);
+         NSDictionary*dic=error.userInfo;
+         NSData*data=dic[@"com.alamofire.serialization.response.error.data"];
+         NSString*strr=[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+         NSLog(@"strr====%@",strr);
      }];
     
     

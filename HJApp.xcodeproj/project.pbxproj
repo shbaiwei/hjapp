@@ -304,6 +304,8 @@
 		32F877C91C0B59C000CC9C3A /* BWCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 32F877C81C0B59C000CC9C3A /* BWCommon.m */; };
 		32F877CE1C0B61E600CC9C3A /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 32F877CD1C0B61E600CC9C3A /* MBProgressHUD.m */; };
 		32F877D11C0B6CF500CC9C3A /* PayTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 32F877D01C0B6CF500CC9C3A /* PayTableViewCell.m */; };
+		32F978871C0BF21A003F2393 /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 32F978861C0BF21A003F2393 /* NSString+MD5.m */; };
+		32F9788A1C0C0D76003F2393 /* ForgetPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32F978891C0C0D76003F2393 /* ForgetPasswordViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -814,6 +816,11 @@
 		32F877CD1C0B61E600CC9C3A /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		32F877CF1C0B6CF500CC9C3A /* PayTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PayTableViewCell.h; sourceTree = "<group>"; };
 		32F877D01C0B6CF500CC9C3A /* PayTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PayTableViewCell.m; sourceTree = "<group>"; };
+		32F978841C0BF21A003F2393 /* NSString+Encryption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Encryption.h"; sourceTree = "<group>"; };
+		32F978851C0BF21A003F2393 /* NSString+MD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MD5.h"; sourceTree = "<group>"; };
+		32F978861C0BF21A003F2393 /* NSString+MD5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5.m"; sourceTree = "<group>"; };
+		32F978881C0C0D76003F2393 /* ForgetPasswordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ForgetPasswordViewController.h; sourceTree = "<group>"; };
+		32F978891C0C0D76003F2393 /* ForgetPasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForgetPasswordViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1106,6 +1113,8 @@
 				325AC5DE1BE7412800408525 /* RegisterViewController.h */,
 				325AC5DF1BE7412800408525 /* RegisterViewController.m */,
 				325AC5E01BE7412800408525 /* RegisterViewController.xib */,
+				32F978881C0C0D76003F2393 /* ForgetPasswordViewController.h */,
+				32F978891C0C0D76003F2393 /* ForgetPasswordViewController.m */,
 			);
 			name = "登陆注册";
 			sourceTree = "<group>";
@@ -1135,6 +1144,7 @@
 				320BBE3E1BF9B65A004DE70A /* SVPullToRefresh */,
 				3242B1341BE7155D00B29989 /* UIKit+AFNetworking */,
 				320697781C02DA8700E77750 /* areapicker */,
+				32F978831C0BF21A003F2393 /* Encryption */,
 				32B49B531BE30CE400AB6D55 /* HJApp */,
 				32B49B6D1BE30CE500AB6D55 /* HJAppTests */,
 				32B49B781BE30CE500AB6D55 /* HJAppUITests */,
@@ -1585,6 +1595,16 @@
 			path = MBProgressHUD;
 			sourceTree = "<group>";
 		};
+		32F978831C0BF21A003F2393 /* Encryption */ = {
+			isa = PBXGroup;
+			children = (
+				32F978841C0BF21A003F2393 /* NSString+Encryption.h */,
+				32F978851C0BF21A003F2393 /* NSString+MD5.h */,
+				32F978861C0BF21A003F2393 /* NSString+MD5.m */,
+			);
+			path = Encryption;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1922,6 +1942,7 @@
 				325AC5C81BE715DB00408525 /* SDWebImageCompat.m in Sources */,
 				32B49CD71BE37BF700AB6D55 /* AFURLResponseSerialization.m in Sources */,
 				3242B14C1BE7155D00B29989 /* UIActivityIndicatorView+AFNetworking.m in Sources */,
+				32F978871C0BF21A003F2393 /* NSString+MD5.m in Sources */,
 				325AC5C91BE715DB00408525 /* SDWebImageDecoder.m in Sources */,
 				3242B1511BE7155D00B29989 /* UIWebView+AFNetworking.m in Sources */,
 				32DDC1171BEC8E5B00649AE5 /* PayViewController.m in Sources */,
@@ -1973,6 +1994,7 @@
 				32E512321C05AC3F00D08F02 /* DataBaseUtil.m in Sources */,
 				32DDC10F1BEC753A00649AE5 /* UserMoneyViewController.m in Sources */,
 				32B49CD51BE37BF700AB6D55 /* AFSecurityPolicy.m in Sources */,
+				32F9788A1C0C0D76003F2393 /* ForgetPasswordViewController.m in Sources */,
 				32F877CE1C0B61E600CC9C3A /* MBProgressHUD.m in Sources */,
 				32B49B591BE30CE400AB6D55 /* AppDelegate.m in Sources */,
 				32EFB1D31BF48C530065B475 /* MD5DataSigner.m in Sources */,

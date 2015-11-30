@@ -84,9 +84,10 @@
 //    [headView addSubview:backBtn];
     
     //我的订单
-    _myOrderBtn=[[MyButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.3, 20, LBVIEW_WIDTH1*0.4, 30)];
+    _myOrderBtn=[[MyButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.3, 25, LBVIEW_WIDTH1*0.4, 30)];
     [_myOrderBtn setTitle:@"我的订单" forState:UIControlStateNormal];
     [_myOrderBtn addTarget:self action:@selector(myOrderBtnClick) forControlEvents:UIControlEventTouchUpInside];
+    _myOrderBtn.titleLabel.font=[UIFont boldSystemFontOfSize:19];
     _myOrderBtn.isOpen=NO;
     [headView addSubview:_myOrderBtn];
     
@@ -402,10 +403,9 @@
     UIButton*btn=[UIButton buttonWithType:UIButtonTypeSystem];
     btn.layer.borderColor=[UIColor grayColor].CGColor;
     btn.layer.borderWidth=1;
-    btn.layer.cornerRadius=2;
     btn.layer.cornerRadius=5;
     btn.clipsToBounds=YES;
-    btn.frame=CGRectMake(LBVIEW_WIDTH1-110, LBVIEW_HEIGHT1*0.12-30, 100, 20);
+    btn.frame=CGRectMake(LBVIEW_WIDTH1-90, LBVIEW_HEIGHT1*0.12-40, 80, 30);
     [btn setTitle:@"再次购买" forState:UIControlStateNormal];
     [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     btn.tag=section+500;

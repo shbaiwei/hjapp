@@ -124,7 +124,7 @@
 //    float price=[dic[@"curr_price"] floatValue];
 //    float allPrice=num*price;
 //    prcLabel.text=[NSString stringWithFormat:@"¥%0.2f",allPrice];
-    prcLabel.text=dic[@"curr_price"];
+    prcLabel.text=[NSString stringWithFormat:@"¥%@",dic[@"curr_price"]];
     [cell addSubview:prcLabel];
     
     
@@ -157,9 +157,9 @@
 {
     orderDetail*order=_dataArray[0];
     UIView*view=[[UIView alloc]init];
-    UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(10, 10, 20, 20)];
+    UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(10, (LBVIEW_HEIGHT1*0.08-20)/2, 20, 20)];
     [view addSubview:image];
-    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(30, 10, 100, 20)];
+    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(30, (LBVIEW_HEIGHT1*0.08-20)/2, 100, 20)];
 
     label.font=[UIFont systemFontOfSize:20];
     label.textColor=[UIColor blackColor];
@@ -168,7 +168,7 @@
     {
         label.text=@"订单号:";
         image.image=[UIImage imageNamed:@"order-ddh.png"];
-        UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(130, 10, 150, 20)];
+        UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(130, (LBVIEW_HEIGHT1*0.08-20)/2, 150, 20)];
         numLabel.text=order.orderNo;
         numLabel.font=[UIFont systemFontOfSize:20];
         numLabel.textColor=[UIColor blackColor];
@@ -202,7 +202,7 @@
     NSArray*array=order.dataArray;
     UIView*view=[[UIView alloc]init];
     view.backgroundColor=[UIColor whiteColor];
-        if (section==0)
+    if (section==0)
     {
         return nil;
     }
