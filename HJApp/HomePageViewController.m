@@ -257,7 +257,7 @@ UILabel *secondLabel;
     self.mainScroll = [[UIScrollView alloc] init];
     self.mainScroll.bounces=NO;
     self.mainScroll.frame = CGRectMake(0, LBVIEW_HEIGHT1 / 11.5-20, LBVIEW_WIDTH1, LBVIEW_HEIGHT1);
-    self.mainScroll.contentSize = CGSizeMake(VIEW_WIDTH, LBVIEW_HEIGHT1-40);
+    self.mainScroll.contentSize = CGSizeMake(VIEW_WIDTH, LBVIEW_HEIGHT1-30);
     [self.view addSubview:self.mainScroll];
 }
 

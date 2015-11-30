@@ -210,14 +210,14 @@
         for (int i=0; i<3; i++)
         {
             
-            UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(i*LBVIEW_WIDTH1/3, 35, LBVIEW_WIDTH1/3, 20)];
+            UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(i*LBVIEW_WIDTH1/3, 30, LBVIEW_WIDTH1/3, 20)];
             label.text=array[i];
             label.textColor=[UIColor blackColor];
             label.textAlignment=NSTextAlignmentCenter;
             label.font=[UIFont systemFontOfSize:13];
             [cell addSubview:label];
             
-            UIImageView*imageV=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/7+i*LBVIEW_WIDTH1/3-5, 5, 30, 30)];
+            UIImageView*imageV=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/7+i*LBVIEW_WIDTH1/3, 8, 20, 20)];
             imageV.image=[UIImage imageNamed:[NSString stringWithFormat:@"order_state%d.png",i+1]];
             [cell addSubview:imageV];
             
@@ -230,13 +230,13 @@
             if (i==0)
             {
                 UILabel*line1=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 10, 1, 37)];
-                line1.backgroundColor=[UIColor grayColor];
+                line1.backgroundColor=[UIColor lightGrayColor];
                 [cell addSubview:line1];
             }
             if (i==1)
             {
                 UILabel*line2=[[UILabel alloc]initWithFrame:CGRectMake(2*LBVIEW_WIDTH1/3, 10, 1, 37)];
-                line2.backgroundColor=[UIColor grayColor];
+                line2.backgroundColor=[UIColor lightGrayColor];
                 [cell addSubview:line2];
             }
         }
@@ -389,7 +389,7 @@
     self.userImaButton.clipsToBounds = YES;
     [view addSubview:self.userImaButton];
     
-    self.userLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.userImaButton.frame.size.width * 1.4, (80-VIEW_HEIGHT*0.03)/2, VIEW_WIDTH * 0.25, VIEW_HEIGHT * 0.03)];
+    self.userLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.userImaButton.frame.size.width * 1.4, (80-VIEW_HEIGHT*0.03)/2, VIEW_WIDTH * 0.35, VIEW_HEIGHT * 0.03)];
     self.userLabel.text =_userName;
     self.userLabel.textColor = [UIColor blackColor];
     self.userLabel.font = [UIFont systemFontOfSize:16];
@@ -498,7 +498,7 @@
     self.overButton.titleLabel.font=[UIFont systemFontOfSize:19];
     [self.overButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.overButton setBackgroundColor:[UIColor redColor]];
-    self.overButton.layer.cornerRadius=7;
+    self.overButton.layer.cornerRadius=5;
     self.overButton.clipsToBounds=YES;
     
     [self.overButton addTarget:self action:@selector(goToSleep) forControlEvents:UIControlEventTouchUpInside];
@@ -514,11 +514,11 @@
 -(void)goToSleep
 {
     UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"亲是要走了嘛" preferredStyle: UIAlertControllerStyleAlert];
-    UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"再玩一会" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
+    UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
         {
             
         }];
-    UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"残忍离开" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
+    UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
         {
             [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"TOKEN_KEY"];
             [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"CITYNAME"];

@@ -60,8 +60,8 @@
     self.leftImageV.frame = CGRectMake(width * 0.2, height * 0.1, width * 0.85, height * 0.8);
     self.nameLabel.frame = CGRectMake(width * 1.2, height * 0.2, width * 2.4, height * 0.15);
     self.suryouLabel.frame = CGRectMake(width * 1.2, height * 0.45, width * 3, height * 0.1);
-    self.moneyLabel.frame = CGRectMake(width * 4.2, height * 0.05, width * 0.75+5, 25);
-    self.X2Label.frame = CGRectMake(width * 4.2, height * 0.19+10, width * 0.75, 20);
+    self.moneyLabel.frame = CGRectMake(width * 4.2, height * 0.15, width * 0.75+5, 25);
+    self.X2Label.frame = CGRectMake(width * 4.2, height * 0.4, width * 0.75, 20);
   
 }
 - (void)awakeFromNib

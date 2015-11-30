@@ -135,7 +135,7 @@
     }
     if (!_assortTopView)
     {
-      [self performSelector:@selector(delayGetProduct) withObject:nil afterDelay:0.5];
+      [self performSelector:@selector(delayGetProduct) withObject:nil afterDelay:0.3];
     }
 }
 

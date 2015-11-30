@@ -59,13 +59,6 @@
     return YES;
 }
 
-//键盘下去
--(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
-    [self.window endEditing:YES];
-}
-
-
 //支付宝
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {

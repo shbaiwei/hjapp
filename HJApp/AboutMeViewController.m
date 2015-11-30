@@ -67,7 +67,6 @@
         
     }];
     
-
 }
 -(void)showConsumerDetail
 {
@@ -142,6 +141,7 @@
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
         cell.textLabel.text=_titleArray[indexPath.row];
+        cell.textLabel.textColor=[UIColor grayColor];
         switch (indexPath.row)
         {
             case 0:
@@ -169,7 +169,14 @@
                 _trueNameTF.layer.cornerRadius=10;
                 _trueNameTF.clipsToBounds=YES;
                 _trueNameTF.text=[NSString stringWithFormat:@"%@",consumer.realName];
+                [_trueNameTF addTarget:self action:@selector(keyDown) forControlEvents:UIControlEventEditingDidEndOnExit];
                 _trueNameTF.textColor=[UIColor blackColor];
+                
+                UIView * leftView = [[UIView alloc] initWithFrame:CGRectMake(10,0,10,40)];
+                leftView.backgroundColor = [UIColor clearColor];
+                _trueNameTF.leftView = leftView;
+                _trueNameTF.leftViewMode = UITextFieldViewModeAlways;
+                
                 [cell addSubview:_trueNameTF];
                 
             }
@@ -325,5 +332,12 @@
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
     
+}
+
+
+//键盘下去
+-(void)keyDown
+{
+    [_trueNameTF resignFirstResponder];
 }
 @end

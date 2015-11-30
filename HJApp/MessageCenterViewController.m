@@ -54,7 +54,7 @@
         
         UIFont*font=[UIFont systemFontOfSize:16];
         CGSize size=[dic[@"title"] boundingRectWithSize:CGSizeMake(LBVIEW_WIDTH1, 20) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
-        UILabel*titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, 5, size.width, 20)];
+        UILabel*titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 5, size.width, 20)];
         titleLabel.text=dic[@"title"];
         titleLabel.font=font;
         titleLabel.textColor=[UIColor blackColor];
@@ -62,7 +62,7 @@
         
         UIFont*font1=[UIFont systemFontOfSize:14];
         CGSize size1=[dic[@"content"] boundingRectWithSize:CGSizeMake(LBVIEW_WIDTH1-20, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font1} context:nil].size;
-        UILabel*contentLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, 30, LBVIEW_WIDTH1-20, size1.height)];
+        UILabel*contentLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 30, LBVIEW_WIDTH1-20, size1.height)];
         contentLabel.text=dic[@"content"];
         contentLabel.font=font1;
         contentLabel.textColor=[UIColor grayColor];

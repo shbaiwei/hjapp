@@ -159,7 +159,7 @@
             AdressViewController*adressVC=[[AdressViewController alloc]init];
             adressVC.payVCStr=@"payVC";
             adressVC.payVC=self;
-            [self.navigationController pushViewController:adressVC animated:YES];
+            [self.navigationController pushViewController:adressVC animated:NO];
         }];
         UIAlertAction*cancal=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
             
@@ -773,5 +773,4 @@
     }
     return 0;
 }
-
 @end;
