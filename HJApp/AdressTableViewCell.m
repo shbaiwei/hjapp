@@ -106,7 +106,7 @@
     
     
     self.nameL.frame = CGRectMake(width / 1.5, height / 6, width*4, height / 5);
-    self.numberL.frame = CGRectMake(width / 1.5+width /1.5, height / 6,16, 16);
+    self.numberL.frame = CGRectMake(width / 1.5+width /1.5, height / 6, width / 0.6, height / 5);
     
     self.adressL.frame = CGRectMake(width / 1.5, height / 2.7, self.frame.size.width-width/1.5, height / 3);
     

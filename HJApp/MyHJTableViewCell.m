@@ -46,7 +46,7 @@
         [self.textLabel setFont:[UIFont systemFontOfSize:16]];
         [self.textLabel setTextColor:[UIColor colorWithRed:0.1 green:0.1 blue:0.1 alpha:1]];
         
-        UILabel *rightLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.bounds.size.width - 110, 15, 120, 20)];
+        UILabel *rightLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.bounds.size.width - 70, 15, 120, 20)];
         self.rightLabel=rightLabel;
         [rightLabel setFont:[UIFont systemFontOfSize:14]];
         [rightLabel setTextAlignment:NSTextAlignmentRight];
