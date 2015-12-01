@@ -13,4 +13,7 @@
 {
 }
 @property(nonatomic,strong)UITabBarController*tabBarVC;
+
+-(void)updateCartCount:(NSString *) number;
+
 @end

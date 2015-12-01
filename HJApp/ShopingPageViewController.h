@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HJViewController.h"
 
-@interface ShopingPageViewController : UIViewController
+@interface ShopingPageViewController : HJViewController
 
-@property(nonatomic,strong)UITabBarController*tabBarVC;
+//@property(nonatomic,strong)UITabBarController*tabBarVC;
 @end

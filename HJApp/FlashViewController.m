@@ -102,6 +102,7 @@
     shopVC.title = @"购物车";
     shopVC.tabBarItem.selectedImage = ShopImage;
     
+    
     UIImage *shopImage2 = [UIImage imageNamed:@"ico_item3_active"];
     shopImage2 = [shopImage2 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     shopVC.tabBarItem.selectedImage = shopImage2;

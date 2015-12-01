@@ -29,6 +29,11 @@
 
 @end
 
+#define NJTitleFont [UIFont systemFontOfSize:14]
+#define NJNameFont [UIFont systemFontOfSize:12]
+#define NJTextFont [UIFont systemFontOfSize:10.5]
+#define NJFontColor [UIColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1]
+
 #define VIEW_WIDTH self.view.bounds.size.width
 #define VIEW_HEIGHT self.view.bounds.size.height
 
@@ -40,12 +45,22 @@
 -(void)viewWillAppear:(BOOL)animated
 {
   
-    [self hidesTabBar:NO];
+    //[self hidesTabBar:NO];
     self.navigationController.navigationBarHidden=NO;
     self.navigationController.navigationBar.translucent =NO;
     
     [HttpEngine getSimpleCart:^(NSArray *array) {
         _dataArray=array;
+        
+        NSInteger number = 0;
+        for (NSInteger i=0; i<array.count; i++) {
+            ShopingCar*shCa=array[i];
+            number += [shCa.number integerValue];
+        }
+        if(number>0){
+            [self updateCartCount:[NSString stringWithFormat:@"%ld",number]];
+        }
+
         [self showTableView];
     }];
 }
@@ -141,7 +156,7 @@
 {
     if (_dataArray.count==0)
     {
-        _tabBarVC.selectedIndex=1;
+        self.tabBarVC.selectedIndex=1;
     }
     else
     {
@@ -186,15 +201,18 @@
         UILabel*nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, 5, LBVIEW_WIDTH1*0.5-10, 60)];
         nameLabel.text=[NSString stringWithFormat:@"%@ %@",spCa.skuName,attributeStr] ;
         nameLabel.numberOfLines=2;
+        [nameLabel setFont:NJTitleFont];
+        [nameLabel setTextColor:NJFontColor];
         [cell addSubview:nameLabel];
         
         NSString*str=[NSString stringWithFormat:@"¥%@",spCa.price];
-        UIFont*font=[UIFont systemFontOfSize:17];
+        UIFont*font=NJTitleFont;
         CGSize size=[str boundingRectWithSize:CGSizeMake(100, 30) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
         
         UILabel*picLabel=[[UILabel alloc]initWithFrame:CGRectMake(10+LBVIEW_WIDTH1*0.5, 20, size.width, 30)];
         picLabel.text=[NSString stringWithFormat:@"¥%@",spCa.price];
         picLabel.textColor=[UIColor redColor];
+        [picLabel setFont:font];
         [cell addSubview:picLabel];
         
 //        UILabel*xlabel=[[UILabel alloc]initWithFrame:CGRectMake((3*LBVIEW_WIDTH1*0.5-70+size.width)/2, 25, 20, 20)];
@@ -205,7 +223,7 @@
         UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-60, 25, 20, 20)];
         numLabel.text=[NSString stringWithFormat:@"%@",spCa.number];
         numLabel.textAlignment=NSTextAlignmentCenter;
-        numLabel.font=[UIFont systemFontOfSize:16];
+        numLabel.font=NJTitleFont;
         [cell addSubview:numLabel];
         
         UIButton*addBtn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-40, 20, 30, 30)];
@@ -227,7 +245,7 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    return 70;
+    return 60;
     
 }
 //增加按钮
@@ -311,7 +329,7 @@
          }
          //总价格刷新
          NSString*allPrice=[NSString stringWithFormat:@"总计%@",_totalPrice];
-         UIFont*font=[UIFont systemFontOfSize:21];
+         UIFont*font=[UIFont systemFontOfSize:18];
          CGSize size=[allPrice boundingRectWithSize:CGSizeMake(LBVIEW_WIDTH1, LBVIEW_HEIGHT1 / 15) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
          self.okaneL.text =allPrice;
          self.okaneL.frame = CGRectMake(5, (LBVIEW_HEIGHT1/13-LBVIEW_HEIGHT1/15)/2, size.width, VIEW_HEIGHT / 15);
