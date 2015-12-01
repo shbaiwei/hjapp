@@ -71,7 +71,7 @@
         _bjLab=[[UILabel alloc]init];
         _bjLab.textColor=[UIColor grayColor];
         _bjLab.text=@"编辑";
-        _bjLab.font = [UIFont systemFontOfSize:14];
+        _bjLab.font = [UIFont systemFontOfSize:12];
         [self.contentView addSubview:_bjLab];
         
         
@@ -86,7 +86,7 @@
         _deLab=[[UILabel alloc]init];
         _deLab.textColor=[UIColor grayColor];
         _deLab.text=@"删除";
-        _deLab.font = [UIFont systemFontOfSize:14];
+        _deLab.font = [UIFont systemFontOfSize:12];
         [self.contentView addSubview:_deLab];
         
     }
@@ -102,7 +102,7 @@
     CGFloat height = self.frame.size.height;
     
     self.adressIV.frame = CGRectMake(width / 1.5-44, height / 6, 32, 44);
-    self.numAddressLabel.frame=CGRectMake(width/5.2+(width/4-width/14)/2,height / 6+height /17+height/26, width /13, width /13);
+    self.numAddressLabel.frame=CGRectMake(width / 1.5-44+8,height / 6+7, 16, 16);
     
     
     self.nameL.frame = CGRectMake(width / 1.5, height / 6, width*4, height / 5);

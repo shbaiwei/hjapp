@@ -76,6 +76,7 @@
     
     UILabel*userLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 4+4, LBVIEW_HEIGHT1 / 17)];
     userLabel.text=@"  收货人";
+    userLabel.font=[UIFont systemFontOfSize:14];
     userLabel.textColor=[UIColor grayColor];
     //userLabel.font=[UIFont systemFontOfSize:14];
     [userV addSubview:userLabel];
@@ -89,6 +90,7 @@
     self.userNameTF.borderStyle = UITextBorderStyleNone;
     self.userNameTF.textColor = [UIColor blackColor];
     self.userNameTF.text=_userName;
+    self.userNameTF.font=[UIFont systemFontOfSize:14];
     UIView * leftView1= [[UIView alloc] initWithFrame:CGRectMake(10,0,10,LBVIEW_HEIGHT1 / 17)];
     leftView1.backgroundColor = [UIColor clearColor];
     self.userNameTF.leftView = leftView1;
@@ -107,6 +109,7 @@
     
     UILabel*phoneLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 4+4, LBVIEW_HEIGHT1 / 17)];
     phoneLabel.text=@"  手机";
+    phoneLabel.font=[UIFont systemFontOfSize:14];
     phoneLabel.textColor=[UIColor grayColor];
    // phoneLabel.font=[UIFont systemFontOfSize:14];
     [phoneV addSubview:phoneLabel];
@@ -120,6 +123,7 @@
     self.phoneTF.borderStyle = UITextBorderStyleNone;
     self.phoneTF.textColor = [UIColor blackColor];
     self.phoneTF.text=_phone;
+    self.phoneTF.font=[UIFont systemFontOfSize:14];
     UIView * leftView2= [[UIView alloc] initWithFrame:CGRectMake(10,0,10,LBVIEW_HEIGHT1 / 17)];
     leftView2.backgroundColor = [UIColor clearColor];
     self.phoneTF.leftView = leftView2;
@@ -135,6 +139,7 @@
     
     UILabel*proconLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 4+4, LBVIEW_HEIGHT1 / 17)];
     proconLabel.text=@"  所在地区";
+    proconLabel.font=[UIFont systemFontOfSize:14];
     proconLabel.textColor=[UIColor grayColor];
     //proconLabel.font=[UIFont systemFontOfSize:14];
     [proconV addSubview:proconLabel];
@@ -148,6 +153,7 @@
     self.proconTF.borderStyle = UITextBorderStyleNone;
     self.proconTF.textColor = [UIColor blackColor];
     self.proconTF.text=_procon;
+    self.proconTF.font=[UIFont systemFontOfSize:14];
     UIView * leftView3= [[UIView alloc] initWithFrame:CGRectMake(10,0,10,LBVIEW_HEIGHT1 / 17)];
     leftView3.backgroundColor = [UIColor clearColor];
     self.proconTF.leftView = leftView3;
@@ -167,6 +173,7 @@
     
     UILabel*adreLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, LBVIEW_HEIGHT1 * 0.001, LBVIEW_WIDTH1 / 4+4, LBVIEW_HEIGHT1 / 17)];
     adreLabel.text=@"  详细地址";
+    adreLabel.font=[UIFont systemFontOfSize:14];
     adreLabel.textColor=[UIColor grayColor];
    // adreLabel.font=[UIFont systemFontOfSize:14];
     [adreV addSubview:adreLabel];
@@ -180,6 +187,7 @@
     self.adreTF.borderStyle = UITextBorderStyleNone;
     self.adreTF.textColor = [UIColor blackColor];
     self.adreTF.text=_adre;
+    self.adreTF.font=[UIFont systemFontOfSize:14];
     UIView * leftView4= [[UIView alloc] initWithFrame:CGRectMake(10,0,10,LBVIEW_HEIGHT1 / 17)];
     leftView4.backgroundColor = [UIColor clearColor];
     self.adreTF.leftView = leftView4;
@@ -192,6 +200,7 @@
     [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [btn setBackgroundColor:[UIColor redColor]];
     btn.layer.cornerRadius=7;
+    btn.titleLabel.font=[UIFont systemFontOfSize:14];
     btn.clipsToBounds=YES;
 
     [btn addTarget:self action:@selector(saveDetail) forControlEvents:UIControlEventTouchUpInside];

@@ -118,15 +118,15 @@
         cell.numAddressLabel.font=[UIFont boldSystemFontOfSize:12];
         
         cell.nameL.text=[NSString stringWithFormat:@"%@   %@",adress.consignee,adress.phoneMob];
-        cell.nameL.font=[UIFont systemFontOfSize:16];
+        cell.nameL.font=[UIFont systemFontOfSize:14];
         
         cell.adressL.text=[NSString stringWithFormat:@"%@ %@ %@ %@",adress.chineseProvince,adress.chineseCity,adress.chineseTown,adress.address];
-        cell.adressL.font=[UIFont systemFontOfSize:16];
+        cell.adressL.font=[UIFont systemFontOfSize:14];
         
         _chooseLable=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/5, 95, 2*LBVIEW_WIDTH1/5, 20)];
        
         _chooseLable.tag=indexPath.row+500;
-        _chooseLable.font = [UIFont systemFontOfSize:14];
+        _chooseLable.font = [UIFont systemFontOfSize:12];
         _chooseLable.textColor=[UIColor grayColor];
         [cell addSubview:_chooseLable];
         
@@ -195,6 +195,7 @@
     [btn setTitle:@"新建收货地址" forState:UIControlStateNormal];
     [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [btn setBackgroundColor:[UIColor redColor]];
+    btn.titleLabel.font=[UIFont systemFontOfSize:14];
     btn.layer.cornerRadius=7;
     btn.clipsToBounds=YES;
     [btn addTarget:self action:@selector(newadBtnAction:) forControlEvents:UIControlEventTouchUpInside];

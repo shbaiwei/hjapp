@@ -9,8 +9,10 @@
 #import "IdeaBackViewController.h"
 #import "HttpEngine.h"
 
-@interface IdeaBackViewController ()
+@interface IdeaBackViewController ()<UITextViewDelegate>
 @property(nonatomic,copy)NSString*mobile;
+@property(nonatomic,strong)UITextView*tView;
+@property(nonatomic,strong)UIScrollView*scrollView;
 //@property(nonatomic,copy)NSString*nameTF;
 //@property(nonatomic,copy)NSString*mobileTF;
 //@property(nonatomic,copy)NSString*contentTF;
@@ -23,6 +25,24 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+    if(str==NULL)
+    {
+        UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"请登陆后反馈" preferredStyle: UIAlertControllerStyleAlert];
+        UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
+                              {
+                                  [self.navigationController popViewControllerAnimated:YES];
+                              }];
+        UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
+                                     {
+                                  [self.navigationController popViewControllerAnimated:YES];
+                                     }];
+        [alert addAction:cancel];
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
+    
+    }
     self.navigationController.navigationBarHidden=NO;
     self.navigationController.navigationBar.translucent=NO;
     [self.navigationController.navigationBar setTitleTextAttributes:
@@ -49,12 +69,25 @@
     NSArray*nameArray=[[NSArray alloc]initWithObjects:@"姓名",@"手机号", nil];
     for (int i=0; i<2; i++)
     {
-        UILabel *nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, 10+i*120, 100, 30)];
+        UILabel *nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, 10+i*120, 100, 30)];
         nameLabel.text=nameArray[i];
+        nameLabel.font=[UIFont systemFontOfSize:14];
         [scrollView addSubview:nameLabel];
         
-        UITextField*field=[[UITextField alloc]initWithFrame:CGRectMake(10, 60+i*120, LBVIEW_WIDTH1-20, 50)];
-        field.borderStyle=UITextBorderStyleLine;
+        UITextField*field=[[UITextField alloc]initWithFrame:CGRectMake(20, 60+i*120, LBVIEW_WIDTH1-40, 50)];
+        field.layer.cornerRadius=5;
+        field.clipsToBounds=YES;
+        field.layer.borderColor=[UIColor grayColor].CGColor;
+        
+        UIView * leftView = [[UIView alloc] initWithFrame:CGRectMake(10,0,10,LBVIEW_HEIGHT1/14)];
+        leftView.backgroundColor = [UIColor clearColor];
+        field.leftView = leftView;
+        field.leftViewMode = UITextFieldViewModeAlways;
+        field.font=[UIFont systemFontOfSize:14];
+        field.layer.borderWidth=1;
+        [field addTarget:self action:@selector(keyDown) forControlEvents:UIControlEventEditingDidEndOnExit];
+        
+        //field.borderStyle=UITextBorderStyleLine;
         if (i==0)
         {
             field.placeholder=@"请输入您的姓名";
@@ -68,21 +101,28 @@
         [scrollView addSubview:field];
     }
 
-    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(5,270, 100, 30)];
+    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10,270, 100, 30)];
     label.text=@"详细内容";
+    label.font=[UIFont systemFontOfSize:14];
     [scrollView addSubview:label];
     
-    UITextView*tView=[[UITextView alloc]initWithFrame:CGRectMake(10, 320, LBVIEW_WIDTH1-20, LBVIEW_HEIGHT1/5)];
-    tView.layer.borderColor =[UIColor grayColor].CGColor;
-    tView.layer.borderWidth =1.0;
-    tView.layer.cornerRadius =5.0;
-    tView.tag=3;
-    [scrollView addSubview:tView];
+    _tView=[[UITextView alloc]initWithFrame:CGRectMake(20, 320, LBVIEW_WIDTH1-40, LBVIEW_HEIGHT1/5)];
+    _tView.layer.borderColor =[UIColor grayColor].CGColor;
+    _tView.layer.borderWidth =1.0;
+    _tView.layer.cornerRadius =5.0;
+    _tView.tag=3;
+    _tView.delegate=self;
+    _tView.font=[UIFont systemFontOfSize:14];
     
-    UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(10,350+ LBVIEW_HEIGHT1/5, LBVIEW_WIDTH1-20, 30)];
+    [scrollView addSubview:_tView];
+    
+    UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(20,350+ LBVIEW_HEIGHT1/5, LBVIEW_WIDTH1-40, 40)];
     [btn setTitle:@"提交" forState:UIControlStateNormal];
     [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [btn setBackgroundColor:[UIColor redColor]];
+    btn.layer.cornerRadius=5;
+    btn.titleLabel.font=[UIFont systemFontOfSize:14];
+    btn.clipsToBounds=YES;
     [btn addTarget:self action:@selector(comit) forControlEvents:UIControlEventTouchUpInside];
     [scrollView addSubview:btn];
 }
@@ -109,5 +149,22 @@
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
 
+    
+}
+-(BOOL)textView:(UITextView
+                 *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    if([text
+        isEqualToString:@"\n"])
+        
+    {
+        [_tView
+         resignFirstResponder];
+        return NO;
+    }
+    return YES;
+}
+-(void)keyDown
+{
+    [self.view endEditing:YES];
 }
 @end

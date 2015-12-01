@@ -71,7 +71,7 @@
     self.madaBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [self.madaBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.madaBtn.backgroundColor = [UIColor whiteColor];
-    self.madaBtn.titleLabel.font = [UIFont systemFontOfSize:16];
+    self.madaBtn.titleLabel.font = [UIFont systemFontOfSize:14];
     self.madaBtn.frame = CGRectMake(0, 0, LBVIEW_WIDTH1 / 3-1, LBVIEW_HEIGHT1 / 15);
     [self.madaBtn addTarget:self action:@selector(lookRedBagBtn:) forControlEvents:UIControlEventTouchUpInside];
     if (_dataArray.count!=0)
@@ -90,7 +90,7 @@
     [self.dattaBtn setTitle:@"已使用" forState:UIControlStateNormal];
     [self.dattaBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.dattaBtn.backgroundColor = [UIColor whiteColor];
-    self.dattaBtn.titleLabel.font = [UIFont systemFontOfSize:16];
+    self.dattaBtn.titleLabel.font = [UIFont systemFontOfSize:14];
     self.dattaBtn.frame = CGRectMake(LBVIEW_WIDTH1 / 3+2, 0, LBVIEW_WIDTH1/3-1, LBVIEW_HEIGHT1 / 15);
     self.dattaBtn.tag=2;
     [self.dattaBtn addTarget:self action:@selector(lookRedBagBtn:) forControlEvents:UIControlEventTouchUpInside];
@@ -100,7 +100,7 @@
     [self.mouBtn setTitle:@"已过期" forState:UIControlStateNormal];
     [self.mouBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.mouBtn.backgroundColor = [UIColor whiteColor];
-    self.mouBtn.titleLabel.font = [UIFont systemFontOfSize:16];
+    self.mouBtn.titleLabel.font = [UIFont systemFontOfSize:14];
     self.mouBtn.frame = CGRectMake(2*LBVIEW_WIDTH1/3+3, 0, LBVIEW_WIDTH1 / 3-1, LBVIEW_HEIGHT1 / 15);
     self.mouBtn.tag=3;
     [self.mouBtn addTarget:self action:@selector(lookRedBagBtn:) forControlEvents:UIControlEventTouchUpInside];

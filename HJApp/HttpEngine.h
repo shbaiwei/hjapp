@@ -88,6 +88,8 @@
 //编辑个人资料
 +(void)updataConsumerDetailData:(NSString*)realNameStr with:(NSString*)genderStr with:(NSString*)birthdayStr;
 
+//上传图片
++(void)uploadPicData:(UIImage*)image;
 
 //我的订单
 +(void)myOrder:(NSString*)full with:(NSString*)page with:(NSString*)pageSize with:(NSString*)status completion:(void(^)(NSArray*dataArray))complete;

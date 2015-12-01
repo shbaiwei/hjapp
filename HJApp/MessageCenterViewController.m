@@ -52,7 +52,7 @@
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
         
-        UIFont*font=[UIFont systemFontOfSize:16];
+        UIFont*font=[UIFont systemFontOfSize:14];
         CGSize size=[dic[@"title"] boundingRectWithSize:CGSizeMake(LBVIEW_WIDTH1, 20) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
         UILabel*titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 5, size.width, 20)];
         titleLabel.text=dic[@"title"];
@@ -60,7 +60,7 @@
         titleLabel.textColor=[UIColor blackColor];
         [cell addSubview:titleLabel];
         
-        UIFont*font1=[UIFont systemFontOfSize:14];
+        UIFont*font1=[UIFont systemFontOfSize:12];
         CGSize size1=[dic[@"content"] boundingRectWithSize:CGSizeMake(LBVIEW_WIDTH1-20, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font1} context:nil].size;
         UILabel*contentLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 30, LBVIEW_WIDTH1-20, size1.height)];
         contentLabel.text=dic[@"content"];
@@ -68,9 +68,11 @@
         contentLabel.textColor=[UIColor grayColor];
         [cell addSubview:contentLabel];
         
-        UILabel*timeLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-160, 5, 150, 30)];
-        timeLabel.text=dic[@"date_created"];
-        timeLabel.font=[UIFont systemFontOfSize:14];
+        UILabel*timeLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-160, (size1.height+10)/2, 150, 30)];
+        NSString*str=dic[@"date_created"];
+        NSArray*array=[str componentsSeparatedByString:@"T"];
+        timeLabel.text=[NSString stringWithFormat:@"%@ %@",array[0],array[1]];
+        timeLabel.font=[UIFont systemFontOfSize:12];
         timeLabel.textColor=[UIColor grayColor];
         [cell addSubview:timeLabel];
         
@@ -81,7 +83,7 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSDictionary*dic=_dataArray[indexPath.row];
-    UIFont*font1=[UIFont systemFontOfSize:14];
+    UIFont*font1=[UIFont systemFontOfSize:12];
     CGSize size1=[dic[@"content"] boundingRectWithSize:CGSizeMake(LBVIEW_WIDTH1-20, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font1} context:nil].size;
     return 40+size1.height;
 }

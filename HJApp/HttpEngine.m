@@ -128,7 +128,7 @@
     NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
     [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
     
-    NSDictionary*parameters=@{@"name":name,@"mobile":moblie,@"content":content};
+    NSDictionary*parameters=@{@"name":name,@"mobile":moblie,@"feedback_type":@"1",@"content":content,@"ip":@"192.168.33.259"};
     
     [session POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData)
      {
@@ -151,11 +151,7 @@
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/feedback/"];
     
-    NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
-    NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
-    [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
-
-    NSDictionary*parameters=@{@"name":name,@"mobile":moblie,@"email":email,@"company":danWei,@"content":other,@"feedback_type":@"1",@"ip":ip};
+  NSDictionary*parameters=@{@"name":name,@"mobile":moblie,@"email":email,@"company":danWei,@"content":other,@"feedback_type":@"2",@"ip":ip};
     
     [session POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData)
      {
@@ -773,6 +769,39 @@
          NSLog(@"Error:%@",error);
      }];
     
+}
+
+//上传图片
++(void)uploadPicData:(UIImage*)image
+{
+    AFHTTPSessionManager*manager=[AFHTTPSessionManager manager];
+    
+    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/upload/image/"];
+    
+    NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+    NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
+    
+    [manager.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
+    
+    NSData *data = UIImagePNGRepresentation(image);
+    
+    // 在网络开发中，上传文件时，是文件不允许被覆盖，文件重名
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    // 设置时间格式
+    formatter.dateFormat = @"yyyyMMddHHmmss";
+    NSString *strr = [formatter stringFromDate:[NSDate date]];
+    NSString *fileName = [NSString stringWithFormat:@"%@", strr];
+    
+    [manager POST:str parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData)
+    {
+        [formData appendPartWithFileData:data name:@"fileData" fileName:fileName mimeType:@"image/jpg"];
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        NSLog(@"122323JSON:%@",responseObject);
+    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+        NSLog(@"Error:%@",error);
+    }];
+
 }
 
 //地址列表

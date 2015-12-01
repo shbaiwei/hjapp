@@ -12,7 +12,7 @@
 #import "ChangeSexViewController.h"
 
 
-@interface AboutMeViewController ()<UITableViewDataSource,UITableViewDelegate>
+@interface AboutMeViewController ()<UITableViewDataSource,UITableViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>
 @property(nonatomic,strong)NSArray*dataArray;
 
 @property(nonatomic,strong)UIView*btnView;
@@ -28,8 +28,10 @@
 @property(nonatomic,strong)UILabel*sexLabel;
 @property(nonatomic,strong)UILabel*birthdayLabel;
 
-
+@property(nonatomic,unsafe_unretained)BOOL isOpen;
 @property(nonatomic,strong)UILabel*timeLabel;
+@property(nonatomic,strong)UIView*chooseView;
+@property(nonatomic,strong)UIImagePickerController*imageVC;
 
 @end
 
@@ -86,18 +88,124 @@
     headImage.image=[UIImage imageNamed:@"head.png"];
     [view addSubview:headImage];
     
-    UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(3*LBVIEW_WIDTH1/4-10, 20, LBVIEW_WIDTH1/4, 40)];
+    UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(4*LBVIEW_WIDTH1/5-10, 20, LBVIEW_WIDTH1/5, 40)];
     [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [btn setTitle:@"更换头像" forState:UIControlStateNormal];
-    btn.titleLabel.font=[UIFont systemFontOfSize:17];
+    btn.titleLabel.font=[UIFont systemFontOfSize:14];
     btn.layer.borderColor=[UIColor grayColor].CGColor;
     btn.layer.borderWidth=1;
     btn.layer.cornerRadius=10;
     btn.clipsToBounds=YES;
+    _isOpen=NO;
+    [btn addTarget:self action:@selector(uploadPic) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:btn];
     
     return view;
 }
+//上传头像
+-(void)uploadPic
+{
+   
+    
+    if (_isOpen==NO)
+    {
+        //选择视图
+        _chooseView=[[UIView alloc]initWithFrame:CGRectMake(20,LBVIEW_HEIGHT1-110, LBVIEW_WIDTH1-40,110)];
+//        _chooseView.layer.cornerRadius=10;
+//        _chooseView.clipsToBounds=YES;
+       // _chooseView.backgroundColor=[UIColor whiteColor];
+        //[self.view addSubview:_chooseView];
+        NSArray*btnNameArray=[[NSArray alloc]initWithObjects:@"拍照", @"从相册中选取",@"取消",nil];
+        for (int i=0; i<3; i++)
+        {
+            UILabel*label=[[UILabel alloc]init];
+            if (i==2)
+            {
+                label.frame=CGRectMake(0, 68, LBVIEW_WIDTH1-40,30);
+            }
+            else
+            {
+                label.frame=CGRectMake(0, i*31, LBVIEW_WIDTH1-40,30);
+            }
+            label.text=btnNameArray[i];
+            label.layer.cornerRadius=5;
+            label.clipsToBounds=YES;
+            label.font=[UIFont systemFontOfSize:14];
+            label.textAlignment=NSTextAlignmentCenter;
+            label.textColor=[UIColor blueColor];
+            label.backgroundColor=[UIColor whiteColor];
+            [_chooseView addSubview:label];
+            
+            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, i*31, LBVIEW_WIDTH1-40,30)];
+            btn.tag=i+50;
+            [btn addTarget:self action:@selector(chooseBtn:) forControlEvents:UIControlEventTouchUpInside];
+            [_chooseView addSubview:btn];
+            
+        }
+    }
+    else
+    {
+        [_chooseView removeFromSuperview];
+    }
+    _shadowView=[[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    _shadowView.backgroundColor=[UIColor grayColor];
+    _shadowView.alpha=0.8;
+    
+    //找window
+    UIWindow *window=[[UIApplication sharedApplication]keyWindow];
+    [window addSubview:_shadowView];
+    [_shadowView addSubview:_chooseView];
+    
+    _isOpen=!_isOpen;
+    
+}
+
+//选择按钮
+-(void)chooseBtn:(UIButton*)sender
+{
+    _isOpen=NO;
+    [_shadowView removeFromSuperview];
+    _imageVC=[[UIImagePickerController alloc]init];
+    _imageVC.delegate=self;
+    _imageVC.allowsEditing=YES;
+    
+    if (sender.tag==50)
+    {
+        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
+        {
+            //说明相机 可以使用 ；
+            _imageVC.sourceType=UIImagePickerControllerSourceTypeCamera;
+        }
+    }
+    if (sender.tag==51)
+    {
+        _imageVC.sourceType=UIImagePickerControllerSourceTypePhotoLibrary;
+    }
+    if (sender.tag==52)
+    {
+        return;
+    }
+    
+    [self presentViewController:_imageVC animated:YES completion:nil];
+}
+
+
+//点击取消 ；
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+//选中某项媒体文件；
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    //取出选中的图片 ；
+    UIImage * image = info[UIImagePickerControllerOriginalImage];
+    NSLog(@"%@",image);
+    [HttpEngine uploadPicData:image];
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+}
+
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return 80;
@@ -110,6 +218,7 @@
     UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(10, 30, LBVIEW_WIDTH1-20, 40)];
     [btn setBackgroundColor:[UIColor redColor]];
     [btn setTitle:@"保存" forState:UIControlStateNormal];
+    btn.titleLabel.font=[UIFont systemFontOfSize:14];
     [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     btn.layer.cornerRadius=7;
     btn.clipsToBounds=YES;
@@ -142,6 +251,7 @@
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
         cell.textLabel.text=_titleArray[indexPath.row];
         cell.textLabel.textColor=[UIColor grayColor];
+        cell.textLabel.font=[UIFont systemFontOfSize:14];
         switch (indexPath.row)
         {
             case 0:
@@ -149,6 +259,7 @@
                 UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 20, 2*LBVIEW_WIDTH1/3, 20)];
                 label.textColor=[UIColor blackColor];
                 label.text=consumer.userid;
+                label.font=[UIFont systemFontOfSize:14];
                 [cell addSubview:label];
             }
                 break;
@@ -157,6 +268,7 @@
                 UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 20, 2*LBVIEW_WIDTH1/3, 20)];
                 label.textColor=[UIColor blackColor];
                 label.text=consumer.uniqueid;
+                label.font=[UIFont systemFontOfSize:14];
                 [cell addSubview:label];
                 
             }
@@ -176,7 +288,7 @@
                 leftView.backgroundColor = [UIColor clearColor];
                 _trueNameTF.leftView = leftView;
                 _trueNameTF.leftViewMode = UITextFieldViewModeAlways;
-                
+                _trueNameTF.font=[UIFont systemFontOfSize:14];
                 [cell addSubview:_trueNameTF];
                 
             }
@@ -186,6 +298,7 @@
                 
                 _sexLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3+10, 10,LBVIEW_WIDTH1/2-10, 40)];
                 _sexLabel.textColor=[UIColor blackColor];
+                _sexLabel.font=[UIFont systemFontOfSize:14];
                 [cell addSubview:_sexLabel];
                 
                 _sexBtn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 10,LBVIEW_WIDTH1/2, 40)];
@@ -213,6 +326,7 @@
                 _birthdayLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3+10, 10,LBVIEW_WIDTH1/2-10, 40)];
                 _birthdayLabel.textColor=[UIColor blackColor];
                 _birthdayLabel.text=consumer.birthday;
+                _birthdayLabel.font=[UIFont systemFontOfSize:14];
                 [cell addSubview:_birthdayLabel];
                 
                 _birthdayBtn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 10,LBVIEW_WIDTH1/2, 40)];
@@ -264,6 +378,7 @@
     
     UIButton*timeBtn=[[UIButton alloc]initWithFrame:CGRectMake(0, LBVIEW_HEIGHT1*0.45, LBVIEW_WIDTH1*0.8, LBVIEW_HEIGHT1*0.05)];
     [timeBtn setTitle:@"完成" forState:UIControlStateNormal];
+    timeBtn.titleLabel.font=[UIFont systemFontOfSize:14];
     [timeBtn setTintColor:[UIColor blackColor]];
     [timeBtn setBackgroundColor:[UIColor redColor]];
     [timeBtn addTarget:self action:@selector(chooseTime) forControlEvents:UIControlEventTouchUpInside];

@@ -30,6 +30,7 @@
         
         UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(20, 10, 40, 30)];
         label.text=sexArray[i];
+        label.font=[UIFont systemFontOfSize:14];
         [view addSubview:label];
         
         UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
