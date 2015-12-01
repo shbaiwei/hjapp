@@ -94,6 +94,8 @@
     //NSLog(@"%@",homeVC.cityNameStr);
     [[NSUserDefaults standardUserDefaults]setObject:dic[@"code"] forKey:@"CODE"];
     [[NSUserDefaults standardUserDefaults]setObject:dic[@"name"] forKey:@"CITYNAME"];
+    [[NSUserDefaults standardUserDefaults]setObject:dic[@"allowed_regions"] forKey:@"ALLOWED_REGIONS"];
+    [[NSUserDefaults standardUserDefaults]setObject:dic[@"allowed_regions_name"] forKey:@"ALLOWED_REGIONS_NAME"];
     [self.navigationController popToRootViewControllerAnimated:YES];
     
 }

@@ -7,8 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BWCommon.h"
+#import "MBProgressHUD.h"
 
-@interface PayViewController : UIViewController<UITableViewDataSource,UITableViewDelegate>
+@interface PayViewController : UIViewController<
+UITableViewDataSource,
+UITableViewDelegate,
+UIGestureRecognizerDelegate
+>
 
 @property(nonatomic,unsafe_unretained)int isTag;
 @property(nonatomic,unsafe_unretained)int isTagTime;

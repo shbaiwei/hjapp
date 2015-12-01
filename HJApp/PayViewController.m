@@ -37,6 +37,10 @@
 @property(nonatomic,copy)NSString*addrId;
 @property(nonatomic,copy)NSString*password;
 @property(nonatomic,copy)UITextField*tf;
+@property(nonatomic,retain) UITextView *cust_message;
+
+@property(nonatomic,unsafe_unretained)BOOL show_deadline;
+@property(nonatomic,unsafe_unretained)BOOL self_pickup;
 
 
 
@@ -69,6 +73,7 @@
 
 @implementation PayViewController
 
+NSInteger pay_type;
 
 
 #define LBVIEW_WIDTH1 [UIScreen mainScreen].bounds.size.width
@@ -117,6 +122,8 @@
     [HttpEngine getDefaultAddress:^(NSDictionary*dataDic)
      {
          _defaultAddressDic=dataDic;
+         
+         _addrId = [NSString stringWithFormat:@"%@",_defaultAddressDic[@"addr_id"]];
          NSLog(@"_defaultAddressArray==%@",_defaultAddressDic);
          //[self judgeIsNull];
          [self judgeCity];
@@ -139,20 +146,30 @@
 
 -(void)judgeCity
 {
-    NSString*defaultAdressId=[NSString stringWithFormat:@"%@",_defaultAddressDic[@"province"]];
+    NSString*provinceCode=[NSString stringWithFormat:@"%@",_defaultAddressDic[@"province"]];
+    NSString*cityCode=[NSString stringWithFormat:@"%@",_defaultAddressDic[@"city"]];
+    NSString*townCode=[NSString stringWithFormat:@"%@",_defaultAddressDic[@"town"]];
+    
+    NSArray *allowed_regions = [[[NSUserDefaults standardUserDefaults]objectForKey:@"ALLOWED_REGIONS"] componentsSeparatedByString:@","];
     
     
-    NSString*adr=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
-    NSString*adressId=[NSString stringWithFormat:@"%@",adr];
-    //截取默认地址前两位
-    NSString*defaultTwo=[defaultAdressId substringToIndex:2];
-    //截取选择地址前两位
-    NSString*adressTwo=[adressId substringToIndex:2];
+    NSString*location=[NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"]];
     
-    
-    if (![defaultTwo isEqualToString:adressTwo])
+
+    NSString *errorMessage = @"";
+    if (provinceCode != location && cityCode != location)
     {
-        UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"收货地址不在当前选择的城市中" message:@"请选择其它地址:" preferredStyle: UIAlertControllerStyleAlert];
+        errorMessage = [NSString stringWithFormat:@"收货地址不在当前选中的城市中。\n可配送区域\n%@",[[NSUserDefaults standardUserDefaults]objectForKey:@"ALLOWED_REGIONS_NAME"]];
+    }
+    else if(![allowed_regions containsObject:townCode] && ![allowed_regions containsObject:cityCode])
+    {
+        //errorMessage = @"收货地址所在区域暂未开通配送服务。\n 可配送区域\n";
+        errorMessage = [NSString stringWithFormat:@"收货地址所在区域暂未开通配送服务。\n可配送区域\n%@",[[NSUserDefaults standardUserDefaults]objectForKey:@"ALLOWED_REGIONS_NAME"]];
+    }
+    
+    if(![errorMessage isEqualToString:@""])
+    {
+        UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"系统提示" message:errorMessage preferredStyle: UIAlertControllerStyleAlert];
         
         UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action)
         {
@@ -162,7 +179,7 @@
             [self.navigationController pushViewController:adressVC animated:NO];
         }];
         UIAlertAction*cancal=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-            
+            [self.navigationController popViewControllerAnimated:YES];
         }];
         
         [alert addAction:defaultAction];
@@ -177,9 +194,14 @@
     [super viewDidLoad];
     self.title = @"确认订单";
     
+    pay_type = 0;
+    _isTagRedPacket = @"";
+    _password = @"";
     
+    MBProgressHUD *hud = [BWCommon getHUD];
     [HttpEngine getCart:^(NSDictionary*allDic,NSArray *dataArray, NSString *totalPrice, NSString *shippingFee, NSString *paymentPrice,NSString*error)
     {
+        [hud removeFromSuperview];
              if (![error isEqualToString:@""])
              {
                  UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:error preferredStyle: UIAlertControllerStyleAlert];
@@ -201,6 +223,11 @@
 
         _dataArray=dataArray;
         _styleDic=allDic;
+        _show_deadline = allDic[@"show_deadline"];
+        _self_pickup = allDic[@"self_pickup"];
+        //_self_pickup = 0;
+        //NSLog(@"self_pickup  %@",_styleDic);
+        //NSLog(@"self_pickup  %d",_self_pickup);
         NSArray*array=_styleDic[@"deadline"];
         _distributionTimeStr=array[0];
         _totalPrice=totalPrice;
@@ -218,6 +245,12 @@
     _tableView.delegate=self;
     _tableView.dataSource=self;
     _tableView.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
+    
+    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard)];
+    
+    gestureRecognizer.cancelsTouchesInView = NO;
+    
+    [_tableView addGestureRecognizer:gestureRecognizer];
 
     [self.view addSubview:_tableView];
     _payStyleArray=[[NSArray alloc]initWithObjects:@"花集余额",@"支付宝",@"微信支付",nil];
@@ -225,17 +258,9 @@
     _priceOrderArray=[[NSArray alloc]initWithObjects:_totalPrice,_shippingFee,@"0", nil];
     
     //配送方式字符串
-    NSString*selfPickup=[NSString stringWithFormat:@"%@",_styleDic[@"self_pickup"]];
-    if ([selfPickup isEqualToString:@"0"])
-    {
-        _styleStr=@"送货上门";
-    }
-    else
-    {
-        _styleStr=@"上门提货";
-        
-    }
-    //红宝状态
+    _styleStr=@"送货上门";
+    
+    //红包状态
     NSString*priceStr=[NSString stringWithFormat:@"%@",_paymentPrice];
     int price=[priceStr intValue];
     [HttpEngine getRedBagStatus:@"1" completion:^(NSArray *dataArray)
@@ -255,7 +280,7 @@
                  int termPrice=[termPriceStr intValue];
                  if (price<termPrice)
                  {
-                     _redStr=@"未达到使用额度";
+                     _redStr=@"暂无可用红包";
                  }
                  else
                  {
@@ -294,16 +319,16 @@
 //去支付
 -(void)gotopayAction
 {
-    if(_lastTag==10)
+    if(pay_type == 0)
     {
        [self inputPassword];
     }
-    if (_lastTag==11)
+    if (pay_type == 1)
     {
        [self goZhiFuBao];
         
     }
-    if (_lastTag==12)
+    if (pay_type == 2)
     {
        [self goWeiXin];
     }
@@ -314,73 +339,47 @@
     if(indexPath.section == 1){
         [self changeAddress];
     }else if(indexPath.section == 3){
-        
+        //UITableViewCell *cell=[tableView cellForRowAtIndexPath:indexPath];
+        pay_type = indexPath.row;
+        [tableView reloadData];
     }
 }
 //输入密码
 -(void)inputPassword
 {
-    UIView*view=[[UIView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.1, LBVIEW_HEIGHT1*0.45, LBVIEW_WIDTH1*0.8, LBVIEW_HEIGHT1*0.2)];
-    //_view=[[UIView alloc]initWithFrame:CGSizeMake(280, 120)];
-    view.backgroundColor=[UIColor whiteColor];
-    view.layer.cornerRadius=10;
-    view.clipsToBounds=YES;
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"输入支付密码" message:@"请输入您花集账户的支付密码" preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.secureTextEntry = YES;
+        textField.placeholder = @"支付密码";
+    }];
     
-    UILabel*titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, 20, 150, 20)];
-    titleLabel.text=@"输入支付密码:";
-    titleLabel.font=[UIFont systemFontOfSize:14];
-    [view addSubview:titleLabel];
-    
-    _tf=[[UITextField alloc]initWithFrame:CGRectMake(10, 40, LBVIEW_WIDTH1*0.8-20, 30)];
-    _tf.secureTextEntry=YES;
-    [_tf setBorderStyle:UITextBorderStyleLine];
-    [view addSubview:_tf];
-    
-    
-    UILabel *labelStriping=[[UILabel alloc]initWithFrame:CGRectMake(0, LBVIEW_HEIGHT1*0.2-30, LBVIEW_WIDTH1*0.8, 1)];
-    labelStriping.backgroundColor=[UIColor grayColor];
-    [view addSubview:labelStriping];
-    
-    for (int i=0; i<2; i++)
-    {
-        UIButton *btn=[[UIButton alloc]initWithFrame:CGRectMake(i*LBVIEW_WIDTH1*0.4,LBVIEW_HEIGHT1*0.2-30, LBVIEW_WIDTH1*0.4, 30)];
-        if (i==0)
-        {
-            [btn setTitle:@"取消" forState:UIControlStateNormal];
-        }
-        if (i==1)
-        {
-            [btn setTitle:@"确认" forState:UIControlStateNormal];
-        }
-        [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [btn addTarget:self action:@selector(removeBtn:) forControlEvents:UIControlEventTouchUpInside];
-        btn.tag=i+1;
-        btn.titleLabel.font=[UIFont systemFontOfSize:18];
-        [view addSubview:btn];
-    }
-    _shadowView=[[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
-    _shadowView.backgroundColor=[UIColor darkGrayColor];
-    _shadowView.alpha=0.9;
-    
-    //找window
-    UIWindow *window=[[UIApplication sharedApplication]keyWindow];
-    [window addSubview:_shadowView];
-    [_shadowView addSubview:view];
-}
--(void)removeBtn:(UIButton*)sender
-{
-    [_shadowView removeFromSuperview];
-    _password=_tf.text;
-    if (sender.tag==2)
-    {
-        [HttpEngine submitOrderAddressId:_addrId withMethod:@"huaji" withSpaypassword:_password withCouponNo:@""];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         
-    }
-    else
-    {
+    }];
+    
+    UIAlertAction *confirmAction = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UITextField *pay_password = alertController.textFields.firstObject;
+        _password = pay_password.text;
+        NSLog(@"支付密码：%@",_password);
         
-    }
+        [self createOrder];
+    }];
+    
+    [alertController addAction:cancelAction];
+    [alertController addAction:confirmAction];
+    
+    [self presentViewController:alertController animated:YES completion:nil];
+    
 }
+
+-(void) createOrder{
+    
+    NSArray *pay_method = [[NSArray alloc] initWithObjects:@"huaji",@"alipay",@"weixin", nil];
+    
+    
+    [HttpEngine submitOrderAddressId:_addrId withMethod:[pay_method objectAtIndex:pay_type] withSpaypassword:_password withCouponNo:_isTagRedPacket];
+}
+
 -(void)goWeiXin
 {
     [HttpEngine WXsendPay];
@@ -438,6 +437,9 @@
 //行数
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    if((section == 0 && !_self_pickup) || (section == 2 && !_show_deadline))
+        return 0;
+
     if (section==3||section==6)
     {
         return 3;
@@ -450,6 +452,9 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if((indexPath.section == 0 && !_self_pickup) || (indexPath.section == 2 && !_show_deadline))
+        return 0;
+    
     if (indexPath.section==1)
     {
         return 60;
@@ -553,13 +558,20 @@
             //cell0.iconImage = iconImage;
             //cell.imageView.frame = CGRectMake(0, 0, 24, 24);
             cell0.textLabel.text=_payStyleArray[indexPath.row];
-            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-30, 5, 20, 20)];
+            //cell0.selected = YES;
+            /*UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-30, 5, 20, 20)];
             [btn setBackgroundImage:[UIImage imageNamed:@"maru.png"] forState:UIControlStateNormal];
             [btn setBackgroundImage:[UIImage imageNamed:@"Dg.png"] forState:UIControlStateSelected];
             btn.selected=NO;
             btn.tag=indexPath.row+10;
             [btn addTarget:self action:@selector(choosePayStyle:) forControlEvents:UIControlEventTouchUpInside];
-            [cell0 addSubview:btn];
+            [cell0 addSubview:btn];*/
+            
+            if(pay_type == indexPath.row){
+                cell0.accessoryType = UITableViewCellAccessoryCheckmark;
+            }else{
+                cell0.accessoryType = UITableViewCellAccessoryNone;
+            }
             
             return cell0;
         }
@@ -574,16 +586,21 @@
                 _redLabel.textColor=[UIColor blackColor];
                 [cell addSubview:_redLabel];
             
-            cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+            
             //UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-20, 5, 10, 20)];
             //image.image=[UIImage imageNamed:@"item-r.png"];
             //[cell addSubview:image];
             
-            if (![_redStr isEqualToString:@"未达到使用额度"]&&![_redStr isEqualToString:@"暂无红包"])
+            if (![_redStr isEqualToString:@"暂无可用红包"]&&![_redStr isEqualToString:@"暂无红包"])
             {
                 UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 40)];
                 [btn addTarget:self action:@selector(chooseRedPage) forControlEvents:UIControlEventTouchUpInside];
                 [cell addSubview:btn];
+                cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+            }
+            else{
+                
+                cell.accessoryType = UITableViewCellAccessoryNone;
             }
             
         }
@@ -596,6 +613,8 @@
             tView.layer.borderWidth =1.0;
             tView.layer.cornerRadius =5.0;
             tView.tag=3;
+            
+            self.cust_message = tView;
             [cell addSubview:tView];
         }
             break;
@@ -705,9 +724,14 @@
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UIView*view=[[UIView alloc]init];
+    
+    if((section == 0 && !_self_pickup) || (section == 2 && !_show_deadline))
+        return view;
+    
     NSArray*array=[[NSArray alloc]initWithObjects:@"配送方式",@"配送地址",@"配送时间",@"支付方式",@"花集红包",@"订单备注",@"订单价格",@"商品清单", nil];
-    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, 0, 150, 30)];
+    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, 5, 150, 20)];
     label.text=array[section];
+    [label setFont:NJTitleFont];
     [view addSubview:label];
     
   /*  if (section==1)
@@ -730,8 +754,34 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
+    //if(section == 0)
+    //    return 50;
+    
+    if((section == 0 && !_self_pickup) || (section == 2 && !_show_deadline))
+        return 0.001;
+
     return 30;
 }
+
+
+-(void) hideKeyboard{
+    [self.cust_message resignFirstResponder];
+}
+// 点击隐藏键盘
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [super touchesBegan:touches withEvent:event];
+    [self.view endEditing:YES];
+    [self.tableView endEditing:YES];
+}
+
+// tap dismiss keyboard
+-(void)dismissKeyboard {
+    [self.view endEditing:YES];
+    //[self.tableView endEditing:YES];
+}
+
+
 //更换地址
 -(void)changeAddress
 {
@@ -771,6 +821,6 @@
     {
         return 40;
     }
-    return 0;
+    return 0.001;
 }
 @end;
