@@ -44,7 +44,14 @@
 -(void) updateCartCount:(NSString *) number{
     
     UITabBarItem *item = [self.tabBarVC.tabBar.items objectAtIndex:3];
-    item.badgeValue = number;
+    
+    if(number){
+        item.badgeValue = number;
+    }
+    else
+    {
+        item.badgeValue = nil;
+    }
 }
 /*
 #pragma mark - Navigation

@@ -17,6 +17,7 @@
 #import "FlowerMoneyViewController.h"
 #import "ComplainViewController.h"
 #import "MessageCenterViewController.h"
+#import "MyHJTableViewCell.h"
 
 @interface MyHJViewController ()
 
@@ -87,8 +88,6 @@
 @end
 
 
-
-
 //宏定义宽高
 #define VIEW_WIDTH self.view.bounds.size.width
 #define VIEW_HEIGHT self.view.bounds.size.height
@@ -101,28 +100,21 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    self.navigationController.navigationBarHidden=YES;
+    //self.navigationController.navigationBarHidden=YES;
     self.navigationController.navigationBar.translucent =NO;
-    [self hidesTabBar:NO];
+  
 
-    UIView*headView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1,64)];
-    headView.backgroundColor=[UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1];
-    [self.view addSubview:headView];
-    
-    UILabel*titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 20, LBVIEW_WIDTH1, 30)];
-    titleLabel.text=@"我的花集";
-    titleLabel.font=[UIFont systemFontOfSize:18];
-    titleLabel.textAlignment=NSTextAlignmentCenter;
-    titleLabel.textColor=[UIColor whiteColor];
-    [headView addSubview:titleLabel];
+
     
     NSString*idStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"ID"];
     
+    MBProgressHUD *hud = [BWCommon getHUD];
     [HttpEngine getConsumerDetailData:idStr completion:^(NSArray *dataArray)
      {
+         [hud removeFromSuperview];
          ConsumerDetail*consum=dataArray[0];
          _userName=consum.userid;
-         [self showTableView];
+         [_tableView reloadData];
      }];
     
     //花售余额部分
@@ -136,11 +128,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self showTableView];
     
 }
 -(void)showTableView
 {
-    _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 64, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-110) style:UITableViewStyleGrouped];
+    _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-70) style:UITableViewStyleGrouped];
     _tableView.delegate=self;
     _tableView.dataSource=self;
     _tableView.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
@@ -151,18 +144,22 @@
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 
-    return 8;
+    return 9;
 }
+
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.row==0)
     {
-        return 60;
+        return 80;
     }
     if (indexPath.row==1) {
-        return 60;
+        return 50;
     }
-    return LBVIEW_HEIGHT1 / 13.5;
+    if (indexPath.row==2) {
+        return 50;
+    }
+    return 50;
 
 }
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -173,7 +170,10 @@
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
     }
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
-    if (indexPath.row==0)
+    
+    MyHJTableViewCell *cell0 = [MyHJTableViewCell cellWithTableView:tableView];
+    
+    if(indexPath.row == 0)
     {
         self.oderImageV = [[UIImageView alloc] initWithFrame:CGRectMake(VIEW_WIDTH * 0.06, 18.5, 20, 20)];
         self.oderImageV.image = [UIImage imageNamed:@"myOder.PNG"];
@@ -191,7 +191,11 @@
         selectLabel.textColor=[UIColor grayColor];
         [cell addSubview:selectLabel];
         
+        [cell0.rightLabel setText:@"查看全部购买商品"];
+        return cell0;
+        //[cell addSubview:self.oderImageV];
         //全部订单
+        /*
         UIButton*allBtn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 60)];
         [allBtn addTarget:self action:@selector(allOrder) forControlEvents:UIControlEventTouchUpInside];
         [cell addSubview:allBtn];
@@ -203,7 +207,7 @@
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
         
     }
-    if (indexPath.row==1)
+    else if (indexPath.row==2)
     {
         //订单分类
         
@@ -231,20 +235,20 @@
             
             if (i==0)
             {
-                UILabel*line1=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 10, 1, 37)];
+                UILabel*line1=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 13, 1, 30)];
                 line1.backgroundColor=[UIColor lightGrayColor];
                 [cell addSubview:line1];
             }
             if (i==1)
             {
-                UILabel*line2=[[UILabel alloc]initWithFrame:CGRectMake(2*LBVIEW_WIDTH1/3, 10, 1, 37)];
+                UILabel*line2=[[UILabel alloc]initWithFrame:CGRectMake(2*LBVIEW_WIDTH1/3, 13, 1, 30)];
                 line2.backgroundColor=[UIColor lightGrayColor];
                 [cell addSubview:line2];
             }
         }
         
     }
-    if (indexPath.row==2)
+    else if (indexPath.row==3)
     {
         self.addressImageV = [[UIImageView alloc] initWithFrame:CGRectMake(VIEW_WIDTH * 0.06, VIEW_HEIGHT * 0.02+2, 16, 22)];
         self.addressImageV.image = [UIImage imageNamed:@"icons-my-huaji-1.png"];
@@ -261,7 +265,7 @@
         
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     }
-    if (indexPath.row==3)
+    else if (indexPath.row==4)
     {
         self.saihuImageV = [[UIImageView alloc] initWithFrame:CGRectMake(VIEW_WIDTH * 0.06, VIEW_HEIGHT * 0.02+2,20,20)];
         self.saihuImageV.image = [UIImage imageNamed:@"saihu.PNG"];
@@ -278,8 +282,9 @@
 
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     }
-    if (indexPath.row==4)
+    else if (indexPath.row==5)
     {
+        [cell0.iconImage setImage:[UIImage imageNamed:@"message.PNG"]];
         
         self.messageImageV = [[UIImageView alloc] initWithFrame:CGRectMake(VIEW_WIDTH * 0.06, VIEW_HEIGHT * 0.02+2, 20, 20)];
         self.messageImageV.image = [UIImage imageNamed:@"message.PNG"];
@@ -296,7 +301,7 @@
         
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     }
-    if (indexPath.row==5)
+    else if (indexPath.row==6)
     {
         self.moneyImageV = [[UIImageView alloc] initWithFrame:CGRectMake(VIEW_WIDTH * 0.06, VIEW_HEIGHT * 0.02+2, 20, 20)];
         self.moneyImageV.image = [UIImage imageNamed:@"money.PNG"];
@@ -319,7 +324,7 @@
         
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     }
-    if (indexPath.row==6)
+    else if (indexPath.row==7)
     {
         UIImageView*secuIV= [[UIImageView alloc] initWithFrame:CGRectMake(VIEW_WIDTH * 0.06, VIEW_HEIGHT * 0.02, 20, 20)];
         secuIV.image = [UIImage imageNamed:@"afer.PNG"];
@@ -423,13 +428,14 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 80;
+    return 0.001;
+    //return 80;
 }
 
 -(void)theTopButtonAction:(UIButton *)sender
 {
     AboutMeViewController *aboutVC = [[AboutMeViewController alloc] init];
-    [self hidesTabBar:YES];
+    aboutVC.hidesBottomBarWhenPushed=YES;
     [self.navigationController pushViewController:aboutVC animated:YES];
 }
 
@@ -437,41 +443,53 @@
 //选中cell
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
+    if(indexPath.row == 0)
+    {
+        AboutMeViewController *aboutVC = [[AboutMeViewController alloc] init];
+        aboutVC.hidesBottomBarWhenPushed=YES;
+        [self.navigationController pushViewController:aboutVC animated:YES];
+    }
+    if(indexPath.row == 1)
+    {
+        _tabBarVC.selectedIndex=2;
+        return;
+    }
     //管理收货地址
-    if(indexPath.row==2)
+    if(indexPath.row==3)
     {
         AdressViewController *adressVC = [[AdressViewController alloc] init];
-        [self hidesTabBar:YES];
+        adressVC.hidesBottomBarWhenPushed=YES;
         [self.navigationController pushViewController:adressVC animated:YES];
     }
     //花集红包
-    if(indexPath.row==3)
+    if(indexPath.row==4)
     {
         FlowerMoneyViewController*flowerVC=[[FlowerMoneyViewController alloc]init];
-        [self hidesTabBar:YES];
+        flowerVC.hidesBottomBarWhenPushed=YES;
         [self.navigationController pushViewController:flowerVC animated:YES];
     }
     //消息中心
-    if(indexPath.row==4)
+    if(indexPath.row==5)
     {
         MessageCenterViewController*messageVC=[[MessageCenterViewController alloc]init];
         [self.navigationController pushViewController:messageVC animated:YES];
         
     }
     //花集余额
-    if(indexPath.row==5)
+    if(indexPath.row==6)
     {
         UserMoneyViewController *userMVC = [[UserMoneyViewController alloc] init];
         [self.navigationController pushViewController:userMVC animated:YES];
     }
     //我的售后
-    if(indexPath.row==6)
+    if(indexPath.row==7)
     {
         ComplainViewController*complainVC=[[ComplainViewController alloc]init];
         [self.navigationController pushViewController:complainVC animated:YES];
     }
     //客服电话
-    if(indexPath.row==7)
+    if(indexPath.row==8)
     {
         // 跳转页面
         UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"是否拨打客服电话" preferredStyle: UIAlertControllerStyleAlert];
@@ -541,33 +559,5 @@
     
 }
 
-//自定义隐藏tarbtn
--(void)hidesTabBar:(BOOL)hidden
-{
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:0];
-    for (UIView *view in self.tabBarController.view.subviews) {
-        if ([view isKindOfClass:[UITabBar class]]) {
-            if (hidden)
-            {
-                [view setFrame:CGRectMake(view.frame.origin.x, [UIScreen mainScreen].bounds.size.height, view.frame.size.width , view.frame.size.height)];
-            }
-            else{
-                [view setFrame:CGRectMake(view.frame.origin.x, [UIScreen mainScreen].bounds.size.height - 49, view.frame.size.width, view.frame.size.height)];
-                
-            }
-        }
-        else{
-            if([view isKindOfClass:NSClassFromString(@"UITransitionView")]){
-                if (hidden) {
-                    [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, [UIScreen mainScreen].bounds.size.height)];
-                }
-                else{
-                    [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, [UIScreen mainScreen].bounds.size.height - 49 )];
-                }
-            }
-        }
-    }
-    [UIView commitAnimations];
-}
+
 @end

@@ -31,6 +31,11 @@
 
 @implementation AdressViewController
 
+#define NJTitleFont [UIFont systemFontOfSize:14]
+#define NJNameFont [UIFont systemFontOfSize:12]
+#define NJTextFont [UIFont systemFontOfSize:10.5]
+#define NJFontColor [UIColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1]
+
 #define VIEW_WIDTH self.view.bounds.size.width
 #define VIEW_HEIGHT self.view.bounds.size.height
 
@@ -40,7 +45,7 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    self.navigationController.navigationBarHidden=NO;
+    //self.navigationController.navigationBarHidden=NO;
     self.navigationController.navigationBar.translucent =NO;
     [HttpEngine getAddress:^(NSArray *dataArray)
      {
@@ -115,7 +120,7 @@
         cell.selectionStyle= UITableViewCellSelectionStyleNone;
         cell.numAddressLabel.text=[NSString stringWithFormat:@"%lu",indexPath.row+1];
         cell.numAddressLabel.textColor=[UIColor whiteColor];
-        cell.numAddressLabel.font=[UIFont boldSystemFontOfSize:12];
+        //cell.numAddressLabel.font=[UIFont systemFontOfSize:14];
         
         cell.nameL.text=[NSString stringWithFormat:@"%@   %@",adress.consignee,adress.phoneMob];
         cell.nameL.font=[UIFont systemFontOfSize:14];
@@ -207,6 +212,12 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
     return LBVIEW_HEIGHT1 / 10;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 0.001;
+    //return 80;
 }
 
 //添加新地址

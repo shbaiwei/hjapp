@@ -10,6 +10,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import "HJViewController.h"
 #import "AssortPageViewController.h"
+#import "BWCommon.h"
 
 @interface HomePageViewController : HJViewController
 <CLLocationManagerDelegate>

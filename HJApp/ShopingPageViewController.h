@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "HJViewController.h"
+#import "BWCommon.h"
 
 @interface ShopingPageViewController : HJViewController
 

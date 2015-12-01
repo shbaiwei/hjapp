@@ -15,10 +15,6 @@
 #import "TodayShopViewController.h"
 #import "LoginViewController.h"
 
-#define NJTitleFont [UIFont systemFontOfSize:14]
-#define NJNameFont [UIFont systemFontOfSize:12]
-#define NJTextFont [UIFont systemFontOfSize:10.5]
-#define NJFontColor [UIColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1]
 
 @interface HomePageViewController ()<UIScrollViewDelegate>
 
@@ -96,7 +92,6 @@ UILabel *secondLabel;
 {
   
     self.navigationController.navigationBarHidden=YES;
-    [self hidesTabBar:NO];
     //self.cityLabel.text=[[NSUserDefaults standardUserDefaults]objectForKey:@"CITYNAME"];
     //NSLog(@"沙盒路径=====%@",NSHomeDirectory());
     
@@ -267,6 +262,7 @@ UILabel *secondLabel;
 -(void)changeCityBtn
 {
     ChangCityViewController*changVC=[[ChangCityViewController alloc]init];
+    changVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:changVC animated:YES];
     
 }
@@ -677,45 +673,16 @@ UILabel *secondLabel;
 -(void)ikenButton:(UIButton*)sender
 {
     IdeaBackViewController*ideaVC=[[IdeaBackViewController alloc]init];
-    [self hidesTabBar:YES];
+    ideaVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:ideaVC animated:YES];
     
 }
 -(void)bessButton:(UIButton*)sender
 {
     CooperateViewController*cooperateVC=[[CooperateViewController alloc]init];
-    [self hidesTabBar:YES];
+    cooperateVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:cooperateVC animated:YES];
     
 }
 
-//自定义隐藏tarbtn
--(void)hidesTabBar:(BOOL)hidden
-{
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:0];
-    for (UIView *view in self.tabBarController.view.subviews) {
-        if ([view isKindOfClass:[UITabBar class]]) {
-            if (hidden)
-            {
-                [view setFrame:CGRectMake(view.frame.origin.x, [UIScreen mainScreen].bounds.size.height, view.frame.size.width , view.frame.size.height)];
-            }
-            else{
-                [view setFrame:CGRectMake(view.frame.origin.x, [UIScreen mainScreen].bounds.size.height - 49, view.frame.size.width, view.frame.size.height)];
-                
-            }
-        }
-        else{
-            if([view isKindOfClass:NSClassFromString(@"UITransitionView")]){
-                if (hidden) {
-                    [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, [UIScreen mainScreen].bounds.size.height)];
-                }
-                else{
-                    [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, [UIScreen mainScreen].bounds.size.height - 49 )];
-                }
-            }
-        }
-    }
-    [UIView commitAnimations];
-}
 @end
