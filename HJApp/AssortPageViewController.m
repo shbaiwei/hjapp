@@ -958,6 +958,8 @@ NSString *locatioanStr;
         UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-90,40, 94, 34)];
         //[btn setBackgroundImage:[UIImage imageNamed:@"category-arrow2.png"] forState:UIControlStateNormal];
         [btn setImage:[UIImage imageNamed:@"category-arrow2.png"] forState:UIControlStateNormal];
+//      [btn setImage:[UIImage imageNamed:@"category-arrow1.png"] forState:UIControlStateSelected];
+        btn.selected=NO;
         [btn setContentMode:UIViewContentModeCenter];
         [btn setContentEdgeInsets:UIEdgeInsetsMake(10, 60, 0, 10)];
         
@@ -974,10 +976,10 @@ NSString *locatioanStr;
 //区间开合按钮
 -(void)showDetail:(UIButton*)sender
 {
+   // sender.selected=!sender.selected;
     _isOpen[sender.tag]=!_isOpen[sender.tag];
     [_rightTableV reloadData];
-//    NSIndexSet*set=[NSIndexSet indexSetWithIndex:sender.tag];
-//    [_rightTableV reloadSections:set withRowAnimation:UITableViewRowAnimationFade];
+
 }
 
 //自定义隐藏tarbtn

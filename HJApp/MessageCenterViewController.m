@@ -74,6 +74,7 @@
         timeLabel.text=[NSString stringWithFormat:@"%@ %@",array[0],array[1]];
         timeLabel.font=[UIFont systemFontOfSize:12];
         timeLabel.textColor=[UIColor grayColor];
+        timeLabel.textAlignment=NSTextAlignmentRight;
         [cell addSubview:timeLabel];
         
         

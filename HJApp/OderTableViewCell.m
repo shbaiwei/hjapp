@@ -21,13 +21,13 @@
         
         self.nameLabel = [[UILabel alloc] init];
         self.nameLabel.textColor = [UIColor blackColor];
-        self.nameLabel.font = [UIFont systemFontOfSize:16];
+        self.nameLabel.font = [UIFont systemFontOfSize:14];
         //    self.nameLabel.backgroundColor = [UIColor yellowColor];
         [self.contentView addSubview:self.nameLabel];
         
         self.suryouLabel = [[UILabel alloc] init];
         self.suryouLabel.textColor = [UIColor grayColor];
-        self.suryouLabel.font = [UIFont systemFontOfSize:14];
+        self.suryouLabel.font = [UIFont systemFontOfSize:12];
         //     self.suryouLabel.backgroundColor = [UIColor yellowColor];
         self.suryouLabel.alpha = 0.7;
         [self.contentView addSubview:self.suryouLabel];
@@ -36,13 +36,13 @@
         //self.moneyLabel.text = @"¥100";
         self.moneyLabel.textColor = [UIColor redColor];
         //        self.moneyLabel.backgroundColor = [UIColor cyanColor];
-        self.moneyLabel.font = [UIFont systemFontOfSize:16];
+        self.moneyLabel.font = [UIFont systemFontOfSize:14];
         [self.contentView addSubview:self.moneyLabel];
         
         self.X2Label = [[UILabel alloc] init];
         self.X2Label.textColor = [UIColor grayColor];
         self.X2Label.textAlignment=NSTextAlignmentCenter;
-        self.X2Label.font = [UIFont systemFontOfSize:16];
+        self.X2Label.font = [UIFont systemFontOfSize:14];
         self.X2Label.alpha = 0.5;
         [self.contentView addSubview:self.X2Label];
         

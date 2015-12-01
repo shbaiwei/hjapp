@@ -195,7 +195,7 @@
 {
     UIView*view=[[UIView alloc]init];
     
-    UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(20,LBVIEW_HEIGHT1 / 10-LBVIEW_HEIGHT1 / 17, LBVIEW_WIDTH1-40, LBVIEW_HEIGHT1 / 17)];
+    UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(20,LBVIEW_HEIGHT1 / 10-LBVIEW_HEIGHT1 / 17-10, LBVIEW_WIDTH1-40, LBVIEW_HEIGHT1 / 17)];
     //[btn setImage:[UIImage imageNamed:@"newadress.png"] forState:UIControlStateNormal];
     [btn setTitle:@"新建收货地址" forState:UIControlStateNormal];
     [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];

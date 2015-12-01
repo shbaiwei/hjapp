@@ -79,13 +79,15 @@
         [self.view addSubview:view];
         
         
-        UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(15, 0, LBVIEW_WIDTH1/5.0, LBVIEW_HEIGHT1/15.0)];
+        UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(15, 0, LBVIEW_WIDTH1/4.5, LBVIEW_HEIGHT1/15.0)];
         label.text=labelNameArray[i];
+        label.font=[UIFont systemFontOfSize:14];
         label.textColor=[UIColor blackColor];
         [view addSubview:label];
         
-        UITextField*field=[[UITextField alloc]initWithFrame:CGRectMake(20+LBVIEW_WIDTH1/5.0, 0, view.frame.size.width-label.frame.size.width-20, LBVIEW_HEIGHT1/15.0)];
+        UITextField*field=[[UITextField alloc]initWithFrame:CGRectMake(20+LBVIEW_WIDTH1/4.5, 0, view.frame.size.width-label.frame.size.width-20, LBVIEW_HEIGHT1/15.0)];
         field.placeholder=tfNameArray[i];
+        field.font=[UIFont systemFontOfSize:14];
         field.clearsOnBeginEditing=YES;
         //field.borderStyle=UITextBorderStyleBezel;
         if (i==1)
@@ -111,6 +113,7 @@
         lgBtn.tag=i;
         lgBtn.layer.cornerRadius=7;
         lgBtn.clipsToBounds=YES;
+        lgBtn.titleLabel.font=[UIFont systemFontOfSize:14];
         [lgBtn setTitle:btnNameArray[i] forState:UIControlStateNormal];
         [lgBtn addTarget:self action:@selector(lgBtnClick:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:lgBtn];
@@ -121,7 +124,7 @@
     [disBtn setTitle:@"忘记密码?" forState:UIControlStateNormal];
     [disBtn addTarget:self action:@selector(disPassword) forControlEvents:UIControlEventTouchUpInside];
     [disBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    [disBtn.titleLabel setFont:[UIFont systemFontOfSize:14]];
+    [disBtn.titleLabel setFont:[UIFont systemFontOfSize:12]];
     [self.view addSubview:disBtn];
     
 }

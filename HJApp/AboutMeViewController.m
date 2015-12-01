@@ -12,7 +12,7 @@
 #import "ChangeSexViewController.h"
 
 
-@interface AboutMeViewController ()<UITableViewDataSource,UITableViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>
+@interface AboutMeViewController ()<UITableViewDataSource,UITableViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UITextViewDelegate>
 @property(nonatomic,strong)NSArray*dataArray;
 
 @property(nonatomic,strong)UIView*btnView;
@@ -25,6 +25,7 @@
 @property(nonatomic,strong)UIButton*sexBtn;
 @property(nonatomic,strong)UIButton*birthdayBtn;
 @property(nonatomic,strong)UITextField*trueNameTF;
+@property(nonatomic,strong)UITextView*trueNameTFV;
 @property(nonatomic,strong)UILabel*sexLabel;
 @property(nonatomic,strong)UILabel*birthdayLabel;
 
@@ -72,7 +73,7 @@
 }
 -(void)showConsumerDetail
 {
-    _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1) style:UITableViewStyleGrouped];
+    _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-64) style:UITableViewStyleGrouped];
     _tableView.delegate=self;
     _tableView.dataSource=self;
     //_tableView.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
@@ -105,91 +106,35 @@
 //上传头像
 -(void)uploadPic
 {
-   
-    
-    if (_isOpen==NO)
-    {
-        //选择视图
-        _chooseView=[[UIView alloc]initWithFrame:CGRectMake(20,LBVIEW_HEIGHT1-110, LBVIEW_WIDTH1-40,110)];
-//        _chooseView.layer.cornerRadius=10;
-//        _chooseView.clipsToBounds=YES;
-       // _chooseView.backgroundColor=[UIColor whiteColor];
-        //[self.view addSubview:_chooseView];
-        NSArray*btnNameArray=[[NSArray alloc]initWithObjects:@"拍照", @"从相册中选取",@"取消",nil];
-        for (int i=0; i<3; i++)
-        {
-            UILabel*label=[[UILabel alloc]init];
-            if (i==2)
-            {
-                label.frame=CGRectMake(0, 68, LBVIEW_WIDTH1-40,30);
-            }
-            else
-            {
-                label.frame=CGRectMake(0, i*31, LBVIEW_WIDTH1-40,30);
-            }
-            label.text=btnNameArray[i];
-            label.layer.cornerRadius=5;
-            label.clipsToBounds=YES;
-            label.font=[UIFont systemFontOfSize:14];
-            label.textAlignment=NSTextAlignmentCenter;
-            label.textColor=[UIColor blueColor];
-            label.backgroundColor=[UIColor whiteColor];
-            [_chooseView addSubview:label];
-            
-            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, i*31, LBVIEW_WIDTH1-40,30)];
-            btn.tag=i+50;
-            [btn addTarget:self action:@selector(chooseBtn:) forControlEvents:UIControlEventTouchUpInside];
-            [_chooseView addSubview:btn];
-            
-        }
-    }
-    else
-    {
-        [_chooseView removeFromSuperview];
-    }
-    _shadowView=[[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
-    _shadowView.backgroundColor=[UIColor grayColor];
-    _shadowView.alpha=0.8;
-    
-    //找window
-    UIWindow *window=[[UIApplication sharedApplication]keyWindow];
-    [window addSubview:_shadowView];
-    [_shadowView addSubview:_chooseView];
-    
-    _isOpen=!_isOpen;
-    
-}
-
-//选择按钮
--(void)chooseBtn:(UIButton*)sender
-{
-    _isOpen=NO;
-    [_shadowView removeFromSuperview];
     _imageVC=[[UIImagePickerController alloc]init];
     _imageVC.delegate=self;
     _imageVC.allowsEditing=YES;
+
+    UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"请选择" message:nil preferredStyle: UIAlertControllerStyleActionSheet];
+    UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"从本地获取" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
+                                 {
+                        _imageVC.sourceType=UIImagePickerControllerSourceTypePhotoLibrary;
+                        [self presentViewController:_imageVC animated:YES completion:nil];
+                                 }];
+    UIAlertAction*defaultAction1=[UIAlertAction actionWithTitle:@"使用相机" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
+                                 {
+                                     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
+                                     {
+                                         //说明相机 可以使用 ；
+                                         _imageVC.sourceType=UIImagePickerControllerSourceTypeCamera;
+                                         [self presentViewController:_imageVC animated:YES completion:nil];
+                                     }
+                                 }];
+    UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
+                          {
+                              
+                          }];
+    [alert addAction:cancel];
+    [alert addAction:defaultAction];
+    [alert addAction:defaultAction1];
+    [self presentViewController:alert animated:YES completion:nil];
     
-    if (sender.tag==50)
-    {
-        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
-        {
-            //说明相机 可以使用 ；
-            _imageVC.sourceType=UIImagePickerControllerSourceTypeCamera;
-        }
-    }
-    if (sender.tag==51)
-    {
-        _imageVC.sourceType=UIImagePickerControllerSourceTypePhotoLibrary;
-    }
-    if (sender.tag==52)
-    {
-        return;
-    }
-    
-    [self presentViewController:_imageVC animated:YES completion:nil];
 }
-
-
 //点击取消 ；
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
@@ -229,7 +174,7 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    return 70;
+    return 80;
 }
 
 //区
@@ -275,21 +220,33 @@
                 break;
             case 2:
             {
-                _trueNameTF=[[UITextField alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 15,LBVIEW_WIDTH1/2, 40)];
-                _trueNameTF.layer.borderColor=[UIColor grayColor].CGColor;
-                _trueNameTF.layer.borderWidth=1;
-                _trueNameTF.layer.cornerRadius=10;
-                _trueNameTF.clipsToBounds=YES;
-                _trueNameTF.text=[NSString stringWithFormat:@"%@",consumer.realName];
-                [_trueNameTF addTarget:self action:@selector(keyDown) forControlEvents:UIControlEventEditingDidEndOnExit];
-                _trueNameTF.textColor=[UIColor blackColor];
+//                _trueNameTF=[[UITextField alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 15,LBVIEW_WIDTH1/2, 40)];
+//                _trueNameTF.layer.borderColor=[UIColor grayColor].CGColor;
+//                _trueNameTF.layer.borderWidth=1;
+//                _trueNameTF.layer.cornerRadius=10;
+//                _trueNameTF.clipsToBounds=YES;
+//                _trueNameTF.text=[NSString stringWithFormat:@"%@",consumer.realName];
+//                [_trueNameTF addTarget:self action:@selector(keyDown) forControlEvents:UIControlEventEditingDidEndOnExit];
+//                _trueNameTF.textColor=[UIColor blackColor];
+//                
+//                UIView * leftView = [[UIView alloc] initWithFrame:CGRectMake(10,0,10,40)];
+//                leftView.backgroundColor = [UIColor clearColor];
+//                _trueNameTF.leftView = leftView;
+//                _trueNameTF.leftViewMode = UITextFieldViewModeAlways;
+//                _trueNameTF.font=[UIFont systemFontOfSize:14];
+//                [cell addSubview:_trueNameTF];
                 
-                UIView * leftView = [[UIView alloc] initWithFrame:CGRectMake(10,0,10,40)];
-                leftView.backgroundColor = [UIColor clearColor];
-                _trueNameTF.leftView = leftView;
-                _trueNameTF.leftViewMode = UITextFieldViewModeAlways;
-                _trueNameTF.font=[UIFont systemFontOfSize:14];
-                [cell addSubview:_trueNameTF];
+                _trueNameTFV=[[UITextView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 15,LBVIEW_WIDTH1/2, 40)];
+                _trueNameTFV.layer.borderColor=[UIColor grayColor].CGColor;
+                _trueNameTFV.layer.borderWidth=1;
+                _trueNameTFV.layer.cornerRadius=10;
+                _trueNameTFV.clipsToBounds=YES;
+                _trueNameTFV.text=[NSString stringWithFormat:@"%@",consumer.realName];
+                _trueNameTFV.textColor=[UIColor blackColor];
+                _trueNameTFV.delegate=self;
+                _trueNameTFV.font=[UIFont systemFontOfSize:14];
+                [cell addSubview:_trueNameTFV];
+
                 
             }
                 break;
@@ -449,10 +406,32 @@
     
 }
 
-
-//键盘下去
--(void)keyDown
+//让view上去做动画 table上去
+-(void)textViewDidBeginEditing:(UITextView *)textView
 {
-    [_trueNameTF resignFirstResponder];
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.25];
+     _tableView.frame=CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-64-216);
+    [UIView commitAnimations];
+    
 }
+-(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
+    //text==return  换行
+    if ([text isEqualToString:@"\n"])
+    {
+        [textView resignFirstResponder];
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.25];
+        _tableView.frame=CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-64);
+        [UIView commitAnimations];
+    }
+    return YES;
+}
+//键盘下去
+//-(void)keyDown
+//{
+//    _tableView.frame=CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-64-216);
+//    [_trueNameTF resignFirstResponder];
+//}
 @end
