@@ -102,11 +102,11 @@
     CGFloat height = self.frame.size.height;
     
     self.adressIV.frame = CGRectMake(width / 1.5-35, height / 6, 24, 33);
-    self.numAddressLabel.frame=CGRectMake(width/5.2+(width/4-width/14)/2,height / 6+height /18+height/26, width /13, width /13);
+    self.numAddressLabel.frame=CGRectMake(width / 1.5-35,22, 16, 26);
     
     
     self.nameL.frame = CGRectMake(width / 1.5, height / 6, width*4, height / 5);
-    self.numberL.frame = CGRectMake(width / 1.5+width /1.5, height / 6, width / 0.6, height / 5);
+    self.numberL.frame = CGRectMake(width / 1.5+width /1.5, height / 6,16, 16);
     
     self.adressL.frame = CGRectMake(width / 1.5, height / 2.7, self.frame.size.width-width/1.5, height / 3);
     

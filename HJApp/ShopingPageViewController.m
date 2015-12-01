@@ -29,10 +29,7 @@
 
 @end
 
-#define NJTitleFont [UIFont systemFontOfSize:14]
-#define NJNameFont [UIFont systemFontOfSize:12]
-#define NJTextFont [UIFont systemFontOfSize:10.5]
-#define NJFontColor [UIColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1]
+
 
 #define VIEW_WIDTH self.view.bounds.size.width
 #define VIEW_HEIGHT self.view.bounds.size.height
@@ -52,14 +49,7 @@
     [HttpEngine getSimpleCart:^(NSArray *array) {
         _dataArray=array;
         
-        NSInteger number = 0;
-        for (NSInteger i=0; i<array.count; i++) {
-            ShopingCar*shCa=array[i];
-            number += [shCa.number integerValue];
-        }
-        if(number>0){
-            [self updateCartCount:[NSString stringWithFormat:@"%ld",number]];
-        }
+        [self refreshCartCount:array];
 
         [self showTableView];
     }];
@@ -111,7 +101,7 @@
     }
     
     NSString*allPrice=[NSString stringWithFormat:@"总计%@",_totalPrice];
-    UIFont*font=[UIFont systemFontOfSize:21];
+    UIFont*font=[UIFont systemFontOfSize:18];
     CGSize size=[allPrice boundingRectWithSize:CGSizeMake(LBVIEW_WIDTH1, LBVIEW_HEIGHT1 / 15) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
     
     self.okaneL = [[UILabel alloc] init];
@@ -161,7 +151,8 @@
     else
     {
         PayViewController*payVC=[[PayViewController alloc]init];
-        [self hidesTabBar:YES];
+        //[self hidesTabBar:YES];
+        payVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:payVC animated:YES];
     }
     
@@ -254,6 +245,16 @@
     [HttpEngine getSimpleCart:^(NSArray *array)
      {
          _dataArray=array;
+         
+         NSInteger number = 0;
+         for (NSInteger i=0; i<array.count; i++) {
+             ShopingCar*shCa=array[i];
+             number += [shCa.number integerValue];
+         }
+         if(number>0){
+             [self updateCartCount:[NSString stringWithFormat:@"%ld",number]];
+         }
+
          [self add:(sender.tag)];
     }];
     
@@ -275,6 +276,22 @@
     
 }
 
+
+-(void) refreshCartCount:(NSArray *)array {
+    
+    NSInteger number = 0;
+    for (NSInteger i=0; i<array.count; i++) {
+        ShopingCar*shCa=array[i];
+        number += [shCa.number integerValue];
+    }
+    if(number>0){
+        [self updateCartCount:[NSString stringWithFormat:@"%ld",number]];
+    }else{
+        [self updateCartCount:nil];
+    }
+
+}
+
 //删除按钮
 -(void)subBtn:(UIButton*)sender
 {
@@ -282,7 +299,9 @@
 [HttpEngine getSimpleCart:^(NSArray *array)
  {
     _dataArray=array;
+     [self refreshCartCount:array];
     [self sub:(sender.tag-1000)];
+    
  }];
     
 }
@@ -309,6 +328,10 @@
     [HttpEngine getSimpleCart:^(NSArray *array)
      {
          _dataArray=array;
+         
+         [self refreshCartCount:array];
+         
+         
          float sum=0;
          if (_dataArray.count==0)
          {
@@ -356,33 +379,4 @@
     
 }
 
-//自定义隐藏tarbtn
--(void)hidesTabBar:(BOOL)hidden
-{
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:0];
-    for (UIView *view in self.tabBarController.view.subviews) {
-        if ([view isKindOfClass:[UITabBar class]]) {
-            if (hidden)
-            {
-                [view setFrame:CGRectMake(view.frame.origin.x, [UIScreen mainScreen].bounds.size.height, view.frame.size.width , view.frame.size.height)];
-            }
-            else{
-                [view setFrame:CGRectMake(view.frame.origin.x, [UIScreen mainScreen].bounds.size.height - 49, view.frame.size.width, view.frame.size.height)];
-                
-            }
-        }
-        else{
-            if([view isKindOfClass:NSClassFromString(@"UITransitionView")]){
-                if (hidden) {
-                    [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, [UIScreen mainScreen].bounds.size.height)];
-                }
-                else{
-                    [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, [UIScreen mainScreen].bounds.size.height - 49 )];
-                }
-            }
-        }
-    }
-    [UIView commitAnimations];
-}
 @end

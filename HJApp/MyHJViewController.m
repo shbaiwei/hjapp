@@ -17,6 +17,7 @@
 #import "FlowerMoneyViewController.h"
 #import "ComplainViewController.h"
 #import "MessageCenterViewController.h"
+#import "MyHJTableViewCell.h"
 
 @interface MyHJViewController ()
 
@@ -87,8 +88,6 @@
 @end
 
 
-
-
 //宏定义宽高
 #define VIEW_WIDTH self.view.bounds.size.width
 #define VIEW_HEIGHT self.view.bounds.size.height
@@ -101,28 +100,21 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    self.navigationController.navigationBarHidden=YES;
+    //self.navigationController.navigationBarHidden=YES;
     self.navigationController.navigationBar.translucent =NO;
-    [self hidesTabBar:NO];
+  
 
-    UIView*headView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1,64)];
-    headView.backgroundColor=[UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1];
-    [self.view addSubview:headView];
-    
-    UILabel*titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 20, LBVIEW_WIDTH1, 30)];
-    titleLabel.text=@"我的花集";
-    titleLabel.font=[UIFont systemFontOfSize:18];
-    titleLabel.textAlignment=NSTextAlignmentCenter;
-    titleLabel.textColor=[UIColor whiteColor];
-    [headView addSubview:titleLabel];
+
     
     NSString*idStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"ID"];
     
+    MBProgressHUD *hud = [BWCommon getHUD];
     [HttpEngine getConsumerDetailData:idStr completion:^(NSArray *dataArray)
      {
+         [hud removeFromSuperview];
          ConsumerDetail*consum=dataArray[0];
          _userName=consum.userid;
-         [self showTableView];
+         [_tableView reloadData];
      }];
     
     //花售余额部分
@@ -136,11 +128,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self showTableView];
     
 }
 -(void)showTableView
 {
-    _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 64, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-110) style:UITableViewStyleGrouped];
+    _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-70) style:UITableViewStyleGrouped];
     _tableView.delegate=self;
     _tableView.dataSource=self;
     _tableView.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
@@ -151,18 +144,22 @@
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 
-    return 8;
+    return 9;
 }
+
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.row==0)
     {
-        return 60;
+        return 80;
     }
     if (indexPath.row==1) {
-        return 60;
+        return 50;
     }
-    return LBVIEW_HEIGHT1 / 13.5;
+    if (indexPath.row==2) {
+        return 50;
+    }
+    return 50;
 
 }
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -173,35 +170,53 @@
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
     }
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
-    if (indexPath.row==0)
+    
+    MyHJTableViewCell *cell0 = [MyHJTableViewCell cellWithTableView:tableView];
+    
+    if(indexPath.row == 0)
     {
-        self.oderImageV = [[UIImageView alloc] initWithFrame:CGRectMake(VIEW_WIDTH * 0.06, 17.5, VIEW_WIDTH * 0.06, 25)];
-        self.oderImageV.image = [UIImage imageNamed:@"myOder.PNG"];
-        [cell addSubview:self.oderImageV];
+        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
         
-        self.myOderLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.oderImageV.frame.size.width * 2.3, 15, VIEW_WIDTH * 0.5, 30)];
-        self.myOderLabel.text = @"我的订单";
-        self.myOderLabel.font = [UIFont systemFontOfSize:17];
-        [cell addSubview:self.myOderLabel];
+        self.userImaButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIImage *userImage = [UIImage imageNamed:@"head.png"];
+        userImage = [userImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        self.userImaButton.contentMode = UIViewContentModeScaleAspectFill;
+        self.userImaButton.frame = CGRectMake(VIEW_WIDTH * 0.05, (80-VIEW_HEIGHT*0.09)/2, VIEW_HEIGHT * 0.09, VIEW_HEIGHT * 0.09);
+        [self.userImaButton setImage:userImage forState:UIControlStateNormal];
+        self.userImaButton.layer.cornerRadius = 20;
+        self.userImaButton.clipsToBounds = YES;
+        [cell addSubview:self.userImaButton];
         
-        UILabel*selectLabel=[[UILabel alloc]initWithFrame:CGRectMake(self.view.frame.size.width-15*VIEW_WIDTH * 0.043+10, 20, VIEW_WIDTH * 0.5, 20)];
-        selectLabel.text=@"查看全部购买商品";
-        selectLabel.textAlignment=NSTextAlignmentRight;
-        selectLabel.font=[UIFont systemFontOfSize:14];
-        selectLabel.textColor=[UIColor grayColor];
-        [cell addSubview:selectLabel];
+        self.userLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.userImaButton.frame.size.width * 1.6, (80-VIEW_HEIGHT*0.03)/2, VIEW_WIDTH * 0.35, VIEW_HEIGHT * 0.03)];
+        self.userLabel.text =_userName;
+        self.userLabel.textColor = [UIColor blackColor];
+        self.userLabel.font = [UIFont systemFontOfSize:16];
+        [cell addSubview:self.userLabel];
         
+        self.szLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.userLabel.frame.size.width * 3.2, (80-VIEW_HEIGHT*0.03)/2, VIEW_WIDTH * 0.12, VIEW_HEIGHT * 0.03)];
+        self.szLabel.text = @"设置";
+        self.szLabel.textColor = [UIColor grayColor];
+        self.szLabel.font = [UIFont systemFontOfSize:15];
+        [cell addSubview:self.szLabel];
+
+    }
+    else if (indexPath.row==1)
+    {
+        
+        [cell0.iconImage setImage:[UIImage imageNamed:@"myOder.PNG"]];
+        [cell0.textLabel setText:@"我的订单"];
+        
+        [cell0.rightLabel setText:@"查看全部购买商品"];
+        return cell0;
+        //[cell addSubview:self.oderImageV];
         //全部订单
+        /*
         UIButton*allBtn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 60)];
         [allBtn addTarget:self action:@selector(allOrder) forControlEvents:UIControlEventTouchUpInside];
         [cell addSubview:allBtn];
-        
-        self.odJtImageV = [[UIImageView alloc] initWithFrame:CGRectMake(self.oderImageV.frame.size.width * 15,(60-VIEW_HEIGHT * 0.025)/2, VIEW_WIDTH * 0.043, VIEW_HEIGHT * 0.025)];
-        self.odJtImageV.image = [UIImage imageNamed:@"jt.png"];
-        [cell addSubview:self.odJtImageV];
-        
+        */
     }
-    if (indexPath.row==1)
+    else if (indexPath.row==2)
     {
         //订单分类
         
@@ -214,7 +229,8 @@
             label.text=array[i];
             label.textColor=[UIColor blackColor];
             label.textAlignment=NSTextAlignmentCenter;
-            label.font=[UIFont systemFontOfSize:13];
+            label.font=NJNameFont;
+            [label setTextColor:NJFontColor];
             [cell addSubview:label];
             
             UIImageView*imageV=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/7+i*LBVIEW_WIDTH1/3, 8, 20, 20)];
@@ -229,107 +245,67 @@
             
             if (i==0)
             {
-                UILabel*line1=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 10, 1, 37)];
+                UILabel*line1=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 13, 1, 30)];
                 line1.backgroundColor=[UIColor lightGrayColor];
                 [cell addSubview:line1];
             }
             if (i==1)
             {
-                UILabel*line2=[[UILabel alloc]initWithFrame:CGRectMake(2*LBVIEW_WIDTH1/3, 10, 1, 37)];
+                UILabel*line2=[[UILabel alloc]initWithFrame:CGRectMake(2*LBVIEW_WIDTH1/3, 13, 1, 30)];
                 line2.backgroundColor=[UIColor lightGrayColor];
                 [cell addSubview:line2];
             }
         }
         
     }
-    if (indexPath.row==2)
+    else if (indexPath.row==3)
     {
-        self.addressImageV = [[UIImageView alloc] initWithFrame:CGRectMake(VIEW_WIDTH * 0.06, VIEW_HEIGHT * 0.02, VIEW_WIDTH * 0.05, VIEW_HEIGHT * 0.033)];
-        self.addressImageV.image = [UIImage imageNamed:@"icons-my-huaji-1.png"];
-        [cell addSubview:self.addressImageV];
         
-        self.addressLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.addressImageV.frame.size.width * 2.6, VIEW_HEIGHT * 0.02, VIEW_WIDTH * 0.5, VIEW_HEIGHT * 0.033)];
-        self.addressLabel.text = @"管理收货地址";
-        self.addressLabel.font = [UIFont systemFontOfSize:17];
-        [cell addSubview:self.addressLabel];
+        [cell0.iconImage setImage:[UIImage imageNamed:@"icons-my-huaji-1.png"]];
         
-        self.adJtImageV = [[UIImageView alloc] initWithFrame:CGRectMake(self.addressImageV.frame.size.width * 18, VIEW_HEIGHT * 0.02, VIEW_WIDTH * 0.043, VIEW_HEIGHT * 0.025)];
-        self.adJtImageV.image = [UIImage imageNamed:@"jt.png"];
-        [cell addSubview:self.adJtImageV];
-        
+        [cell0.textLabel setText:@"管理收货地址"];
+        [cell0.rightLabel setText:nil];
+        return cell0;
     }
-    if (indexPath.row==3)
+    else if (indexPath.row==4)
     {
-        self.saihuImageV = [[UIImageView alloc] initWithFrame:CGRectMake(VIEW_WIDTH * 0.06, VIEW_HEIGHT * 0.02, VIEW_WIDTH * 0.06, VIEW_HEIGHT * 0.033)];
-        self.saihuImageV.image = [UIImage imageNamed:@"saihu.PNG"];
-        [cell addSubview:self.saihuImageV];
+        [cell0.iconImage setImage:[UIImage imageNamed:@"saihu.PNG"]];
         
-        self.saihuLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.saihuImageV.frame.size.width * 2.3, VIEW_HEIGHT * 0.02, VIEW_WIDTH * 0.5, VIEW_HEIGHT * 0.033)];
-        self.saihuLabel.text = @"花集红包";
-        self.saihuLabel.font = [UIFont systemFontOfSize:17];
-        [cell addSubview:self.saihuLabel];
-        
-        self.shJtImageV = [[UIImageView alloc] initWithFrame:CGRectMake(self.saihuImageV.frame.size.width * 15, VIEW_HEIGHT * 0.02, VIEW_WIDTH * 0.043, VIEW_HEIGHT * 0.025)];
-        self.shJtImageV.image = [UIImage imageNamed:@"jt.png"];
-        [cell addSubview:self.shJtImageV];
+        [cell0.textLabel setText:@"花集红包"];
+        [cell0.rightLabel setText:nil];
+        return cell0;
 
     }
-    if (indexPath.row==4)
+    else if (indexPath.row==5)
     {
+        [cell0.iconImage setImage:[UIImage imageNamed:@"message.PNG"]];
         
-        self.messageImageV = [[UIImageView alloc] initWithFrame:CGRectMake(VIEW_WIDTH * 0.06, VIEW_HEIGHT * 0.02, VIEW_WIDTH * 0.06, VIEW_HEIGHT * 0.033)];
-        self.messageImageV.image = [UIImage imageNamed:@"message.PNG"];
-        [cell addSubview:self.messageImageV];
-        
-        self.messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.messageImageV.frame.size.width * 2.3, VIEW_HEIGHT * 0.02, VIEW_WIDTH * 0.5, VIEW_HEIGHT * 0.033)];
-        self.messageLabel.text = @"消息中心";
-        self.messageLabel.font = [UIFont systemFontOfSize:17];
-        [cell addSubview:self.messageLabel];
-        
-        self.mesJtImageV = [[UIImageView alloc] initWithFrame:CGRectMake(self.messageImageV.frame.size.width * 15, VIEW_HEIGHT * 0.02, VIEW_WIDTH * 0.043, VIEW_HEIGHT * 0.025)];
-        self.mesJtImageV.image = [UIImage imageNamed:@"jt.png"];
-        [cell addSubview:self.mesJtImageV];
+        [cell0.textLabel setText:@"消息中心"];
+        [cell0.rightLabel setText:nil];
+        return cell0;
         
     }
-    if (indexPath.row==5)
+    else if (indexPath.row==6)
     {
-        self.moneyImageV = [[UIImageView alloc] initWithFrame:CGRectMake(VIEW_WIDTH * 0.06, VIEW_HEIGHT * 0.02, VIEW_WIDTH * 0.06, VIEW_HEIGHT * 0.033)];
-        self.moneyImageV.image = [UIImage imageNamed:@"money.PNG"];
-        [cell addSubview:self.moneyImageV];
+        [cell0.iconImage setImage:[UIImage imageNamed:@"money.PNG"]];
         
-        self.moneyLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.moneyImageV.frame.size.width * 2.3, VIEW_HEIGHT * 0.02, VIEW_WIDTH * 0.5, VIEW_HEIGHT * 0.033)];
-        self.moneyLabel.text =[NSString stringWithFormat:@"花集余额(%@)",_balanceDic[@"nmoney"]];
-        self.moneyLabel.font = [UIFont systemFontOfSize:17];
-        [cell addSubview:self.moneyLabel];
+        [cell0.textLabel setText:[NSString stringWithFormat:@"花集余额(%@)",_balanceDic[@"nmoney"]]];
         
-        self.monJtImageV = [[UIImageView alloc] initWithFrame:CGRectMake(self.moneyImageV.frame.size.width * 15, VIEW_HEIGHT * 0.02, VIEW_WIDTH * 0.043, VIEW_HEIGHT * 0.025)];
-        self.monJtImageV.image = [UIImage imageNamed:@"jt.png"];
-        [cell addSubview:self.monJtImageV];
+        [cell0.rightLabel setText:@"充值"];
         
-        self.czLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.moneyImageV.frame.size.width * 13.3, VIEW_HEIGHT * 0.02, VIEW_WIDTH * 0.12, VIEW_HEIGHT * 0.03)];
-        self.czLabel.text = @"充值";
-        self.czLabel.textColor = [UIColor grayColor];
-        self.czLabel.font = [UIFont systemFontOfSize:15];
-        [cell addSubview:self.czLabel];
+        return cell0;
         
     }
-    if (indexPath.row==6)
+    else if (indexPath.row==7)
     {
-        UIImageView*secuIV= [[UIImageView alloc] initWithFrame:CGRectMake(VIEW_WIDTH * 0.06, VIEW_HEIGHT * 0.02, VIEW_WIDTH * 0.06, VIEW_HEIGHT * 0.033)];
-        secuIV.image = [UIImage imageNamed:@"afer.PNG"];
-        [cell addSubview:secuIV];
         
-        UILabel*secuLB = [[UILabel alloc] initWithFrame:CGRectMake(secuIV.frame.size.width * 2.3, VIEW_HEIGHT * 0.02, VIEW_WIDTH * 0.5, VIEW_HEIGHT * 0.033)];
-        secuLB.text =@"我的售后";
-        secuLB.font = [UIFont systemFontOfSize:17];
-        [cell addSubview:secuLB];
+        [cell0.iconImage setImage:[UIImage imageNamed:@"afer.PNG"]];
+        [cell0.textLabel setText:@"我的售后"];
+        [cell0.rightLabel setText:nil];
+        return cell0;
         
-        UIImageView*leftDwon = [[UIImageView alloc] initWithFrame:CGRectMake(secuIV.frame.size.width * 15, VIEW_HEIGHT * 0.02, VIEW_WIDTH * 0.043, VIEW_HEIGHT * 0.025)];
-        leftDwon.image = [UIImage imageNamed:@"jt.png"];
-        [cell addSubview:leftDwon];
-        
-      }
-    if (indexPath.row==7)
+    }
+    else if (indexPath.row==8)
     {
         self.phoneImageV = [[UIImageView alloc] initWithFrame:CGRectMake(VIEW_WIDTH * 0.18, VIEW_HEIGHT * 0.02, VIEW_WIDTH * 0.055, VIEW_HEIGHT * 0.035)];
         self.phoneImageV.image = [UIImage imageNamed:@"icons-my-huaji-6.png"];
@@ -338,7 +314,7 @@
         self.phoneLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.phoneImageV.frame.size.width * 4.6, VIEW_HEIGHT * 0.02, VIEW_WIDTH * 0.9, VIEW_HEIGHT * 0.035)];
         self.phoneLabel.text = @"客服电话 0571-28980809";
         self.phoneLabel.textColor = [UIColor redColor];
-        self.phoneLabel.font = [UIFont systemFontOfSize:18];
+        self.phoneLabel.font = NJTitleFont;
         [cell addSubview:self.phoneLabel];
         
     }
@@ -373,55 +349,17 @@
     _tabBarVC.selectedIndex=2;
 }
 
-//区头
--(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    UIView*view=[[UIView alloc]init];
-    view.backgroundColor=[UIColor whiteColor];
-    
-    self.userImaButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    UIImage *userImage = [UIImage imageNamed:@"head.png"];
-    userImage = [userImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    self.userImaButton.contentMode = UIViewContentModeScaleAspectFill;
-    self.userImaButton.frame = CGRectMake(VIEW_WIDTH * 0.05, (80-VIEW_HEIGHT*0.09)/2, VIEW_HEIGHT * 0.09, VIEW_HEIGHT * 0.09);
-    [self.userImaButton setImage:userImage forState:UIControlStateNormal];
-    self.userImaButton.layer.cornerRadius = 20;
-    self.userImaButton.clipsToBounds = YES;
-    [view addSubview:self.userImaButton];
-    
-    self.userLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.userImaButton.frame.size.width * 1.4, (80-VIEW_HEIGHT*0.03)/2, VIEW_WIDTH * 0.35, VIEW_HEIGHT * 0.03)];
-    self.userLabel.text =_userName;
-    self.userLabel.textColor = [UIColor blackColor];
-    self.userLabel.font = [UIFont systemFontOfSize:16];
-    [view addSubview:self.userLabel];
-    
-    self.szLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.userLabel.frame.size.width * 3.2, (80-VIEW_HEIGHT*0.03)/2, VIEW_WIDTH * 0.12, VIEW_HEIGHT * 0.03)];
-    self.szLabel.text = @"设置";
-    self.szLabel.textColor = [UIColor grayColor];
-    self.szLabel.font = [UIFont systemFontOfSize:15];
-    [view addSubview:self.szLabel];
-    
-    self.jtImageV = [[UIImageView alloc] initWithFrame:CGRectMake(self.szLabel.frame.size.width * 7.5, (80-VIEW_HEIGHT*0.025)/2, VIEW_WIDTH * 0.043, VIEW_HEIGHT * 0.025)];
-    self.jtImageV.image = [UIImage imageNamed:@"jt.png"];
-    [view addSubview:self.jtImageV];
-    
-    self.topButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    self.topButton.frame = CGRectMake(0, 0, LBVIEW_WIDTH1, 80);
-    self.topButton.backgroundColor = [UIColor clearColor];
-    [self.topButton addTarget:self action:@selector(theTopButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-    [view addSubview:self.topButton];
-    
-    return view;
-}
+
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 80;
+    return 0.001;
+    //return 80;
 }
 
 -(void)theTopButtonAction:(UIButton *)sender
 {
     AboutMeViewController *aboutVC = [[AboutMeViewController alloc] init];
-    [self hidesTabBar:YES];
+    aboutVC.hidesBottomBarWhenPushed=YES;
     [self.navigationController pushViewController:aboutVC animated:YES];
 }
 
@@ -429,41 +367,53 @@
 //选中cell
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
+    if(indexPath.row == 0)
+    {
+        AboutMeViewController *aboutVC = [[AboutMeViewController alloc] init];
+        aboutVC.hidesBottomBarWhenPushed=YES;
+        [self.navigationController pushViewController:aboutVC animated:YES];
+    }
+    if(indexPath.row == 1)
+    {
+        _tabBarVC.selectedIndex=2;
+        return;
+    }
     //管理收货地址
-    if(indexPath.row==2)
+    if(indexPath.row==3)
     {
         AdressViewController *adressVC = [[AdressViewController alloc] init];
-        [self hidesTabBar:YES];
+        adressVC.hidesBottomBarWhenPushed=YES;
         [self.navigationController pushViewController:adressVC animated:YES];
     }
     //花集红包
-    if(indexPath.row==3)
+    if(indexPath.row==4)
     {
         FlowerMoneyViewController*flowerVC=[[FlowerMoneyViewController alloc]init];
-        [self hidesTabBar:YES];
+        flowerVC.hidesBottomBarWhenPushed=YES;
         [self.navigationController pushViewController:flowerVC animated:YES];
     }
     //消息中心
-    if(indexPath.row==4)
+    if(indexPath.row==5)
     {
         MessageCenterViewController*messageVC=[[MessageCenterViewController alloc]init];
         [self.navigationController pushViewController:messageVC animated:YES];
         
     }
     //花集余额
-    if(indexPath.row==5)
+    if(indexPath.row==6)
     {
         UserMoneyViewController *userMVC = [[UserMoneyViewController alloc] init];
         [self.navigationController pushViewController:userMVC animated:YES];
     }
     //我的售后
-    if(indexPath.row==6)
+    if(indexPath.row==7)
     {
         ComplainViewController*complainVC=[[ComplainViewController alloc]init];
         [self.navigationController pushViewController:complainVC animated:YES];
     }
     //客服电话
-    if(indexPath.row==7)
+    if(indexPath.row==8)
     {
         // 跳转页面
         UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"是否拨打客服电话" preferredStyle: UIAlertControllerStyleAlert];
@@ -533,33 +483,5 @@
     
 }
 
-//自定义隐藏tarbtn
--(void)hidesTabBar:(BOOL)hidden
-{
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:0];
-    for (UIView *view in self.tabBarController.view.subviews) {
-        if ([view isKindOfClass:[UITabBar class]]) {
-            if (hidden)
-            {
-                [view setFrame:CGRectMake(view.frame.origin.x, [UIScreen mainScreen].bounds.size.height, view.frame.size.width , view.frame.size.height)];
-            }
-            else{
-                [view setFrame:CGRectMake(view.frame.origin.x, [UIScreen mainScreen].bounds.size.height - 49, view.frame.size.width, view.frame.size.height)];
-                
-            }
-        }
-        else{
-            if([view isKindOfClass:NSClassFromString(@"UITransitionView")]){
-                if (hidden) {
-                    [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, [UIScreen mainScreen].bounds.size.height)];
-                }
-                else{
-                    [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, [UIScreen mainScreen].bounds.size.height - 49 )];
-                }
-            }
-        }
-    }
-    [UIView commitAnimations];
-}
+
 @end

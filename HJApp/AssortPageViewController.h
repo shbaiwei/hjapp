@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "HJViewController.h"
 #import "FlashViewController.h"
+#import "BWCommon.h"
 
 @interface AssortPageViewController : HJViewController
 {

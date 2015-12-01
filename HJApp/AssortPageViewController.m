@@ -17,10 +17,6 @@
 #import "LoginViewController.h"
 #import "SVPullToRefresh.h"
 
-#define NJTitleFont [UIFont systemFontOfSize:14]
-#define NJNameFont [UIFont systemFontOfSize:12]
-#define NJTextFont [UIFont systemFontOfSize:10.5]
-#define NJFontColor [UIColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1]
 
 
 @interface AssortPageViewController ()<UITableViewDataSource, UITableViewDelegate, UICollectionViewDelegate, UIScrollViewDelegate>
@@ -779,6 +775,9 @@ NSString *locatioanStr;
         }
         if(number>0){
             [self updateCartCount:[NSString stringWithFormat:@"%ld",number]];
+        }
+        else{
+            [self updateCartCount:nil];
         }
         
         [_rightTableV reloadData];

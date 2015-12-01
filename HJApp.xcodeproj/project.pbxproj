@@ -183,6 +183,7 @@
 		324421731C0AFE9C00CA943A /* redPacketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 324421721C0AFE9C00CA943A /* redPacketViewController.m */; };
 		325089DA1BFACD2800FD0CD3 /* HJNotifiton.m in Sources */ = {isa = PBXBuildFile; fileRef = 325089D91BFACD2700FD0CD3 /* HJNotifiton.m */; };
 		3257DC691C0C93C2001BC879 /* loading_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 3257DC681C0C93C2001BC879 /* loading_logo.png */; };
+		3257DC6C1C0D5E24001BC879 /* MyHJTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3257DC6B1C0D5E24001BC879 /* MyHJTableViewCell.m */; };
 		325AC5C51BE715DB00408525 /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 325AC5A51BE715DB00408525 /* MKAnnotationView+WebCache.m */; };
 		325AC5C61BE715DB00408525 /* NSData+ImageContentType.m in Sources */ = {isa = PBXBuildFile; fileRef = 325AC5A71BE715DB00408525 /* NSData+ImageContentType.m */; };
 		325AC5C71BE715DB00408525 /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 325AC5A91BE715DB00408525 /* SDImageCache.m */; };
@@ -534,6 +535,8 @@
 		325089D81BFACD2600FD0CD3 /* HJNotifiton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HJNotifiton.h; sourceTree = "<group>"; };
 		325089D91BFACD2700FD0CD3 /* HJNotifiton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HJNotifiton.m; sourceTree = "<group>"; };
 		3257DC681C0C93C2001BC879 /* loading_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loading_logo.png; sourceTree = "<group>"; };
+		3257DC6A1C0D5E24001BC879 /* MyHJTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyHJTableViewCell.h; sourceTree = "<group>"; };
+		3257DC6B1C0D5E24001BC879 /* MyHJTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyHJTableViewCell.m; sourceTree = "<group>"; };
 		325AC5A41BE715DB00408525 /* MKAnnotationView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKAnnotationView+WebCache.h"; sourceTree = "<group>"; };
 		325AC5A51BE715DB00408525 /* MKAnnotationView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKAnnotationView+WebCache.m"; sourceTree = "<group>"; };
 		325AC5A61BE715DB00408525 /* NSData+ImageContentType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+ImageContentType.h"; sourceTree = "<group>"; };
@@ -1320,6 +1323,8 @@
 				323648A61BFC114A007D6EF5 /* ComplainViewController.xib */,
 				323648AC1BFC258E007D6EF5 /* BigPicWebViewController.h */,
 				323648AD1BFC258E007D6EF5 /* BigPicWebViewController.m */,
+				3257DC6A1C0D5E24001BC879 /* MyHJTableViewCell.h */,
+				3257DC6B1C0D5E24001BC879 /* MyHJTableViewCell.m */,
 				323648AF1BFC279E007D6EF5 /* MessageCenterViewController.h */,
 				323648B01BFC279E007D6EF5 /* MessageCenterViewController.m */,
 				323648B11BFC279E007D6EF5 /* MessageCenterViewController.xib */,
@@ -1937,6 +1942,7 @@
 				32DDC1131BEC7A6400649AE5 /* MyButton.m in Sources */,
 				32EFB1D41BF48C530065B475 /* NSDataEx.m in Sources */,
 				32D0317A1BE9B99A008CAC2B /* OderTableViewCell.m in Sources */,
+				3257DC6C1C0D5E24001BC879 /* MyHJTableViewCell.m in Sources */,
 				3244216D1C0AF3F300CA943A /* DistributionStyleViewController.m in Sources */,
 				32B49CC41BE37BB500AB6D55 /* HttpEngine.m in Sources */,
 				320697931C02DA8700E77750 /* HZLocation.m in Sources */,

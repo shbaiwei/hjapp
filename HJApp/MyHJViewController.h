@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BWCommon.h"
+#import "MBProgressHUD.h"
 
 @interface MyHJViewController : UIViewController<UITableViewDataSource,UITableViewDelegate>
 
