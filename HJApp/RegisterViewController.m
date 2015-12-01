@@ -90,6 +90,10 @@
     [self.phoneTF.layer setBorderColor:[UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1].CGColor];
     self.phoneTF.textColor = [UIColor blackColor];
     self.phoneTF.placeholder=@"手机号码";
+    UIView * leftView = [[UIView alloc] initWithFrame:CGRectMake(10,0,10,LBVIEW_HEIGHT1*0.06)];
+    leftView.backgroundColor = [UIColor clearColor];
+    _phoneTF.leftView = leftView;
+    _phoneTF.leftViewMode = UITextFieldViewModeAlways;
     [self.view addSubview:self.phoneTF];
     
 
@@ -122,6 +126,10 @@
     [self.yzmTF.layer setBorderWidth:1];
     [self.yzmTF.layer setBorderColor:[UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1].CGColor];
     self.yzmTF.placeholder=@"验证码";
+    UIView * leftView1 = [[UIView alloc] initWithFrame:CGRectMake(10,0,10,LBVIEW_HEIGHT1*0.06)];
+    leftView1.backgroundColor = [UIColor clearColor];
+    _yzmTF.leftView = leftView1;
+    _yzmTF.leftViewMode = UITextFieldViewModeAlways;
     [self.view addSubview:self.yzmTF];
     
     
@@ -133,6 +141,10 @@
     self.pswTF.textColor = [UIColor blackColor];
     self.pswTF.placeholder=@"密码";
     self.pswTF.secureTextEntry=YES;
+    UIView * leftView2 = [[UIView alloc] initWithFrame:CGRectMake(10,0,10,LBVIEW_HEIGHT1*0.06)];
+    leftView2.backgroundColor = [UIColor clearColor];
+    _pswTF.leftView = leftView2;
+    _pswTF.leftViewMode = UITextFieldViewModeAlways;
     [self.view addSubview:self.pswTF];
     
     self.psw2TF = [[UITextField alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.05, LBVIEW_HEIGHT1 * 0.31+25, LBVIEW_WIDTH1*0.9, LBVIEW_HEIGHT1*0.06)];
@@ -143,6 +155,10 @@
     self.psw2TF.textColor = [UIColor blackColor];
     self.psw2TF.placeholder=@"确认密码";
     self.psw2TF.secureTextEntry=YES;
+    UIView * leftView3 = [[UIView alloc] initWithFrame:CGRectMake(10,0,10,LBVIEW_HEIGHT1*0.06)];
+    leftView3.backgroundColor = [UIColor clearColor];
+    _psw2TF.leftView = leftView3;
+    _psw2TF.leftViewMode = UITextFieldViewModeAlways;
     [self.view addSubview:self.psw2TF];
     
     self.getBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];

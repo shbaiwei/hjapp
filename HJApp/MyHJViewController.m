@@ -102,8 +102,6 @@
 {
     //self.navigationController.navigationBarHidden=YES;
     self.navigationController.navigationBar.translucent =NO;
-  
-
 
     
     NSString*idStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"ID"];
@@ -187,7 +185,7 @@
         self.userImaButton.clipsToBounds = YES;
         [cell addSubview:self.userImaButton];
         
-        self.userLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.userImaButton.frame.size.width * 1.6, (80-VIEW_HEIGHT*0.03)/2, VIEW_WIDTH * 0.35, VIEW_HEIGHT * 0.03)];
+        self.userLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.userImaButton.frame.size.width * 1.6, (80-VIEW_HEIGHT*0.03)/2, VIEW_WIDTH * 0.5, VIEW_HEIGHT * 0.03)];
         self.userLabel.text =_userName;
         self.userLabel.textColor = [UIColor blackColor];
         self.userLabel.font = [UIFont systemFontOfSize:16];
@@ -307,11 +305,15 @@
     }
     else if (indexPath.row==8)
     {
-        self.phoneImageV = [[UIImageView alloc] initWithFrame:CGRectMake(VIEW_WIDTH * 0.18, (VIEW_HEIGHT/13.5-VIEW_WIDTH * 0.05)/2, VIEW_WIDTH * 0.05, VIEW_WIDTH * 0.05)];
+        NSString*str=@"客服电话 0571-28980809";
+        UIFont*font=[UIFont systemFontOfSize:14];
+        CGSize size=[str boundingRectWithSize:CGSizeMake(400, 20) options: NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
+        
+        self.phoneImageV = [[UIImageView alloc] initWithFrame:CGRectMake((VIEW_WIDTH-size.width-VIEW_WIDTH * 0.05)/2, (VIEW_HEIGHT/13.5-VIEW_WIDTH * 0.05)/2, VIEW_WIDTH * 0.05, VIEW_WIDTH * 0.05)];
         self.phoneImageV.image = [UIImage imageNamed:@"icons-my-huaji-6.png"];
         [cell addSubview:self.phoneImageV];
-    
-        self.phoneLabel = [[UILabel alloc] initWithFrame:CGRectMake(VIEW_WIDTH * 0.4, VIEW_HEIGHT * 0.02, VIEW_WIDTH * 0.6, VIEW_HEIGHT * 0.035)];
+        
+        self.phoneLabel = [[UILabel alloc] initWithFrame:CGRectMake((VIEW_WIDTH-size.width-VIEW_WIDTH * 0.05-5)/2+VIEW_WIDTH * 0.05+5, VIEW_HEIGHT * 0.02,size.width, VIEW_HEIGHT * 0.035)];
         self.phoneLabel.text = @"客服电话 0571-28980809";
         self.phoneLabel.textColor = [UIColor redColor];
         self.phoneLabel.textAlignment=NSTextAlignmentCenter;
@@ -357,12 +359,12 @@
     //return 80;
 }
 
--(void)theTopButtonAction:(UIButton *)sender
-{
-    AboutMeViewController *aboutVC = [[AboutMeViewController alloc] init];
-    aboutVC.hidesBottomBarWhenPushed=YES;
-    [self.navigationController pushViewController:aboutVC animated:YES];
-}
+//-(void)theTopButtonAction:(UIButton *)sender
+//{
+//    AboutMeViewController *aboutVC = [[AboutMeViewController alloc] init];
+//    aboutVC.hidesBottomBarWhenPushed=YES;
+//    [self.navigationController pushViewController:aboutVC animated:YES];
+//}
 
 
 //选中cell
@@ -398,6 +400,7 @@
     if(indexPath.row==5)
     {
         MessageCenterViewController*messageVC=[[MessageCenterViewController alloc]init];
+        messageVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:messageVC animated:YES];
         
     }
@@ -405,12 +408,14 @@
     if(indexPath.row==6)
     {
         UserMoneyViewController *userMVC = [[UserMoneyViewController alloc] init];
+        userMVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:userMVC animated:YES];
     }
     //我的售后
     if(indexPath.row==7)
     {
         ComplainViewController*complainVC=[[ComplainViewController alloc]init];
+        complainVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:complainVC animated:YES];
     }
     //客服电话
@@ -483,6 +488,4 @@
     
     
 }
-
-
 @end

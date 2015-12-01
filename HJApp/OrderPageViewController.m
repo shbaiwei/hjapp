@@ -154,7 +154,7 @@
         {
             UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, i*LBVIEW_HEIGHT1*0.05, LBVIEW_WIDTH1-10, LBVIEW_HEIGHT1*0.05)];
             label.text=btnNameArray[i];
-            label.font=[UIFont systemFontOfSize:13];
+            label.font=[UIFont systemFontOfSize:14];
             label.textColor=[UIColor blackColor];
             [_chooseView addSubview:label];
             
@@ -305,6 +305,7 @@
     
     UILabel *dNamelable=[[UILabel alloc]initWithFrame:CGRectMake(20+LBVIEW_HEIGHT1*0.025, 15, 100,20)];
     dNamelable.text=dic[@"to_florist_name"];
+    dNamelable.font=[UIFont systemFontOfSize:14];
     //dNamelable.textAlignment=NSTextAlignmentCenter;
     dNamelable.backgroundColor=[UIColor clearColor];
     [view addSubview:dNamelable];
@@ -312,7 +313,7 @@
     
     UILabel *timeLable=[[UILabel alloc]initWithFrame:CGRectMake(120+LBVIEW_HEIGHT1*0.025, 15, 140,20)];
     timeLable.text=dic[@"datetime"];
-    timeLable.font=[UIFont systemFontOfSize:14];
+    timeLable.font=[UIFont systemFontOfSize:12];
     timeLable.textColor=[UIColor grayColor];
     //dNamelable.textAlignment=NSTextAlignmentCenter;
     timeLable.backgroundColor=[UIColor clearColor];
@@ -321,7 +322,7 @@
     UILabel *jyLable=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-90, 15, 80,20)];
     jyLable.text=@"交易关闭";
     jyLable.textColor=[UIColor colorWithRed:43/255.0 green:152/255.0 blue:225/255.0 alpha:1];
-    jyLable.font=[UIFont systemFontOfSize:14];
+    jyLable.font=[UIFont systemFontOfSize:12];
     jyLable.textAlignment=NSTextAlignmentRight;
     //dNamelable.textAlignment=NSTextAlignmentCenter;
     jyLable.backgroundColor=[UIColor clearColor];
@@ -374,7 +375,7 @@
     UIView*view=[[UIView alloc]init];
     view.backgroundColor=[UIColor whiteColor];
     
-    UIFont*font=[UIFont systemFontOfSize:14];
+    UIFont*font=[UIFont systemFontOfSize:12];
     NSString*numStr=[NSString stringWithFormat:@"%lu",detailArray.count];
     NSString*labelStr=[NSString stringWithFormat:@"共%@件商品 实际支付",numStr];
     CGSize size=[labelStr boundingRectWithSize:CGSizeMake(LBVIEW_WIDTH1, 20) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
@@ -384,7 +385,7 @@
     [view addSubview:lable];
     
     
-    UIFont*font1=[UIFont systemFontOfSize:20];
+    UIFont*font1=[UIFont systemFontOfSize:14];
     NSString*picStr=[NSString stringWithFormat:@"¥%@",dic[@"order_price"]];
     CGSize size1=[picStr boundingRectWithSize:CGSizeMake(LBVIEW_WIDTH1, 20) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font1} context:nil].size;
     UILabel *priceLable=[[UILabel alloc]initWithFrame:CGRectMake(10+size.width, 10, size1.width,20)];
@@ -405,7 +406,8 @@
     btn.layer.borderWidth=1;
     btn.layer.cornerRadius=5;
     btn.clipsToBounds=YES;
-    btn.frame=CGRectMake(LBVIEW_WIDTH1-90, LBVIEW_HEIGHT1*0.1-35, 80, 30);
+    btn.titleLabel.font=[UIFont systemFontOfSize:14];
+    btn.frame=CGRectMake(LBVIEW_WIDTH1-80, LBVIEW_HEIGHT1*0.1-25, 70, 20);
     [btn setTitle:@"再次购买" forState:UIControlStateNormal];
     [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     btn.tag=section+500;

@@ -8,6 +8,8 @@
 
 #import "MyHJTableViewCell.h"
 
+#define LBVIEW_WIDTH1 [UIScreen mainScreen].bounds.size.width
+#define LBVIEW_HEIGHT1 [UIScreen mainScreen].bounds.size.height
 @implementation MyHJTableViewCell
 
 -(void) layoutSubviews{
@@ -46,12 +48,12 @@
         [self.textLabel setFont:[UIFont systemFontOfSize:16]];
         [self.textLabel setTextColor:[UIColor colorWithRed:0.1 green:0.1 blue:0.1 alpha:1]];
         
-        UILabel *rightLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.bounds.size.width - 70, 15, 120, 20)];
+        UILabel *rightLabel = [[UILabel alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1-155, 14, 120, 20)];
         self.rightLabel=rightLabel;
+        //rightLabel.backgroundColor=[UIColor redColor];
         [rightLabel setFont:[UIFont systemFontOfSize:14]];
         [rightLabel setTextAlignment:NSTextAlignmentRight];
         [rightLabel setTextColor:[UIColor grayColor]];
-        
         
         [self.contentView addSubview:rightLabel];
     }

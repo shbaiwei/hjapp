@@ -45,6 +45,15 @@
         
         _morenBtn=[[UIButton alloc] init];
        
+//        UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-90,40, 94, 34)];
+//        //[btn setBackgroundImage:[UIImage imageNamed:@"category-arrow2.png"] forState:UIControlStateNormal];
+//        [btn setImage:[UIImage imageNamed:@"category-arrow2.png"] forState:UIControlStateNormal];
+//        [btn setContentMode:UIViewContentModeCenter];
+//        [btn setContentEdgeInsets:UIEdgeInsetsMake(10, 60, 0, 10)];
+        [_morenBtn setContentMode:UIViewContentModeCenter];
+        //40 60
+        [_morenBtn setContentEdgeInsets:UIEdgeInsetsMake(13, 0, 7, 40)];
+        //[_morenBtn setBackgroundColor:[UIColor redColor]];
         [self.contentView addSubview:_morenBtn];
         
         
@@ -110,7 +119,7 @@
     
     self.adressL.frame = CGRectMake(width / 1.5, height / 2.7, self.frame.size.width-width/1.5, height / 3);
     
-    self.morenBtn.frame = CGRectMake(width / 1.5, self.frame.size.height-27,22, 22);
+    self.morenBtn.frame = CGRectMake(width / 1.5, self.frame.size.height-40,60, 40);
     //self.choiceL.frame = CGRectMake(width / 1.1, height / 1.25, width *2, height / 7);
     
     self.bjIV.frame = CGRectMake(self.frame.size.width-125, self.frame.size.height-20, 15, 15);

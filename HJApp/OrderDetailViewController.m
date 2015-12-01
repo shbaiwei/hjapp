@@ -71,13 +71,13 @@
     {
         UILabel*nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, 0, LBVIEW_WIDTH1-20, LBVIEW_HEIGHT1*0.05)];
         nameLabel.text=[NSString stringWithFormat:@"%@  %@",order.recvName,order.recvMobile];
-        nameLabel.font=[UIFont systemFontOfSize:14];
+        nameLabel.font=[UIFont systemFontOfSize:12];
         nameLabel.textColor=[UIColor grayColor];
         [cell addSubview:nameLabel];
         
         UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, LBVIEW_HEIGHT1*0.05, LBVIEW_WIDTH1-20, LBVIEW_HEIGHT1*0.05)];
         label.text=[NSString stringWithFormat:@"%@",order.recvAddress];
-        label.font=[UIFont systemFontOfSize:14];
+        label.font=[UIFont systemFontOfSize:12];
         label.textColor=[UIColor grayColor];
         [cell addSubview:label];
         
@@ -88,12 +88,12 @@
     {
         UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, 0, 60, LBVIEW_HEIGHT1*0.06)];
         label.text=nameArray[indexPath.row];
-        label.font=[UIFont systemFontOfSize:14];
+        label.font=[UIFont systemFontOfSize:12];
         label.textColor=[UIColor grayColor];
         [cell addSubview:label];
         
         UILabel*prcLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-70, 0, 60, LBVIEW_HEIGHT1*0.06)];
-        prcLabel.font=[UIFont systemFontOfSize:14];
+        prcLabel.font=[UIFont systemFontOfSize:12];
         prcLabel.textColor=[UIColor grayColor];
         [cell addSubview:prcLabel];
         if (indexPath.row==0)
@@ -115,14 +115,14 @@
     UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, 0, 180, LBVIEW_HEIGHT1*0.08)];
     label.text=[NSString stringWithFormat:@"%@  %@",dic[@"merch_name"],dic[@"merch_desc"]];
     label.numberOfLines=2;
-    label.font=[UIFont systemFontOfSize:14];
+    label.font=[UIFont systemFontOfSize:12];
     label.textColor=[UIColor grayColor];
     [cell addSubview:label];
     
     UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-110, 0, 40, LBVIEW_HEIGHT1*0.08)];
     numLabel.text=[NSString stringWithFormat:@"x%@",dic[@"merch_qty"]];;
     numLabel.textColor=[UIColor grayColor];
-    numLabel.font=[UIFont systemFontOfSize:14];
+    numLabel.font=[UIFont systemFontOfSize:12];
     [cell addSubview:numLabel];
     
     
@@ -133,7 +133,7 @@
 //    prcLabel.text=[NSString stringWithFormat:@"¥%0.2f",allPrice];
     prcLabel.text=[NSString stringWithFormat:@"¥%@",dic[@"curr_price"]];
     prcLabel.textColor=[UIColor grayColor];
-    prcLabel.font=[UIFont systemFontOfSize:14];
+    prcLabel.font=[UIFont systemFontOfSize:12];
     [cell addSubview:prcLabel];
     
     return cell;
@@ -157,26 +157,26 @@
 //区头
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return LBVIEW_HEIGHT1*0.08;
+    return 40;
 }
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     orderDetail*order=_dataArray[0];
     UIView*view=[[UIView alloc]init];
-    UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(10, (LBVIEW_HEIGHT1*0.08-20)/2, 20, 20)];
+    UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(10, 10, 20, 20)];
     [view addSubview:image];
-    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(37, (LBVIEW_HEIGHT1*0.08-20)/2, 100, 20)];
+    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(37, 10, 80, 20)];
 
-    label.font=[UIFont systemFontOfSize:20];
+    label.font=[UIFont systemFontOfSize:14];
     label.textColor=[UIColor blackColor];
     [view addSubview:label];
         if (section==0)
     {
         label.text=@"订单号 :";
         image.image=[UIImage imageNamed:@"order-ddh.png"];
-        UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(110, (LBVIEW_HEIGHT1*0.08-20)/2, 150, 20)];
+        UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(90, 10, 140, 20)];
         numLabel.text=order.orderNo;
-        numLabel.font=[UIFont systemFontOfSize:20];
+        numLabel.font=[UIFont systemFontOfSize:14];
         numLabel.textColor=[UIColor blackColor];
         [view addSubview:numLabel];
     }
@@ -200,7 +200,7 @@
     {
         return 1;
     }
-    return LBVIEW_HEIGHT1*0.08;
+    return 40;
 }
 -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
@@ -216,13 +216,13 @@
     {
         UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-150, 10, 70, 20)];
         label.textColor=[UIColor blackColor];
-        label.font=[UIFont systemFontOfSize:17];
+        label.font=[UIFont systemFontOfSize:14];
         label.text=@"实际支付";
         [view addSubview:label];
         
         UILabel*picLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-80, 10, 80, 20)];
         picLabel.textColor=[UIColor redColor];
-        picLabel.font=[UIFont systemFontOfSize:17];
+        picLabel.font=[UIFont systemFontOfSize:14];
         picLabel.text=[NSString stringWithFormat:@"¥%@",order.paymentPrice];
         [view addSubview:picLabel];
         
@@ -230,13 +230,13 @@
     }
     UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-200, 10, 120, 20)];
     label.textColor=[UIColor blackColor];
-    label.font=[UIFont systemFontOfSize:17];
-    label.text=[NSString stringWithFormat:@"共%lu件商品,合计",array.count];
+    label.font=[UIFont systemFontOfSize:14];
+    label.text=[NSString stringWithFormat:@"共%lu件商品，合计",array.count];
     [view addSubview:label];
     
     UILabel*picLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-80, 10, 80, 20)];
     picLabel.textColor=[UIColor redColor];
-    picLabel.font=[UIFont systemFontOfSize:17];
+    picLabel.font=[UIFont systemFontOfSize:14];
     picLabel.text=[NSString stringWithFormat:@"¥%@",order.paymentPrice];
     [view addSubview:picLabel];
     
