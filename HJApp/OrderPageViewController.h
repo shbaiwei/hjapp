@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HJViewController.h"
 
-@interface OrderPageViewController : UIViewController<UITableViewDataSource,UITableViewDelegate>
+@interface OrderPageViewController : HJViewController<UITableViewDataSource,UITableViewDelegate>
 
 @property(nonatomic,copy)NSString* chooseValue;
 @end

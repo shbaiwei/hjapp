@@ -11,4 +11,5 @@
 @interface MyButton : UIButton
 
 @property(nonatomic,unsafe_unretained)BOOL isOpen;
+@property(nonatomic,unsafe_unretained)int status;
 @end

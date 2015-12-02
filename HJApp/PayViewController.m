@@ -17,6 +17,8 @@
 #import "DistributionTimeViewController.h"
 #import "redPacketViewController.h"
 #import "PayTableViewCell.h"
+#import "WxApi.h"
+#import "OrderPageViewController.h"
 
 
 @interface PayViewController () <UIScrollViewDelegate>
@@ -114,8 +116,29 @@ NSInteger pay_type;
     {
         _redStr=_isTagRedPacket;
     }
+    
+    if([WXApi isWXAppInstalled]) // 判断 用户是否安装微信
+    {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getOrderPayResult:) name:@"order_pay_notification" object:nil];//监听一个通知
+    }
 
 }
+
+#pragma mark - 通知信息
+- (void)getOrderPayResult:(NSNotification *)notification{
+    if ([notification.object isEqualToString:@"success"])
+    {
+        [self alert:@"恭喜" msg:@"订单支付成功"];
+        // to  order page
+    }
+    else
+    {
+        [self alert:@"提示" msg:@"订单支付失败"];
+        // to  order page
+    }
+    [self tabBarVC].selectedIndex = 2;
+}
+
 //获取地址
 -(void)getdefaultAddress
 {
@@ -319,20 +342,68 @@ NSInteger pay_type;
 //去支付
 -(void)gotopayAction
 {
+    
     if(pay_type == 0)
     {
-       [self inputPassword];
+        [self inputPassword];
     }
-    if (pay_type == 1)
+    else
     {
-       [self goZhiFuBao];
-        
-    }
-    if (pay_type == 2)
-    {
-       [self goWeiXin];
-    }
+        [self createOrder];
     
+    }
+
+}
+-(void)createOrder
+{
+    
+   
+    
+    NSArray *pay_method = [[NSArray alloc] initWithObjects:@"huaji",@"alipay",@"weixin", nil];
+    
+    [HttpEngine submitOrderAddressId:_addrId withMethod:[pay_method objectAtIndex:pay_type] withSpaypassword:_password withCouponNo:_isTagRedPacket completion:^(NSDictionary *dict)
+     {
+         
+         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"温馨提醒" message:dict[@"msg"] preferredStyle:UIAlertControllerStyleAlert];
+         
+         NSString *actionTitle = pay_type == 0 ? @"查看我的订单" : @"去支付";
+ 
+         UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:actionTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action){
+             if(pay_type == 0)
+             {
+                 // order page
+                 
+             }
+             else if (pay_type==1)
+             {
+                 [self alipay:dict[@"out_trade_no"] amount:dict[@"payment_price"] completion:^(BOOL success)
+                  {
+                      //order page
+                      
+                  }];
+             }
+             else if (pay_type==2)
+             {
+                 
+                 [self WeiXinPay:dict[@"out_trade_no"]];
+             }
+//             [self tabBarVC].selectedIndex = 2;
+             [self.navigationController popViewControllerAnimated:YES];
+         }];
+         if (pay_type!=0)
+         {
+            UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action)
+             {
+                 [self.navigationController popViewControllerAnimated:YES];
+            }];
+             [alertController addAction:cancel];
+             
+         }
+         [alertController addAction:defaultAction];
+ 
+         [self presentViewController:alertController animated:YES completion:nil];
+         
+     }];
 }
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -348,7 +419,8 @@ NSInteger pay_type;
 -(void)inputPassword
 {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"输入支付密码" message:@"请输入您花集账户的支付密码" preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField)
+     {
         textField.secureTextEntry = YES;
         textField.placeholder = @"支付密码";
     }];
@@ -357,11 +429,10 @@ NSInteger pay_type;
         
     }];
     
-    UIAlertAction *confirmAction = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *confirmAction = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action)
+    {
         UITextField *pay_password = alertController.textFields.firstObject;
         _password = pay_password.text;
-        NSLog(@"支付密码：%@",_password);
-        
         [self createOrder];
     }];
     
@@ -369,69 +440,6 @@ NSInteger pay_type;
     [alertController addAction:confirmAction];
     
     [self presentViewController:alertController animated:YES completion:nil];
-    
-}
-
--(void) createOrder{
-    
-    NSArray *pay_method = [[NSArray alloc] initWithObjects:@"huaji",@"alipay",@"weixin", nil];
-    
-    
-    [HttpEngine submitOrderAddressId:_addrId withMethod:[pay_method objectAtIndex:pay_type] withSpaypassword:_password withCouponNo:_isTagRedPacket];
-}
-
--(void)goWeiXin
-{
-    [HttpEngine WXsendPay];
-    
-}
-
-//支付宝支付
--(void)goZhiFuBao
-{
-    
-    NSString *partner = @"2088501633478038";
-    NSString *seller = @"hr@ourbloom.com";
-    NSString *privateKey = @"MIICXgIBAAKBgQC89o2rkejk5DqF9MZ2j/wmuhzDQdYZ8c1pitg36726la1Q4ySUy0nWmibKitlLrR61ph2ZE2pKHIEV7Wi4bPzUZVqRD+z4y7HcBFeBzq+2vBjsTFtuPOVsnc9yjaqV/ncC4GfCL9YvebILxl1mLsHJbyL3cZbgB1N+bZvBAtfwwwIDAQABAoGBAJUSlRVDWM4qVxkSz/b9BFmw/bv0lmmFXx3iUU1chyNJrZ9gcp2H+sp4dh3XiDGxc8auNC9tJ68r6ZJY5wKHyLSR5UUQ0Cze1nlooE9kltLNdADeEyAlSYN+M68MQrNSXdzoo0hLq04zpqc+XdGIA2xLDlhXRDbMlpVltldzhCxxAkEA9Ssei+mWVCB1nCMiz6qr5yV+SNif1dU02Sp9Lecs8nXrNcDlAsnYPqEjiA1l21Kj4pltUSC1hbS/V4AE+VkBTQJBAMVPvu+cruSF4bj0Sg6WA5JXCBUtgu41wYJRnAU7cg2h47anN0ILWeFFrOPnU/yKlgspnPRDHcHfiozLw0bdsk8CQQDcm/xUsdBPyxWJdiRw8YbV6+sC6cqJw9xWPeF+WLMdSfZo3DY2mCI52Q378vJgtLA7ywuPIPu2YLp8pfnT1b9RAkAn94ZKjOdUPNZDG6CgobxpeR2XBJf/3n2rAxLicG8i2ccBaY+k3h2/pthldacqgXvxGOXFCI9PhRNQf7m3chK7AkEAvtCyBgfzJ9I5wMzsRA7lKO4AjVhHe8SBYWYZWHMWPOipG7adAVm5dp+8g56BZBc3q+VeTfl+SFKn0ojcm+JPLQ==";
-    
-    ZhiFuBaoOrder *order = [[ZhiFuBaoOrder alloc] init];
-    order.partner = partner;
-    order.seller = seller;
-    order.tradeNO = @"2015368736746"; //订单ID（由商家?自?行制定）
-    order.productName = @"订单详细"; //商品标题
-    order.productDescription = @"10玫瑰"; //商品描述
-    order.amount = @"10.00"; //商品价格
-    order.notifyURL = @""; //回调URL
-    
-    
-    order.service = @"mobile.securitypay.pay";
-    order.paymentType = @"1";
-    order.inputCharset = @"utf-8";
-    order.itBPay = @"30m";
-    
-    //应用注册scheme,在AlixPayDemo-Info.plist定义URL types
-    NSString *appScheme = @"2015111300787957";
-    
-    //将商品信息拼接成字符串
-    NSString *orderSpec = [order description];
-    NSLog(@"orderSpec = %@",orderSpec);
-    
-    //获取私钥并将商户信息签名,外部商户可以根据情况存放私钥和签名,只需要遵循RSA签名规范,并将签名字符串base64编码和UrlEncode
-    id<DataSigner> signer = CreateRSADataSigner(privateKey);
-    NSString *signedString = [signer signString:orderSpec];
-    
-    //将签名成功字符串格式化为订单字符串,请严格按照该格式
-    NSString *orderString = nil;
-    if (signedString != nil) {
-        orderString = [NSString stringWithFormat:@"%@&sign=\"%@\"&sign_type=\"%@\"",
-                       orderSpec, signedString, @"RSA"];
-        
-        [[AlipaySDK defaultService] payOrder:orderString fromScheme:appScheme callback:^(NSDictionary *resultDic) {
-            //【callback处理支付结果】
-            NSLog(@"reslut = %@",resultDic);
-        }];
-        
-    }
     
 }
 

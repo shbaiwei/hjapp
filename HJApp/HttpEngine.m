@@ -698,7 +698,7 @@
 }
 
 //订单提交
-+(void)submitOrderAddressId:(NSString*)addressId withMethod:(NSString*)method withSpaypassword:(NSString*)spaypassword withCouponNo:(NSString*)couponNo
++(void)submitOrderAddressId:(NSString*)addressId withMethod:(NSString*)method withSpaypassword:(NSString*)spaypassword withCouponNo:(NSString*)couponNo completion:(void(^)(NSDictionary *dict))complete
 {
     
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
@@ -708,45 +708,46 @@
     NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
     [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/orders/"];
-    
-    
     NSDictionary*parameters=@{@"address_id":addressId,@"method":method,@"spaypassword":spaypassword,@"coupon_no":couponNo};
     
     NSLog(@"parameters==%@",parameters);
     
-    [session POST:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        NSString*str=responseObject;
-        NSLog(@"str==%@",str);
+    [session POST:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
+    {
+        NSDictionary*dic=responseObject;
+        NSLog(@"str==%@",dic);
+        complete(dic);
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
         NSLog(@"Error:%@",error);
     }];
-    
 }
-
-//微信支付
-+(void)WXsendPay
+//订单支付
++(void)payOrderNum:(NSString*)num withSpaypassword:(NSString*)spaypassword withMethod:(NSString*)method withCoupon:(NSString*)couponNo Completion:(void(^)(NSString*orderNo,NSString*price))complete
 {
-    
-    
-    
-    //调起微信支付
-    //                PayReq* req             = [[PayReq alloc] init];
-    //                req.openID              = @"oUpF8uMuAJO_M2pxb1Q9zNjWeS6o";
-    //                req.partnerId           = @"wxf454e1c4757a9d2b";
-    //                req.prepayId            = @"201514926";
-    //                req.nonceStr            = @"5K8264ILTKCH16CQ2502SI8ZNMTM67VS";
-    //                req.timeStamp
-    //                req.package
-    //                req.sign
-    //                [WXApi sendReq:req];
-    //  "_OBJC_CLASS_$_CMMotionManager", referenced from:
-    
-    
-    
+    AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
+    NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+    NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
+    [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
+    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/orders/%@/pay/",num];
+    NSDictionary*parameter=[[NSDictionary alloc]init];
+    if ([method isEqualToString:@"huaji"])
+    {
+        parameter=@{@"method":method,@"spaypassword":spaypassword,@"coupon_no":couponNo};
+    }
+    else
+    {
+        parameter=@{@"method":method,@"spaypassword":@"",@"coupon_no":couponNo};
+    }
+    [session POST:str parameters:parameter success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
+     {
+         NSLog(@"JSON:%@",responseObject);
+         complete(responseObject[@"out_trade_no"],responseObject[@"payment_price"]);
+         
+     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+         NSLog(@"Error:%@",error);
+     }];
+
 }
-
-
-
 
 //编辑个人资料
 +(void)updataConsumerDetailData:(NSString*)realNameStr with:(NSString*)genderStr with:(NSString*)birthdayStr
@@ -781,8 +782,8 @@
 +(void)uploadPicData:(UIImage*)image
 {
     AFHTTPSessionManager*manager=[AFHTTPSessionManager manager];
-    
-    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/upload/image/"];
+    NSString*idStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"ID"];
+    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/member-info/%@/avatar/",idStr];
     
     NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
     NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];

@@ -15,6 +15,7 @@
 #import "MyButton.h"
 #import "SVPullToRefresh.h"
 #import "LoginViewController.h"
+#import "OrderPayViewController.h"
 
 
 @interface OrderPageViewController ()
@@ -26,6 +27,11 @@
 
 @property(nonatomic,strong)MyButton*myOrderBtn;
 @property(nonatomic,unsafe_unretained)int pageNum;
+@property(nonatomic,strong)UIButton*stausBtn;
+@property(nonatomic,strong)UIView*shadowView;
+@property(nonatomic,strong)UIView*shadowV;
+@property(nonatomic,unsafe_unretained)int lastTag;
+
 @end
 
 
@@ -89,11 +95,12 @@
     _myOrderBtn.titleLabel.font=[UIFont boldSystemFontOfSize:19];
     _myOrderBtn.isOpen=NO;
     [headView addSubview:_myOrderBtn];
-    
-    UIImageView*downImage=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.5+40, 34, 15, 10)];
-    downImage.image=[UIImage imageNamed:@"city-arr.png"];
-    [headView addSubview:downImage];
 
+    _stausBtn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.5+40, 34, 15, 10)];
+    [_stausBtn setBackgroundImage:[UIImage imageNamed:@"xia.png"] forState:UIControlStateNormal];
+    [_stausBtn setBackgroundImage:[UIImage imageNamed:@"shang.png"] forState:UIControlStateSelected];
+    _stausBtn.selected=NO;
+    [headView addSubview:_stausBtn];
     
 }
 - (void)insertRowAtTop
@@ -147,6 +154,7 @@
 
 -(void)myOrderBtnClick
 {
+    _stausBtn.selected=!_stausBtn.selected;
     if (_myOrderBtn.isOpen==NO)
     {
         //选择视图
@@ -184,6 +192,7 @@
 {
     
     _myOrderBtn.isOpen=!_myOrderBtn.isOpen;
+  
     [_chooseView removeFromSuperview];
     //订单布局
     if (sender.tag==1)
@@ -323,8 +332,44 @@
     timeLable.backgroundColor=[UIColor clearColor];
     [view addSubview:timeLable];
     
-    UILabel *jyLable=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-90, 15, 80,20)];
-    jyLable.text=@"交易关闭";
+    UILabel *jyLable=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-100, 15, 90,20)];
+    NSString*status=dic[@"status"];
+    int intStatus=[status intValue];
+    NSString*jystr;
+    switch (intStatus)
+    {
+        case 0:
+            jystr=@"等待支付";
+            break;
+        case 1:
+            jystr=@"已支付,等待确认";
+            break;
+        case 2:
+            jystr=@"已确认,等待配送";
+            break;
+        case 3:
+            jystr=@"已签收,等待转账";
+            break;
+        case 4:
+            jystr=@"已退款";
+            break;
+        case 5:
+            jystr=@"交易关闭";
+            break;
+        case 6:
+            jystr=@"已取消";
+            break;
+        case 7:
+            jystr=@"已撤单";
+            break;
+        case 8:
+            jystr=@"交易成功";
+            break;
+        default:
+            jystr=@"订单错误";
+            break;
+    }
+    jyLable.text=jystr;
     jyLable.textColor=[UIColor colorWithRed:43/255.0 green:152/255.0 blue:225/255.0 alpha:1];
     jyLable.font=[UIFont systemFontOfSize:12];
     jyLable.textAlignment=NSTextAlignmentRight;
@@ -406,16 +451,27 @@
     [view addSubview:freeLable];
     
     
-    UIButton*btn=[UIButton buttonWithType:UIButtonTypeSystem];
+    MyButton*btn=[MyButton buttonWithType:UIButtonTypeSystem];
     btn.layer.borderColor=[UIColor grayColor].CGColor;
     btn.layer.borderWidth=1;
     btn.layer.cornerRadius=5;
     btn.clipsToBounds=YES;
     btn.titleLabel.font=[UIFont systemFontOfSize:14];
     btn.frame=CGRectMake(LBVIEW_WIDTH1-80, LBVIEW_HEIGHT1*0.1-25, 70, 20);
-    [btn setTitle:@"再次购买" forState:UIControlStateNormal];
+    
+    int status=[dic[@"status"] intValue];
+    if (status==0)
+    {
+       [btn setTitle:@"支付" forState:UIControlStateNormal];
+    }
+    else if(status==5)
+    {
+       [btn setTitle:@"再次购买" forState:UIControlStateNormal];
+    }
+
     [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     btn.tag=section+500;
+    btn.status=status;
     [btn addTarget:self action:@selector(againBuy:) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:btn];
     
@@ -423,16 +479,166 @@
 }
 
 //再次购买
--(void)againBuy:(UIButton*)sender
+-(void)againBuy:(MyButton*)sender
 {
-    NSDictionary*dic=_dataArray[sender.tag-500];
-    NSArray*array=dic[@"detail"];
-    
-    NSDictionary*dicc=array[0];
-    NSLog(@"dicc[order_no]===%@",dicc[@"order_no"]);
-    [HttpEngine anginBuy:dicc[@"order_no"]];
+    if (sender.status==0)
+    {
+       
+        //NSString*str=dicc[@"order_no"];
+        //dicc[@"curr_price"];
 
-
+//        OrderPayViewController*order=[[OrderPayViewController alloc]init];
+//        [self.navigationController pushViewController:order animated:YES];
+        
+        [self gotoPayOrder:(sender.tag)];
+        
+    }
+    else
+        if (sender.status==5)
+        {
+            NSDictionary*dic=_dataArray[sender.tag-500];
+            NSArray*array=dic[@"detail"];
+            NSDictionary*dicc=array[0];
+            NSLog(@"dicc[order_no]===%@",dicc[@"order_no"]);
+            [HttpEngine anginBuy:dicc[@"order_no"]];
+        }
 }
 
+-(void)gotoPayOrder:(NSInteger)str
+{
+    _shadowV=[[UIView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.1, LBVIEW_HEIGHT1*0.3, LBVIEW_WIDTH1*0.8, LBVIEW_HEIGHT1*0.4)];
+    _shadowV.backgroundColor=[UIColor whiteColor];
+    _shadowV.layer.cornerRadius=10;
+    _shadowV.clipsToBounds=YES;
+     NSArray*array=[[NSArray alloc]initWithObjects:@"花集余额",@"支付宝",@"微信支付", nil];
+    
+    for (int i=0; i<5; i++)
+    {
+        if (i==0)
+        {
+            UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, 0, LBVIEW_WIDTH1*0.8-20, LBVIEW_HEIGHT1*0.5/5)];
+            label.text=@"选择支付方式";
+            label.font=[UIFont systemFontOfSize:14];
+            [_shadowV addSubview:label];
+        }else
+        if (i==4)
+        {
+            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.3, LBVIEW_HEIGHT1*0.4/5*4, LBVIEW_WIDTH1*0.2, 20)];
+            [btn setTitle:@"去支付" forState:UIControlStateNormal];
+             [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            btn.layer.borderColor=[UIColor grayColor].CGColor;
+            btn.layer.borderWidth=1;
+            btn.layer.cornerRadius=5;
+            btn.clipsToBounds=YES;
+            [btn addTarget:self action:@selector(btnpay:) forControlEvents:UIControlEventTouchUpInside];
+            btn.titleLabel.font=[UIFont systemFontOfSize:14];
+            btn.tag=str;
+            [_shadowV addSubview:btn];
+        }else
+        {
+            UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(40,(LBVIEW_HEIGHT1*0.4/5-1)*i, 100, LBVIEW_HEIGHT1*0.4/4)];
+            label.text=array[i-1];
+            label.font=[UIFont systemFontOfSize:14];
+            [_shadowV addSubview:label];
+            UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(10, (LBVIEW_HEIGHT1*0.4/5-20)/2+LBVIEW_HEIGHT1*0.4/5*i, 20, 20)];
+            image.image=[UIImage imageNamed:[NSString stringWithFormat:@"pay1-%d.png",i]];
+            [_shadowV addSubview:image];
+            
+            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake( LBVIEW_WIDTH1*0.8-30, (LBVIEW_HEIGHT1*0.4/5-20)/2+LBVIEW_HEIGHT1*0.4/5*i,20, 20)];
+            [btn setBackgroundImage:[UIImage imageNamed:@"maru.png"] forState:UIControlStateNormal];
+            [btn setBackgroundImage:[UIImage imageNamed:@"Dg.png"] forState:UIControlStateSelected];
+            btn.tag=i+66;
+            
+            [btn addTarget:self action:@selector(ay:) forControlEvents:UIControlEventTouchUpInside];
+            [_shadowV addSubview:btn];
+            
+  
+        }
+        
+    }
+    
+    _shadowView=[[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    _shadowView.backgroundColor=[UIColor grayColor];
+    _shadowView.alpha=1;
+    
+    //找window
+    UIWindow *window=[[UIApplication sharedApplication]keyWindow];
+    [window addSubview:_shadowView];
+    [_shadowView addSubview:_shadowV];
+    
+}
+-(void)btnpay:(UIButton*)sender
+{
+    
+     [_shadowView removeFromSuperview];
+    
+    NSDictionary*dic=_dataArray[sender.tag-500];
+    NSArray*array=dic[@"detail"];
+    NSDictionary*dicc=array[0];
+    if (_lastTag==67)
+    {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"输入支付密码" message:@"请输入您花集账户的支付密码" preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField)
+         {
+             textField.secureTextEntry = YES;
+             textField.placeholder = @"支付密码";
+         }];
+        
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        
+        UIAlertAction *confirmAction = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action)
+                                        {
+            UITextField *pay_password = alertController.textFields.firstObject;
+            [HttpEngine payOrderNum:dicc[@"order_no"] withSpaypassword:pay_password.text withMethod:@"huaji" withCoupon:@"" Completion:^(NSString *orderNo,NSString*price)
+                                             {
+                                                 
+                                             }];
+                       
+                                        }];
+        
+        [alertController addAction:cancelAction];
+        [alertController addAction:confirmAction];
+        
+        [self presentViewController:alertController animated:YES completion:nil];
+        
+       
+    }
+    if (_lastTag==68)
+    {
+        [HttpEngine payOrderNum:dicc[@"order_no"] withSpaypassword:@"" withMethod:@"weixin" withCoupon:@"" Completion:^(NSString *orderNo,NSString*price)
+         {
+             [self alipay:orderNo amount:price completion:^(BOOL success)
+              {
+                  //order page
+                  
+              }];
+         }];
+        
+            
+    
+    }
+    if (_lastTag==69)
+    {
+        [HttpEngine payOrderNum:dicc[@"order_no"] withSpaypassword:@"" withMethod:@"alipay" withCoupon:@"" Completion:^(NSString *orderNo,NSString*price)
+        {
+             [self WeiXinPay:orderNo];
+        }];
+    }
+    
+
+}
+-(void)ay:(UIButton*)sender
+{
+    sender.selected=!sender.selected;
+    if (_lastTag!=0)
+    {
+        UIButton*btn=[_shadowV viewWithTag:_lastTag];
+        btn.selected=NO;
+    }
+    _lastTag=(int)sender.tag;
+    
+   
+}
 @end
