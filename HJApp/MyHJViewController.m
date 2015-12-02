@@ -18,6 +18,7 @@
 #import "ComplainViewController.h"
 #import "MessageCenterViewController.h"
 #import "MyHJTableViewCell.h"
+#import "UIImageView+WebCache.h"
 
 @interface MyHJViewController ()
 
@@ -31,6 +32,7 @@
 @property (nonatomic, strong) UIImageView *jtImageV;
 @property (nonatomic, strong) UIButton *topButton;
 @property(nonatomic,copy)NSString*userName;
+@property(nonatomic,copy)NSString*portrait;
 //我的订单
 @property (nonatomic, strong) UIView *oderView;
 @property (nonatomic, strong) UIImageView *oderImageV;
@@ -112,6 +114,7 @@
          [hud removeFromSuperview];
          ConsumerDetail*consum=dataArray[0];
          _userName=consum.userid;
+         _portrait=consum.portrait;
          [_tableView reloadData];
      }];
     
@@ -174,18 +177,17 @@
     if(indexPath.row == 0)
     {
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+    
         
-        self.userImaButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        UIImage *userImage = [UIImage imageNamed:@"head.png"];
-        userImage = [userImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        self.userImaButton.contentMode = UIViewContentModeScaleAspectFill;
-        self.userImaButton.frame = CGRectMake(VIEW_WIDTH * 0.05, (80-VIEW_HEIGHT*0.09)/2, VIEW_HEIGHT * 0.09, VIEW_HEIGHT * 0.09);
-        [self.userImaButton setImage:userImage forState:UIControlStateNormal];
-        self.userImaButton.layer.cornerRadius = 20;
-        self.userImaButton.clipsToBounds = YES;
-        [cell addSubview:self.userImaButton];
+        UIImageView*headImage=[[UIImageView alloc]initWithFrame: CGRectMake(VIEW_WIDTH * 0.05, (80-VIEW_HEIGHT*0.09)/2, VIEW_HEIGHT * 0.09, VIEW_HEIGHT * 0.09)];
+        headImage.layer.cornerRadius=VIEW_HEIGHT * 0.09/2;
+        headImage.clipsToBounds=YES;
+        NSString*picUrl=[NSString stringWithFormat:@"http://s.huaji.com%@",_portrait];
+        [headImage sd_setImageWithURL:[NSURL URLWithString:picUrl] placeholderImage:[UIImage imageNamed:@"head.png"]];
+        [cell addSubview:headImage];
         
-        self.userLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.userImaButton.frame.size.width * 1.6, (80-VIEW_HEIGHT*0.03)/2, VIEW_WIDTH * 0.5, VIEW_HEIGHT * 0.03)];
+        
+        self.userLabel = [[UILabel alloc] initWithFrame:CGRectMake(headImage.frame.size.width * 1.6, (80-VIEW_HEIGHT*0.03)/2, VIEW_WIDTH * 0.5, VIEW_HEIGHT * 0.03)];
         self.userLabel.text =_userName;
         self.userLabel.textColor = [UIColor blackColor];
         self.userLabel.font = [UIFont systemFontOfSize:16];

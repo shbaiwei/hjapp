@@ -26,6 +26,8 @@
         _realName=[dic[@"realName"]copy];
         _gender=[dic[@"gender"]copy];
         _birthday=[dic[@"birthday"]copy];
+        _portrait=[dic[@"portrait"]copy];
+        
     }
     return self;
 }

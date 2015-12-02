@@ -491,6 +491,7 @@ UILabel *secondLabel;
 {
     TodayShopViewController*todayVC=[[TodayShopViewController alloc]init];
     todayVC.tag=(int)sender.tag;
+    todayVC.hidesBottomBarWhenPushed=YES;
     [self.navigationController pushViewController:todayVC animated:YES];
     
 }

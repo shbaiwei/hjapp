@@ -10,7 +10,7 @@
 
 @interface ConsumerDetail : NSObject
 
-@property(nonatomic,copy)NSString *userid,*uniqueid,*realName,*gender,*birthday,*mobile;
+@property(nonatomic,copy)NSString *userid,*uniqueid,*realName,*gender,*birthday,*mobile,*portrait;
 
 +(id)ConsumerDetailDictionary:(NSDictionary*)dic;
 -(id)initWithDictionary:(NSDictionary*)dic;
