@@ -9,8 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "BWCommon.h"
 #import "MBProgressHUD.h"
+#import "HJViewController.h"
 
-@interface PayViewController : UIViewController<
+
+@interface PayViewController : HJViewController<
 UITableViewDataSource,
 UITableViewDelegate,
 UIGestureRecognizerDelegate

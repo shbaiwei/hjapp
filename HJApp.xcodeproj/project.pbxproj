@@ -287,6 +287,9 @@
 		32E512321C05AC3F00D08F02 /* DataBaseUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 32E512311C05AC3F00D08F02 /* DataBaseUtil.m */; };
 		32E512351C05AD4D00D08F02 /* GroupTableModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 32E512341C05AD4D00D08F02 /* GroupTableModel.m */; };
 		32E5123A1C05B1C500D08F02 /* AreaModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 32E512391C05B1C500D08F02 /* AreaModel.m */; };
+		32EF5CEB1C0EB7760015FCC7 /* shang.png in Resources */ = {isa = PBXBuildFile; fileRef = 32EF5CE91C0EB7760015FCC7 /* shang.png */; };
+		32EF5CEC1C0EB7760015FCC7 /* xia.png in Resources */ = {isa = PBXBuildFile; fileRef = 32EF5CEA1C0EB7760015FCC7 /* xia.png */; };
+		32EF5CEF1C0EEBCF0015FCC7 /* OrderPayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EF5CEE1C0EEBCF0015FCC7 /* OrderPayViewController.m */; };
 		32EFB1CF1BF48C530065B475 /* Order.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB1BC1BF48C530065B475 /* Order.m */; };
 		32EFB1D01BF48C530065B475 /* base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB1BF1BF48C530065B475 /* base64.m */; };
 		32EFB1D11BF48C530065B475 /* DataSigner.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB1C21BF48C530065B475 /* DataSigner.m */; };
@@ -713,6 +716,10 @@
 		32E512341C05AD4D00D08F02 /* GroupTableModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GroupTableModel.m; sourceTree = "<group>"; };
 		32E512381C05B1C400D08F02 /* AreaModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AreaModel.h; sourceTree = "<group>"; };
 		32E512391C05B1C500D08F02 /* AreaModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AreaModel.m; sourceTree = "<group>"; };
+		32EF5CE91C0EB7760015FCC7 /* shang.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shang.png; sourceTree = "<group>"; };
+		32EF5CEA1C0EB7760015FCC7 /* xia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xia.png; sourceTree = "<group>"; };
+		32EF5CED1C0EEBCF0015FCC7 /* OrderPayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderPayViewController.h; sourceTree = "<group>"; };
+		32EF5CEE1C0EEBCF0015FCC7 /* OrderPayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderPayViewController.m; sourceTree = "<group>"; };
 		32EFB1701BF48C530065B475 /* aes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aes.h; sourceTree = "<group>"; };
 		32EFB1711BF48C530065B475 /* asn1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = asn1.h; sourceTree = "<group>"; };
 		32EFB1721BF48C530065B475 /* asn1_mac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = asn1_mac.h; sourceTree = "<group>"; };
@@ -900,6 +907,8 @@
 		320BBE461BF9D4DD004DE70A /* images */ = {
 			isa = PBXGroup;
 			children = (
+				32EF5CE91C0EB7760015FCC7 /* shang.png */,
+				32EF5CEA1C0EB7760015FCC7 /* xia.png */,
 				32A377661C0C558C00DE7D8C /* buy_btn.png */,
 				32F877C21C0B003A00CC9C3A /* select11.png */,
 				32F877B71C0AD56300CC9C3A /* ico_item0.png */,
@@ -1282,6 +1291,8 @@
 				32D0317F1BE9E480008CAC2B /* OrderDetailViewController.h */,
 				32D031801BE9E480008CAC2B /* OrderDetailViewController.m */,
 				32D031811BE9E480008CAC2B /* OrderDetailViewController.xib */,
+				32EF5CED1C0EEBCF0015FCC7 /* OrderPayViewController.h */,
+				32EF5CEE1C0EEBCF0015FCC7 /* OrderPayViewController.m */,
 			);
 			name = OrderPage;
 			sourceTree = "<group>";
@@ -1744,6 +1755,7 @@
 				320BBF2D1BF9DCF7004DE70A /* afer.PNG in Resources */,
 				32B49BA31BE30EF100AB6D55 /* ShopingPageViewController.xib in Resources */,
 				322776241BFEDC9C00C249FD /* loader_icon_03.png in Resources */,
+				32EF5CEB1C0EB7760015FCC7 /* shang.png in Resources */,
 				320BBF031BF9D4DD004DE70A /* swiper-market-btn-t.png in Resources */,
 				320BBF121BF9D8AC004DE70A /* assort2.png in Resources */,
 				320BBF361BF9DF95004DE70A /* navi.png in Resources */,
@@ -1766,6 +1778,7 @@
 				32E512201C05A62600D08F02 /* mydatabasehuajia.sqlite in Resources */,
 				320BBEB11BF9D4DD004DE70A /* city.png in Resources */,
 				325AC5E71BE7617200408525 /* AboutMeViewController.xib in Resources */,
+				32EF5CEC1C0EB7760015FCC7 /* xia.png in Resources */,
 				320BBEA71BF9D4DD004DE70A /* addr-border.png in Resources */,
 				320BBF241BF9DC42004DE70A /* gotopay.png in Resources */,
 				32F17A571C069FEF00328629 /* area.plist in Resources */,
@@ -2015,6 +2028,7 @@
 				32EFB1D21BF48C530065B475 /* DataVerifier.m in Sources */,
 				32DDC1221BECAB1400649AE5 /* FlowerTableViewCell.m in Sources */,
 				325AC5E11BE7412800408525 /* RegisterViewController.m in Sources */,
+				32EF5CEF1C0EEBCF0015FCC7 /* OrderPayViewController.m in Sources */,
 				32E4DD851BEAF6D400EFC9C3 /* RightAssortTableViewCell.m in Sources */,
 				3242B1491BE7155D00B29989 /* AFAutoPurgingImageCache.m in Sources */,
 				325AC5E61BE7617200408525 /* AboutMeViewController.m in Sources */,

@@ -9,10 +9,6 @@
 #import "UserMoneyViewController.h"
 #import "HttpEngine.h"
 
-//zhifubao
-#import <AlipaySDK/AlipaySDK.h>
-#import "ZhiFuBaoOrder.h"
-#import "DataSigner.h"
 
 //wechat
 #import "WXApi.h"
@@ -137,7 +133,7 @@
     self.monenyNum.layer.cornerRadius=5;
     self.monenyNum.clipsToBounds=YES;
     self.monenyNum.keyboardType = UIKeyboardTypeNumberPad;
-    [self.monenyNum addTarget:self action:@selector(keyDown) forControlEvents:UIControlEventEditingDidEndOnExit];
+//    [self.monenyNum addTarget:self action:@selector(keyDown) forControlEvents:UIControlEventEditingDidEndOnExit];
     [self.view addSubview:self.monenyNum];
     
     //LBVIEW_WIDTH1 / 1.2-10
@@ -230,10 +226,10 @@
 }
 
 
--(void)keyDown
-{
-    [self.monenyNum resignFirstResponder];
-}
+//-(void)keyDown
+//{
+//    [self.monenyNum resignFirstResponder];
+//}
 
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {

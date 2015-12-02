@@ -99,7 +99,13 @@
 +(void)anginBuy:(NSString*)order;
 
 //订单提交
-+(void)submitOrderAddressId:(NSString*)addressId withMethod:(NSString*)method withSpaypassword:(NSString*)spaypassword withCouponNo:(NSString*)couponNo;
++(void)submitOrderAddressId:(NSString*)addressId withMethod:(NSString*)method withSpaypassword:(NSString*)spaypassword withCouponNo:(NSString*)couponNo completion:(void(^)(NSDictionary*dict))complete;
+
+//获取订单号
+//+(void)getOutOrderNoNum:(NSString*)num Completion:(void(^)(NSString*orderNo))complete;
+
+//订单支付
++(void)payOrderNum:(NSString*)num withSpaypassword:(NSString*)spaypassword withMethod:(NSString*)method withCoupon:(NSString*)couponNo Completion:(void(^)(NSString*orderNo,NSString*price))complete;
 
 //微信支付
 +(void)WXsendPay;
