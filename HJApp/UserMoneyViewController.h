@@ -7,8 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MBProgressHUD.h"
+#import "HJViewController.h"
 
-@interface UserMoneyViewController : UIViewController
-
+@interface UserMoneyViewController : HJViewController
+<MBProgressHUDDelegate>
+{
+    MBProgressHUD *HUD;
+}
 
 @end

@@ -77,7 +77,7 @@
 }
 -(void)goToPayView
 {
-    UIView*priceView=[[UIView alloc]initWithFrame:CGRectMake(0, 12*LBVIEW_HEIGHT1 / 13-118, VIEW_WIDTH , LBVIEW_HEIGHT1 / 13)];
+    UIView*priceView=[[UIView alloc]initWithFrame:CGRectMake(0, LBVIEW_HEIGHT1-165, VIEW_WIDTH , LBVIEW_HEIGHT1 / 13)];
     priceView.backgroundColor=[UIColor blackColor];
     [self.view addSubview:priceView];
     

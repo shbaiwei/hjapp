@@ -92,8 +92,8 @@ UILabel *secondLabel;
 {
   
     self.navigationController.navigationBarHidden=YES;
-    //self.cityLabel.text=[[NSUserDefaults standardUserDefaults]objectForKey:@"CITYNAME"];
-     NSLog(@"沙盒路径=====%@",NSHomeDirectory());
+    self.cityLabel.text=[[NSUserDefaults standardUserDefaults]objectForKey:@"CITYNAME"];
+    //NSLog(@"沙盒路径=====%@",NSHomeDirectory());
     
 }
 
@@ -197,6 +197,8 @@ UILabel *secondLabel;
 
         [[NSUserDefaults standardUserDefaults]setObject:dataDic[@"code"] forKey:@"CODE"];
         [[NSUserDefaults standardUserDefaults]setObject:dataDic[@"name"] forKey:@"CITYNAME"];
+        [[NSUserDefaults standardUserDefaults]setObject:dataDic[@"allowed_regions"] forKey:@"ALLOWED_REGIONS"];
+        [[NSUserDefaults standardUserDefaults]setObject:dataDic[@"allowed_regions_name"] forKey:@"ALLOWED_REGIONS_NAME"];
         self.cityLabel.text = dataDic[@"name"];
     
     } failure:^(NSError *error) {
@@ -616,7 +618,7 @@ UILabel *secondLabel;
 -(void)promotionAnimation{
     
     if(timeGap>0){
-        NSLog(@"%ld",timeGap);
+        //NSLog(@"%ld",timeGap);
         
         int hour = (int)floor(timeGap / 3600);
         int minute = (int)floor((timeGap - hour * 3600) / 60);

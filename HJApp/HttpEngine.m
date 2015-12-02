@@ -279,10 +279,12 @@
     [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
     
     
-    
+    NSString*location=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
+    str = [NSString stringWithFormat:@"%@?location=%@",str,location];
+    NSLog(@"%@",str);
     [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
-         NSLog(@"123==JSON:%@",responseObject);
+         //NSLog(@"123==JSON:%@",responseObject);
          NSArray*array=responseObject[@"cart_list"];
          NSMutableArray*dataArray=[[NSMutableArray alloc]init];
          for (int i=0; i<array.count; i++)
@@ -317,6 +319,9 @@
     NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
     NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
     [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
+    
+    NSString*location=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
+    str = [NSString stringWithFormat:@"%@?location=%@",str,location];
     
     [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
@@ -704,20 +709,18 @@
     [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/orders/"];
     
-    NSLog(@"spaypassword==%@",spaypassword);
+    
     NSDictionary*parameters=@{@"address_id":addressId,@"method":method,@"spaypassword":spaypassword,@"coupon_no":couponNo};
     
-    [session POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         // NSLog(@"JSON:%@",responseObject);
-         NSString*str=responseObject;
-         NSLog(@"str==%@",str);
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-         NSLog(@"Error:%@",error);
-     }];
+    NSLog(@"parameters==%@",parameters);
+    
+    [session POST:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        NSString*str=responseObject;
+        NSLog(@"str==%@",str);
+    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+        NSLog(@"Error:%@",error);
+    }];
+    
 }
 
 //微信支付
@@ -1009,7 +1012,7 @@
 }
 //amount,method
 //花集余额充值
-+(void)topUpAmount:(NSString*)amount withMethod:(NSString*)method
++(void)topUpAmount:(NSString*)amount withMethod:(NSString*)method completion:(void(^)(NSDictionary *dict))complete
 {
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
     
@@ -1022,12 +1025,28 @@
     
     NSDictionary*parameters=@{@"amount":amount,@"method":method};
     
-    [session POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
+    [session POST:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
          NSLog(@"JSON:%@",responseObject);
+         
+         complete(responseObject);
+
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+         NSLog(@"Error:%@",error);
+     }];
+}
+
++(void)wxPayRequest:(NSString *)out_trade_no completion:(void (^)(NSDictionary *))complete{
+    
+    AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
+    NSString*str=[NSString stringWithFormat:@"http://weixin.huaji.com/app_payment/handle/app.php?out_trade_no=%@",out_trade_no];
+    
+    [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
+     {
+        complete(responseObject);
+         
+     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
+     {
          NSLog(@"Error:%@",error);
      }];
 }

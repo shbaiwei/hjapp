@@ -161,7 +161,7 @@ NSString *locatioanStr;
     
     _cartList = [[NSMutableArray alloc] init];
     
-    locatioanStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
+    
     
 }
 
@@ -380,6 +380,8 @@ NSString *locatioanStr;
 
 - (void) loadDetailData{
     
+    locatioanStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
+
     [HttpEngine getProductDetail:cid withLocation:locatioanStr withProps:_catalogueStrArray withPage:[NSString stringWithFormat:@"%ld",page] withPageSize:@"10" completion:^(NSArray *dataArray)
      {
          //右uitableview

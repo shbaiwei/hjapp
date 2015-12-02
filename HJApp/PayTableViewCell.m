@@ -43,6 +43,8 @@
         UIImageView *iconImage = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 24, 24)];
         self.iconImage = iconImage;
         [self.contentView addSubview:iconImage];
+        
+        [self.textLabel setFont:[UIFont systemFontOfSize:14]];
     }
     
     return self;
