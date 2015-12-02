@@ -93,7 +93,7 @@ UILabel *secondLabel;
   
     self.navigationController.navigationBarHidden=YES;
     //self.cityLabel.text=[[NSUserDefaults standardUserDefaults]objectForKey:@"CITYNAME"];
-    //NSLog(@"沙盒路径=====%@",NSHomeDirectory());
+     NSLog(@"沙盒路径=====%@",NSHomeDirectory());
     
 }
 

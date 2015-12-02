@@ -551,7 +551,7 @@
     
     [magager GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
-         //NSLog(@"JSON:%@",responseObject);
+         NSLog(@"个人信息＝＝JSON:%@",responseObject);
          NSString*idStr=responseObject[@"id"];
          
          [[NSUserDefaults standardUserDefaults]setObject:idStr forKey:@"ID"];
@@ -588,6 +588,7 @@
          consumer.gender=responseObject[@"gender"];
          consumer.birthday=responseObject[@"birthday"];
          consumer.mobile=responseObject[@"mobile"];
+         consumer.portrait=responseObject[@"portrait"];
          [dataArray addObject:consumer];
          complete(dataArray);
          
@@ -747,7 +748,7 @@
 //编辑个人资料
 +(void)updataConsumerDetailData:(NSString*)realNameStr with:(NSString*)genderStr with:(NSString*)birthdayStr
 {
-    //    NSLog(@"realNameStr=%@,genderStr=%@,birthdayStr=%@",realNameStr,genderStr,birthdayStr);
+        NSLog(@"realNameStr=%@,genderStr=%@,birthdayStr=%@",realNameStr,genderStr,birthdayStr);
     
     AFHTTPSessionManager*manager=[AFHTTPSessionManager manager];
     
@@ -759,6 +760,8 @@
     
     [manager.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
     NSDictionary*parameters=@{@"real_name":realNameStr,@"gender":genderStr,@"birthday":birthdayStr};
+    
+    NSLog(@"parameters===%@",parameters);
     
     [manager PUT:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
@@ -783,21 +786,24 @@
     
     [manager.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
     
-    NSData *data = UIImagePNGRepresentation(image);
+    NSLog(@"image====%@",image);
     
-    // 在网络开发中，上传文件时，是文件不允许被覆盖，文件重名
+    //NSData *data = UIImagePNGRepresentation(image);
+    NSData *data = UIImageJPEGRepresentation(image, 0.5);
+    
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     // 设置时间格式
     formatter.dateFormat = @"yyyyMMddHHmmss";
     NSString *strr = [formatter stringFromDate:[NSDate date]];
-    NSString *fileName = [NSString stringWithFormat:@"%@", strr];
+    NSString *fileName = [NSString stringWithFormat:@"%@.jpg", strr];
     
     [manager POST:str parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData)
     {
-        [formData appendPartWithFileData:data name:@"fileData" fileName:fileName mimeType:@"image/jpg"];
+        [formData appendPartWithFileData:data name:@"file" fileName:fileName mimeType:@"image/jpeg"];
+        
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        NSLog(@"122323JSON:%@",responseObject);
+        NSLog(@"pic===JSON:%@",responseObject);
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
         NSLog(@"Error:%@",error);
     }];

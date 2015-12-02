@@ -10,6 +10,7 @@
 #import "HttpEngine.h"
 #import "MyHJViewController.h"
 #import "ChangeSexViewController.h"
+#import "UIImageView+WebCache.h"
 
 
 @interface AboutMeViewController ()<UITableViewDataSource,UITableViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UITextViewDelegate>
@@ -33,6 +34,7 @@
 @property(nonatomic,strong)UILabel*timeLabel;
 @property(nonatomic,strong)UIView*chooseView;
 @property(nonatomic,strong)UIImagePickerController*imageVC;
+@property(nonatomic,strong)UIImageView*headImage;
 
 @end
 
@@ -85,9 +87,14 @@
 {
     UIView*view=[[UIView alloc]init];
     
-    UIImageView*headImage=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1 * 0.05, (80-LBVIEW_HEIGHT1*0.09)/2, LBVIEW_HEIGHT1*0.09, LBVIEW_HEIGHT1* 0.09)];
-    headImage.image=[UIImage imageNamed:@"head.png"];
-    [view addSubview:headImage];
+    _headImage=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1 * 0.05, (80-LBVIEW_HEIGHT1*0.09)/2, LBVIEW_HEIGHT1*0.09, LBVIEW_HEIGHT1* 0.09)];
+    ConsumerDetail*consumer=_dataArray[0];
+    NSString*picUrl=[NSString stringWithFormat:@"http://s.huaji.com%@",consumer.portrait];
+    NSLog(@"picUrl===%@",picUrl);
+    [_headImage sd_setImageWithURL:[NSURL URLWithString:picUrl] placeholderImage:[UIImage imageNamed:@"head.png"]];
+    _headImage.layer.cornerRadius=LBVIEW_HEIGHT1* 0.09/2;
+    _headImage.clipsToBounds=YES;
+    [view addSubview:_headImage];
     
     UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(4*LBVIEW_WIDTH1/5-10, 20, LBVIEW_WIDTH1/5, 40)];
     [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -144,13 +151,16 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     //取出选中的图片 ；
+    
     UIImage * image = info[UIImagePickerControllerOriginalImage];
-    NSLog(@"%@",image);
+    _headImage.image=image;
+    
     [HttpEngine uploadPicData:image];
     [self dismissViewControllerAnimated:YES completion:nil];
     
+    
+    
 }
-
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return 80;
@@ -394,7 +404,7 @@
     UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"确定更新吗" preferredStyle: UIAlertControllerStyleAlert];
     UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
                                  {
-          [HttpEngine updataConsumerDetailData:_trueNameTF.text with:str with:_birthdayLabel.text];
+          [HttpEngine updataConsumerDetailData:_trueNameTFV.text with:str with:_birthdayLabel.text];
                                  }];
     UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
                           {
