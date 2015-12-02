@@ -9,13 +9,21 @@
 #import "UserMoneyViewController.h"
 #import "HttpEngine.h"
 
+//zhifubao
+#import <AlipaySDK/AlipaySDK.h>
+#import "ZhiFuBaoOrder.h"
+#import "DataSigner.h"
+
+//wechat
+#import "WXApi.h"
+
 @interface UserMoneyViewController ()
 
 @property (nonatomic, strong) UILabel *moneyLabel;
 @property (nonatomic, strong) UILabel *nokoLabel;
 @property (nonatomic, strong) UITextField *monenyNum;
 @property (nonatomic, strong) UIButton *zfbBtn;
-@property (nonatomic, strong) UIButton *wechatBth;
+@property (nonatomic, strong) UIButton *wechatBtn;
 @property (nonatomic, strong) UIButton *okBtn;
 
 @property (nonatomic, assign) BOOL btnStatus;
@@ -42,6 +50,7 @@
     // Do any additional setup after loading the view.
     self.title = @"账户余额";
     self.view.backgroundColor = [UIColor whiteColor];
+    _lastTag = 1;
     
 //    UITapGestureRecognizer *tapGes = [[UITapGestureRecognizer alloc] init];
 //    [tapGes addTarget:self action:@selector(keybordHideAction:)];
@@ -63,7 +72,26 @@
          [self thePage];
      }];
     
+    if([WXApi isWXAppInstalled]) // 判断 用户是否安装微信
+    {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getOrderPayResult:) name:@"order_pay_notification" object:nil];//监听一个通知
+    }
+}
 
+#pragma mark - 通知信息
+- (void)getOrderPayResult:(NSNotification *)notification{
+    if ([notification.object isEqualToString:@"success"])
+    {
+        [self alert:@"恭喜" msg:@"您已成功支付啦!"];
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+    else
+    {
+        [self alert:@"提示" msg:@"支付失败"];
+    }
+}
+- (void)viewWillDisappear:(BOOL)animated{
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
 }
 
 //- (void)keybordHideAction:(UITapGestureRecognizer *)tap
@@ -121,13 +149,14 @@
     [self.zfbBtn setBackgroundImage:[UIImage imageNamed:@"zfbBlue.png"] forState:UIControlStateSelected];
     [self.zfbBtn setBackgroundImage:[UIImage imageNamed:@"zfbGray.png"] forState:UIControlStateNormal];
     [self.view addSubview:self.zfbBtn];
+    self.zfbBtn.selected = YES;
     
-    self.wechatBth = [[UIButton alloc]initWithFrame:CGRectMake((LBVIEW_WIDTH1-LBVIEW_WIDTH1 / 1.2)/2+(LBVIEW_WIDTH1 / 1.2-10)/2+10, + self.moneyLabel.frame.size.height + self.nokoLabel.frame.size.height + LBVIEW_WIDTH1 / 9 + 65, (LBVIEW_WIDTH1 / 1.2-10)/2, (LBVIEW_WIDTH1 / 1.2-10)/270*33)];
-    [self.wechatBth addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
-    [self.wechatBth setBackgroundImage:[UIImage imageNamed:@"wechatGray.png"] forState:UIControlStateNormal];
-    [self.wechatBth setBackgroundImage:[UIImage imageNamed:@"wechatGreen.png"] forState:UIControlStateSelected];
-    self.wechatBth.tag=2;
-    [self.view addSubview:self.wechatBth];
+    self.wechatBtn = [[UIButton alloc]initWithFrame:CGRectMake((LBVIEW_WIDTH1-LBVIEW_WIDTH1 / 1.2)/2+(LBVIEW_WIDTH1 / 1.2-10)/2+10, + self.moneyLabel.frame.size.height + self.nokoLabel.frame.size.height + LBVIEW_WIDTH1 / 9 + 65, (LBVIEW_WIDTH1 / 1.2-10)/2, (LBVIEW_WIDTH1 / 1.2-10)/270*33)];
+    [self.wechatBtn addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
+    [self.wechatBtn setBackgroundImage:[UIImage imageNamed:@"wechatGray.png"] forState:UIControlStateNormal];
+    [self.wechatBtn setBackgroundImage:[UIImage imageNamed:@"wechatGreen.png"] forState:UIControlStateSelected];
+    self.wechatBtn.tag=2;
+    [self.view addSubview:self.wechatBtn];
     
 
     self.okBtn = [[UIButton alloc]init];
@@ -164,19 +193,42 @@
 
 -(void)addMoney
 {
+    NSString *pay_method = _lastTag==1 ? @"alipay" : @"weixin";
     
-    if (_lastTag!=0)
-    {
-        if (_lastTag==1)
-        {
-            //NSLog(@"点击事件");
-        }
-        else
-        {
+    
+    //[self goZhiFuBao];
+    //return;
+    NSString *amount = self.monenyNum.text;
+    amount = @"0.01";
+    if([amount isEqualToString:@""]){
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"系统提示" message:@"请输入充值的金额" preferredStyle:UIAlertControllerStyleAlert];
         
-        }
+        UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action){
+            
+        }];
+        [alertController addAction:defaultAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+        return;
     }
+    
+    [HttpEngine topUpAmount:amount withMethod:pay_method completion:^(NSDictionary *dict) {
+        
+        NSString *out_trade_no = [dict objectForKey:@"out_trade_no"];
+        if([pay_method isEqualToString:@"alipay"])
+        {
+            [self alipay:out_trade_no amount:amount completion:^(BOOL success) {
+                if(success){
+                    //返回我的花集
+                    [self.navigationController popViewControllerAnimated:YES];
+                }
+            }];
+        }
+        else{
+            [self WeiXinPay:out_trade_no];
+        }
+    }];
 }
+
 
 -(void)keyDown
 {

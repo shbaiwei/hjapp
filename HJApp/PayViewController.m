@@ -385,6 +385,7 @@ NSInteger pay_type;
     [HttpEngine WXsendPay];
     
 }
+
 //支付宝支付
 -(void)goZhiFuBao
 {

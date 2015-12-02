@@ -1006,7 +1006,7 @@
 }
 //amount,method
 //花集余额充值
-+(void)topUpAmount:(NSString*)amount withMethod:(NSString*)method
++(void)topUpAmount:(NSString*)amount withMethod:(NSString*)method completion:(void(^)(NSDictionary *dict))complete
 {
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
     
@@ -1019,12 +1019,28 @@
     
     NSDictionary*parameters=@{@"amount":amount,@"method":method};
     
-    [session POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
+    [session POST:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
          NSLog(@"JSON:%@",responseObject);
+         
+         complete(responseObject);
+
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+         NSLog(@"Error:%@",error);
+     }];
+}
+
++(void)wxPayRequest:(NSString *)out_trade_no completion:(void (^)(NSDictionary *))complete{
+    
+    AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
+    NSString*str=[NSString stringWithFormat:@"http://weixin.huaji.com/app_payment/handle/app.php?out_trade_no=%@",out_trade_no];
+    
+    [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
+     {
+        complete(responseObject);
+         
+     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
+     {
          NSLog(@"Error:%@",error);
      }];
 }

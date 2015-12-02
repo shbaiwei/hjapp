@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "WXApi.h"
+#import "WXApiObject.h"
+
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate,WXApiDelegate>
 

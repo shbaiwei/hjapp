@@ -128,8 +128,10 @@
 
 //amount,method
 //花集余额充值
-+(void)topUpAmount:(NSString*)amount withMethod:(NSString*)method;
++(void)topUpAmount:(NSString*)amount withMethod:(NSString*)method completion:(void(^)(NSDictionary *dict))complete;
 
+//微信prepay_id接口
++(void)wxPayRequest:(NSString *)out_trade_no completion:(void(^)(NSDictionary *dict)) complete;
 //消息中心
 //+(void)
 
