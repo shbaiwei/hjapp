@@ -82,7 +82,7 @@
         
         return cell;
     }
-    NSArray*nameArray=[[NSArray alloc]initWithObjects:@"总价",@"配送价",@"花卷抵扣", nil];
+    NSArray*nameArray=[[NSArray alloc]initWithObjects:@"总价",@"配送价",@"红包抵扣", nil];
     if (indexPath.section==1)
     {
         UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, 0, 60, LBVIEW_HEIGHT1*0.06)];

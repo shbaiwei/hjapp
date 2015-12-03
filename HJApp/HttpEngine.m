@@ -14,20 +14,20 @@
 //定位城市
 +(void)convertCityName:(NSString *)lat withLng:(NSString *)lng complete:(void (^)(NSDictionary *dataDic))complete failure:(void (^)(NSError * error))failure
 {
-    MBProgressHUD *hud = [BWCommon getHUD];
+    //MBProgressHUD *hud = [BWCommon getHUD];
     
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/location/convert/"];
     [session GET:str parameters:@{@"latitude":lat,@"longitude":lng} success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
-         [hud removeFromSuperview];
+         //[hud removeFromSuperview];
          NSLog(@"JSON:%@",responseObject);
          NSDictionary *dict=responseObject;
          complete(dict);
          
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
      {
-         [hud removeFromSuperview];
+         //[hud removeFromSuperview];
          failure(error);
          NSLog(@"location Error:%@",error);
      }];
@@ -59,6 +59,7 @@
 +(void)getPicture:(void(^)(NSArray*dataArray))complete
 {
     
+    MBProgressHUD *hud = [BWCommon getHUD];
     NSDate *now = [NSDate date];
     NSDateFormatter *dformat = [[NSDateFormatter alloc] init];
     [dformat setDateFormat:@"YYYY-MM-dd%20HH:mm"];
@@ -69,6 +70,8 @@
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/advertisement/?ordering=-sort_order&start_date=%@&end_date=%@",now_str,now_str];
     [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
+         
+         [hud removeFromSuperview];
          NSLog(@"JSON:%@",responseObject);
          
          NSArray*array=responseObject[@"results"];
@@ -87,8 +90,10 @@
          }
          complete(dataArray);
          
+         
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
      {
+         [hud removeFromSuperview];
          NSLog(@"Error:%@",error);
      }];
 }
@@ -351,6 +356,8 @@
 +(void)addGoodsLocation:(NSString*)location withSku:(NSString*)sku withSupplier:(NSString*)supplier withNumber:(NSString*)number
 {
     
+    MBProgressHUD *hud = [BWCommon getHUD];
+    
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/cart/"];
     
@@ -363,10 +370,11 @@
     [session POST:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
          //NSLog(@"JSON:%@",responseObject);
-         
+         [hud removeFromSuperview];
          
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
      {
+         [hud removeFromSuperview];
          NSLog(@"Error:%@",error);
      }];
     
@@ -392,7 +400,7 @@
     if (tag==1)
     {
         [[NSUserDefaults standardUserDefaults]setObject:srt forKey:@"TEXTNUM"];
-        message=[NSString stringWithFormat:@"欢迎您注册花集网会员。注册验证码：%@，三十分钟内有效",srt];
+        message=[NSString stringWithFormat:@"欢迎您注册花集网会员。注册验证码：%@，三十分钟内有效。",srt];
     }
     if (tag==2)
     {
@@ -442,6 +450,29 @@
          complete(@"false");
      }];
     
+}
+
++(void)queryUser:(NSString *)username with:(void (^)(NSDictionary * dict))complete failure:(void (^)(NSString *))failure{
+    
+    AFHTTPSessionManager*magager=[AFHTTPSessionManager manager];
+    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/auth/queryUser/"];
+
+    NSDictionary*parameters=@{@"username":username};
+    [magager GET:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
+     {
+         NSLog(@"JSON:%@",responseObject);
+         complete(responseObject);
+         
+     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
+     {
+         NSLog(@"Error:%@",error);
+         NSDictionary*userInfo=error.userInfo;
+         NSData*data=userInfo[@"com.alamofire.serialization.response.error.data"];
+         NSString*str=[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+         NSLog(@"str====%@",str);
+         //complete(@"false");
+         failure(str);
+     }];
     
 }
 
@@ -514,7 +545,7 @@
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
     
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/auth/password/"];
-    NSString*username=[NSString stringWithFormat:@"hj_%@",user];
+    NSString*username=user;
     
     NSDate *localDate = [NSDate date]; //获取当前时间
     NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[localDate timeIntervalSince1970]];
@@ -610,6 +641,7 @@
     
    // NSLog(@"pageSize==%@",pageSize);
     
+    MBProgressHUD *hud = [BWCommon getHUD];
     
     NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
     NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
@@ -637,11 +669,12 @@
          NSArray*array=responseObject[@"data"];
          NSLog(@"array====%@",array);
          
-         
+         [hud removeFromSuperview];
          complete(array);
          
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
      {
+         [hud removeFromSuperview];
          NSLog(@"Error:%@",error);
      }];
     
@@ -682,11 +715,10 @@
     NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
     NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
     [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
+
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/orders/%@/reorder/",order];
     
-    [session POST:str parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
+    [session POST:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
          NSLog(@"JSON:%@",responseObject);
          

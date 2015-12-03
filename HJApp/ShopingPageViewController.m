@@ -312,6 +312,8 @@
     {
         return;
     }
+    
+
     ShopingCar*spCa=_dataArray[tag];
     NSString*numer=spCa.number;
     numer=[NSString stringWithFormat:@"%lu",[numer integerValue]-1];

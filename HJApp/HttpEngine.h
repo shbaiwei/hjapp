@@ -48,6 +48,9 @@
 //查询手机号是否存在
 +(void)checkUserPhone:(NSString*)phone with:(void(^)(NSString*existe))complete;
 
+//查询用户
++(void)queryUser:(NSString*)username with:(void(^)(NSDictionary *))complete failure:(void(^)(NSString *error))failure;
+
 //用户注册
 +(void)registerRequestPassword:(NSString*)password withMobile:(NSString*)mobile withRegIp:(NSString*)regIp withFlorist:(NSString*)isFlorist complete:(void(^)(NSString*fail))complete;
 
@@ -106,10 +109,6 @@
 
 //订单支付
 +(void)payOrderNum:(NSString*)num withSpaypassword:(NSString*)spaypassword withMethod:(NSString*)method withCoupon:(NSString*)couponNo Completion:(void(^)(NSString*orderNo,NSString*price))complete;
-
-//微信支付
-+(void)WXsendPay;
-
 
 
 //地址列表

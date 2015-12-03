@@ -36,6 +36,8 @@
 
 @implementation ForgetPasswordViewController
 
+
+NSString *username;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -56,7 +58,7 @@
     
     
     
-    
+    username = @"";
     
     self.yzmBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     self.yzmBtn.frame = CGRectMake(LBVIEW_WIDTH1 * 0.05, LBVIEW_HEIGHT1 *0.09+15, LBVIEW_WIDTH1*0.9, LBVIEW_HEIGHT1*0.06);
@@ -141,21 +143,33 @@
         //[self.yzmBtn setBackgroundColor:[UIColor redColor]];
     } else
     {
-        //TODO 发送验证码
-        [HttpEngine sendMessageMoblie:_phone.text withKind:2];
-        self.hqStatus = NO;
         
-        [self.yzmBtn setTitle:@"" forState:UIControlStateNormal];
-        [self.yzmBtn setBackgroundColor:[UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1]];
-        [BWCommon verificationCode:^{
-            [self.yzmBtn setBackgroundColor:[UIColor redColor]];
-            [self.yzmBtn setTitle:@"获取手机验证码" forState:UIControlStateNormal];
-            self.hqStatus = YES;
-            [self.timeLimitLabel setText:@""];
-        } blockNo:^(id time) {
+        [HttpEngine queryUser:_phone.text with:^(NSDictionary *dict) {
+            self.hqStatus = NO;
             
-            [self.timeLimitLabel setText:[NSString stringWithFormat:@"%@秒后重新获取验证码",time]];
+            username = dict[@"username"];
+            
+            [self.yzmBtn setTitle:@"" forState:UIControlStateNormal];
+            [self.yzmBtn setBackgroundColor:[UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1]];
+            [BWCommon verificationCode:^{
+                [self.yzmBtn setBackgroundColor:[UIColor redColor]];
+                [self.yzmBtn setTitle:@"获取手机验证码" forState:UIControlStateNormal];
+                self.hqStatus = YES;
+                [self.timeLimitLabel setText:@""];
+            } blockNo:^(id time) {
+                
+                [self.timeLimitLabel setText:[NSString stringWithFormat:@"%@秒后重新获取验证码",time]];
+            }];
+            
+            //TODO 发送验证码
+            [HttpEngine sendMessageMoblie:_phone.text withKind:2];
+        }
+        failure:^(NSString *error){
+            [self alert:error];
         }];
+        
+        
+        
         //[self.yzmBtn setBackgroundImage:self.hqOff forState:UIControlStateNormal];
     }
     //self.hqStatus = !self.hqStatus;
@@ -170,11 +184,13 @@
     }
     else
     {
-        [HttpEngine momodifyPasswordUser:_phone.text withPassword:_pswTF.text complete:^(NSString *fail)
+        [HttpEngine momodifyPasswordUser:username withPassword:_pswTF.text complete:^(NSString *fail)
         {
             if ([fail isEqualToString:@"true"])
             {
                 [self alert:@"修改成功"];
+                
+                [self dismissViewControllerAnimated:YES completion:nil];
             }
             else
             {

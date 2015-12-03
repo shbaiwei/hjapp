@@ -30,6 +30,9 @@
     self.navigationController.navigationBar.translucent =NO;
     //self.view.frame=CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1);
     self.title=@"城市选择";
+    //[self.navigationController navigationBar]
+    [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                     [UIColor whiteColor], NSForegroundColorAttributeName, nil]];
     
     self.view.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     
@@ -80,7 +83,7 @@
         [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [btn setBackgroundColor:[UIColor whiteColor]];
         btn.tag=i;
-        btn.titleLabel.font=[UIFont systemFontOfSize:12];
+        btn.titleLabel.font=[UIFont systemFontOfSize:14];
         [btn addTarget:self action:@selector(chooseCity:) forControlEvents:UIControlEventTouchUpInside];
         [btnView addSubview:btn];
     }
