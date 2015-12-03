@@ -219,7 +219,8 @@
                 }
             }];
         }
-        else{
+        else
+        {
             [self WeiXinPay:out_trade_no];
         }
     }];
