@@ -67,7 +67,7 @@
 //    [self.view addSubview:backBtn];
     
     //输入框和登陆注册按钮
-    NSArray*labelNameArray=[[NSArray alloc]initWithObjects:@"账户名:",@"登陆密码:", nil];
+    NSArray*labelNameArray=[[NSArray alloc]initWithObjects:@"账户名",@"登陆密码", nil];
     NSArray*tfNameArray=[[NSArray alloc]initWithObjects:@"请输入帐号",@"请输入密码",nil];
     NSArray*btnNameArray=[[NSArray alloc]initWithObjects:@"登录",@"注册" ,nil];
     for (int i=0; i<2; i++)
@@ -81,13 +81,13 @@
         
         UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(15, 0, LBVIEW_WIDTH1/4.5, LBVIEW_HEIGHT1/15.0)];
         label.text=labelNameArray[i];
-        label.font=[UIFont systemFontOfSize:14];
+        label.font=[UIFont systemFontOfSize:16];
         label.textColor=[UIColor blackColor];
         [view addSubview:label];
         
         UITextField*field=[[UITextField alloc]initWithFrame:CGRectMake(20+LBVIEW_WIDTH1/4.5, 0, view.frame.size.width-label.frame.size.width-20, LBVIEW_HEIGHT1/15.0)];
         field.placeholder=tfNameArray[i];
-        field.font=[UIFont systemFontOfSize:14];
+        field.font=[UIFont systemFontOfSize:16];
         field.clearsOnBeginEditing=YES;
         //field.borderStyle=UITextBorderStyleBezel;
         if (i==1)
@@ -113,7 +113,7 @@
         lgBtn.tag=i;
         lgBtn.layer.cornerRadius=7;
         lgBtn.clipsToBounds=YES;
-        lgBtn.titleLabel.font=[UIFont systemFontOfSize:14];
+        lgBtn.titleLabel.font=[UIFont systemFontOfSize:16];
         [lgBtn setTitle:btnNameArray[i] forState:UIControlStateNormal];
         [lgBtn addTarget:self action:@selector(lgBtnClick:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:lgBtn];

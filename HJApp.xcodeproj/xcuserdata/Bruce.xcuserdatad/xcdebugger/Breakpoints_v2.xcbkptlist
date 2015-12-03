@@ -10,13 +10,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "HJApp/HomePageViewController.m"
-            timestampString = "470654732.855798"
+            timestampString = "470755134.882817"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "544"
-            endingLineNumber = "544"
-            landmarkName = "@implementation HomePageViewController"
-            landmarkType = "3">
+            startingLineNumber = "564"
+            endingLineNumber = "564"
+            landmarkName = "-theOneMoney"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "HJApp/AssortPageViewController.m"
-            timestampString = "470657334.715681"
+            timestampString = "470751747.467301"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "407"
-            endingLineNumber = "407"
+            startingLineNumber = "408"
+            endingLineNumber = "408"
             landmarkName = "-insertRowAtBottom"
             landmarkType = "5">
          </BreakpointContent>

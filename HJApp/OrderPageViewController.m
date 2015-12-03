@@ -16,6 +16,7 @@
 #import "SVPullToRefresh.h"
 #import "LoginViewController.h"
 #import "OrderPayViewController.h"
+#import "PayTableViewCell.h"
 
 
 @interface OrderPageViewController ()
@@ -25,12 +26,17 @@
 @property(nonatomic,strong)UIView*chooseView;
 @property(nonatomic,strong)UITableView*tableView;
 
+@property(nonatomic,strong)NSArray*payStyleArray;
+
 @property(nonatomic,strong)MyButton*myOrderBtn;
 @property(nonatomic,unsafe_unretained)int pageNum;
 @property(nonatomic,strong)UIButton*stausBtn;
 @property(nonatomic,strong)UIView*shadowView;
 @property(nonatomic,strong)UIView*shadowV;
 @property(nonatomic,unsafe_unretained)int lastTag;
+@property(nonatomic,unsafe_unretained)int pay_type;
+
+@property(nonatomic,strong)UITableView *paymentTableView;
 
 @end
 
@@ -43,6 +49,7 @@
 #define LBVIEW_HEIGHT1 [UIScreen mainScreen].bounds.size.height
 
 @implementation OrderPageViewController
+
 
 -(void)viewWillAppear:(BOOL)animated
 {
@@ -78,6 +85,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    _pay_type = 0;
   
     UIView*headView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1,64)];
     headView.backgroundColor=[UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1];
@@ -101,6 +110,14 @@
     [_stausBtn setBackgroundImage:[UIImage imageNamed:@"shang.png"] forState:UIControlStateSelected];
     _stausBtn.selected=NO;
     [headView addSubview:_stausBtn];
+    
+    
+    self.paymentTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, VIEW_WIDTH*0.45, 172) style:UITableViewStyleGrouped];
+    self.paymentTableView.backgroundColor = [UIColor whiteColor];
+    self.paymentTableView.scrollEnabled = NO;
+    self.paymentTableView.delegate = self;
+    [self.paymentTableView.layer setCornerRadius:8.0];
+    self.paymentTableView.dataSource = self;
     
 }
 - (void)insertRowAtTop
@@ -158,23 +175,23 @@
     if (_myOrderBtn.isOpen==NO)
     {
         //选择视图
-        _chooseView=[[UIView alloc]initWithFrame:CGRectMake(0, 50, LBVIEW_WIDTH1, LBVIEW_HEIGHT1*0.2)];
+        _chooseView=[[UIView alloc]initWithFrame:CGRectMake(0, 64, LBVIEW_WIDTH1, LBVIEW_HEIGHT1*0.25)];
         _chooseView.backgroundColor=[UIColor whiteColor];
         [self.view addSubview:_chooseView];
         NSArray*btnNameArray=[[NSArray alloc]initWithObjects:@"全部", @"待付款",@"待收货",@"退款／售后",nil];
         for (int i=0; i<4; i++)
         {
-            UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, i*LBVIEW_HEIGHT1*0.05, LBVIEW_WIDTH1-10, LBVIEW_HEIGHT1*0.05)];
+            UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, i*LBVIEW_HEIGHT1*0.06, LBVIEW_WIDTH1-10, LBVIEW_HEIGHT1*0.06)];
             label.text=btnNameArray[i];
             label.font=[UIFont systemFontOfSize:14];
-            label.textColor=[UIColor blackColor];
+            label.textColor=NJFontColor;
             [_chooseView addSubview:label];
             
-            UILabel*lineLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, i*LBVIEW_HEIGHT1*0.05, LBVIEW_WIDTH1, 1)];
-            lineLabel.backgroundColor=[UIColor grayColor];
+            UILabel*lineLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, i*LBVIEW_HEIGHT1*0.06, LBVIEW_WIDTH1, 1)];
+            lineLabel.backgroundColor=[UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
             [_chooseView addSubview:lineLabel];
             
-            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, i*LBVIEW_HEIGHT1*0.05, LBVIEW_WIDTH1, LBVIEW_HEIGHT1*0.05)];
+            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, i*LBVIEW_HEIGHT1*0.06, LBVIEW_WIDTH1, LBVIEW_HEIGHT1*0.06)];
             btn.tag=i+1;
             [btn addTarget:self action:@selector(chooseBtn:) forControlEvents:UIControlEventTouchUpInside];
             [_chooseView addSubview:btn];
@@ -255,6 +272,10 @@
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    if([tableView isEqual:self.paymentTableView]){
+        return 3;
+    }
+    
     NSDictionary*dic=_dataArray[section];
     NSArray*array=dic[@"detail"];
     
@@ -263,16 +284,42 @@
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
+    if([tableView isEqual:self.paymentTableView]){
+        return 1;
+    }
     return _dataArray.count;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if([tableView isEqual:self.paymentTableView]){
+        return 42;
+    }
+    
     return LBVIEW_HEIGHT1*0.12;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
+    if([tableView isEqual:self.paymentTableView]){
+        PayTableViewCell *cell0 = [PayTableViewCell cellWithTableView:tableView];
+        
+        [cell0.iconImage setImage:[UIImage imageNamed:[NSString stringWithFormat:@"pay1-%lu.png",indexPath.row+1]]];
+
+        _payStyleArray = [[NSArray alloc]initWithObjects:@"花集余额",@"支付宝",@"微信支付", nil];
+        cell0.textLabel.text=_payStyleArray[indexPath.row];
+        
+        if(_pay_type == indexPath.row){
+            cell0.accessoryType = UITableViewCellAccessoryCheckmark;
+        }else{
+            cell0.accessoryType = UITableViewCellAccessoryNone;
+        }
+        
+        return cell0;
+    }
+    
+    
     NSDictionary*dic=_dataArray[indexPath.section];
     NSArray*array=dic[@"detail"];
     NSDictionary*dataDic=array[indexPath.row];
@@ -301,14 +348,25 @@
 //设置区头
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
+
     return 50;
 }
 
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    NSDictionary*dic=_dataArray[section];
-    
     UIView*view=[[UIView alloc]init];
+    if([tableView isEqual:self.paymentTableView]){
+        UILabel *payLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 15, 120, 20)];
+        payLabel.text = @"选择支付方式";
+        payLabel.font = NJTitleFont;
+        [view addSubview:payLabel];
+        view.backgroundColor = [UIColor whiteColor];
+        return view;
+        
+    }
+    
+    
+    NSDictionary*dic=_dataArray[section];
     //view.backgroundColor=[UIColor  lightGrayColor];
     
     UIImageView*blueImageV = [[UIImageView alloc]initWithFrame:CGRectMake(10, 15, 20, 20)];
@@ -414,15 +472,22 @@
 //设置区尾
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
+    if([tableView isEqual:self.paymentTableView]){
+        return 0.001;
+    }
     return LBVIEW_HEIGHT1*0.1;
 }
 -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
+    UIView*view=[[UIView alloc]init];
+    if([tableView isEqual:self.paymentTableView]){
+        return view;
+    }
     NSDictionary*dic=_dataArray[section];
     // NSLog(@"_dataArray[5]==%@",_dataArray[0]);
     NSArray*detailArray=dic[@"detail"];
     
-    UIView*view=[[UIView alloc]init];
+    
     view.backgroundColor=[UIColor whiteColor];
     
     UIFont*font=[UIFont systemFontOfSize:12];
@@ -457,69 +522,75 @@
     btn.layer.cornerRadius=5;
     btn.clipsToBounds=YES;
     btn.titleLabel.font=[UIFont systemFontOfSize:14];
-    btn.frame=CGRectMake(LBVIEW_WIDTH1-80, LBVIEW_HEIGHT1*0.1-25, 70, 20);
+    btn.frame=CGRectMake(LBVIEW_WIDTH1-80, LBVIEW_HEIGHT1*0.1-30, 70, 25);
     
     int status=[dic[@"status"] intValue];
     if (status==0)
     {
        [btn setTitle:@"支付" forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(payorder:) forControlEvents:UIControlEventTouchUpInside];
+        [view addSubview:btn];
     }
-    else if(status==5)
+    else
     {
-       [btn setTitle:@"再次购买" forState:UIControlStateNormal];
+       //[btn setTitle:@"再次购买" forState:UIControlStateNormal];
+        //[btn addTarget:self action:@selector(reorder:) forControlEvents:UIControlEventTouchUpInside];
     }
 
     [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     btn.tag=section+500;
     btn.status=status;
-    [btn addTarget:self action:@selector(againBuy:) forControlEvents:UIControlEventTouchUpInside];
-    [view addSubview:btn];
+    
+    
     
     return view;
 }
 
-//再次购买
--(void)againBuy:(MyButton*)sender
-{
-    if (sender.status==0)
-    {
-       
-        //NSString*str=dicc[@"order_no"];
-        //dicc[@"curr_price"];
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 
-//        OrderPayViewController*order=[[OrderPayViewController alloc]init];
-//        [self.navigationController pushViewController:order animated:YES];
-        
-        [self gotoPayOrder:(sender.tag)];
-        
+        //UITableViewCell *cell=[tableView cellForRowAtIndexPath:indexPath];
+    if([tableView isEqual:self.paymentTableView]){
+        _pay_type = (int)indexPath.row;
+        [self.paymentTableView reloadData];
     }
-    else
-        if (sender.status==5)
-        {
+
+}
+
+-(void) payorder:(MyButton *)sender{
+    [self gotoPayOrder:(sender.tag)];
+}
+//再次购买
+-(void)reorder:(MyButton*)sender{
+
+    //self.tabBarVC.selectedIndex=4;
             NSDictionary*dic=_dataArray[sender.tag-500];
             NSArray*array=dic[@"detail"];
             NSDictionary*dicc=array[0];
             NSLog(@"dicc[order_no]===%@",dicc[@"order_no"]);
             [HttpEngine anginBuy:dicc[@"order_no"]];
-        }
+            
+    
 }
 
--(void)gotoPayOrder:(NSInteger)str
+-(void)gotoPayOrder:(NSInteger)tag
 {
-    _shadowV=[[UIView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.1, LBVIEW_HEIGHT1*0.3, LBVIEW_WIDTH1*0.8, LBVIEW_HEIGHT1*0.4)];
-    _shadowV.backgroundColor=[UIColor whiteColor];
-    _shadowV.layer.cornerRadius=10;
-    _shadowV.clipsToBounds=YES;
-     NSArray*array=[[NSArray alloc]initWithObjects:@"花集余额",@"支付宝",@"微信支付", nil];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"\n\n\n\n\n\n" message:nil preferredStyle:UIAlertControllerStyleAlert];
     
-    for (int i=0; i<5; i++)
+    //CGRect frame = self.paymentTableView.frame;
+    //frame.size.width = alertController.view.bounds.size.width;
+    //self.paymentTableView.frame = frame;
+    
+    
+     //NSArray*array=[[NSArray alloc]initWithObjects:@"花集余额",@"支付宝",@"微信支付", nil];
+    
+    /*for (int i=0; i<5; i++)
     {
         if (i==0)
         {
             UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, 0, LBVIEW_WIDTH1*0.8-20, LBVIEW_HEIGHT1*0.5/5)];
             label.text=@"选择支付方式";
             label.font=[UIFont systemFontOfSize:14];
-            [_shadowV addSubview:label];
+            [alertController.view addSubview:label];
         }else
         if (i==4)
         {
@@ -533,7 +604,7 @@
             [btn addTarget:self action:@selector(btnpay:) forControlEvents:UIControlEventTouchUpInside];
             btn.titleLabel.font=[UIFont systemFontOfSize:14];
             btn.tag=str;
-            [_shadowV addSubview:btn];
+            [alertController.view addSubview:btn];
         }else
         {
             UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(40,(LBVIEW_HEIGHT1*0.4/5-1)*i, 100, LBVIEW_HEIGHT1*0.4/4)];
@@ -542,40 +613,41 @@
             [_shadowV addSubview:label];
             UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(10, (LBVIEW_HEIGHT1*0.4/5-20)/2+LBVIEW_HEIGHT1*0.4/5*i, 20, 20)];
             image.image=[UIImage imageNamed:[NSString stringWithFormat:@"pay1-%d.png",i]];
-            [_shadowV addSubview:image];
-            
-            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake( LBVIEW_WIDTH1*0.8-30, (LBVIEW_HEIGHT1*0.4/5-20)/2+LBVIEW_HEIGHT1*0.4/5*i,20, 20)];
-            [btn setBackgroundImage:[UIImage imageNamed:@"maru.png"] forState:UIControlStateNormal];
-            [btn setBackgroundImage:[UIImage imageNamed:@"Dg.png"] forState:UIControlStateSelected];
-            btn.tag=i+66;
-            
-            [btn addTarget:self action:@selector(ay:) forControlEvents:UIControlEventTouchUpInside];
-            [_shadowV addSubview:btn];
+            [alertController.view addSubview:image];
+
             
   
         }
         
-    }
+    }*/
+    [alertController.view addSubview:self.paymentTableView];
     
-    _shadowView=[[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
-    _shadowView.backgroundColor=[UIColor grayColor];
-    _shadowView.alpha=1;
+    UIAlertAction*cancelAction=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action){
+        
+    }];
+    [alertController addAction:cancelAction];
     
-    //找window
-    UIWindow *window=[[UIApplication sharedApplication]keyWindow];
-    [window addSubview:_shadowView];
-    [_shadowView addSubview:_shadowV];
+    UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action){
+        [self toPayOrder:tag];
+    }];
+    [alertController addAction:defaultAction];
+    
+    [self presentViewController:alertController animated:YES completion:^{
+        //[indicator removeFromSuperview];
+        
+        CGRect frame = self.paymentTableView.frame;
+        frame.size.width = alertController.view.bounds.size.width;
+        self.paymentTableView.frame = frame;
+    }];
     
 }
--(void)btnpay:(UIButton*)sender
-{
+
+-(void)toPayOrder:(NSInteger )tag{
     
-     [_shadowView removeFromSuperview];
-    
-    NSDictionary*dic=_dataArray[sender.tag-500];
+    NSDictionary*dic=_dataArray[tag-500];
     NSArray*array=dic[@"detail"];
     NSDictionary*dicc=array[0];
-    if (_lastTag==67)
+    if (_pay_type == 0)
     {
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"输入支付密码" message:@"请输入您花集账户的支付密码" preferredStyle:UIAlertControllerStyleAlert];
         [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField)
@@ -605,7 +677,7 @@
         
        
     }
-    if (_lastTag==68)
+    if (_pay_type==1)
     {
         [HttpEngine payOrderNum:dicc[@"order_no"] withSpaypassword:@"" withMethod:@"weixin" withCoupon:@"" Completion:^(NSString *orderNo,NSString*price)
          {
@@ -619,7 +691,7 @@
             
     
     }
-    if (_lastTag==69)
+    if (_pay_type==2)
     {
         [HttpEngine payOrderNum:dicc[@"order_no"] withSpaypassword:@"" withMethod:@"alipay" withCoupon:@"" Completion:^(NSString *orderNo,NSString*price)
         {

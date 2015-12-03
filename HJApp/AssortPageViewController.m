@@ -125,12 +125,13 @@ NSString *locatioanStr;
     }
     if (!_assortTopView)
     {
-      [self performSelector:@selector(delayGetProduct) withObject:nil afterDelay:0.3];
+      //[self performSelector:@selector(delayGetProduct) withObject:nil afterDelay:0.3];
     }
 }
 
 -(void)judgeIsTag
 {
+    [self delayGetProduct];
     //获取上个页面所选取的种类
     NSString*isTagStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"TWOTAG"];
     if (isTagStr!=NULL)
@@ -602,6 +603,7 @@ NSString *locatioanStr;
         cell.textLabel.adjustsFontSizeToFitWidth=YES;
         cell.textLabel.textColor=NJFontColor;
         cell.textLabel.font=NJNameFont;
+        
         return cell;
     }
     else if ([tableView isEqual:self.rightTableV]){

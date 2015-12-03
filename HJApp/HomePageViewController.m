@@ -152,19 +152,25 @@ UILabel *secondLabel;
     
     
     
+    
+    
+    
+    
     //滑动轮播图部分
     [HttpEngine getPicture:^(NSArray *dataArray)
      {
-         [self theTopView];
+         
          _picDataArray=dataArray;
          //NSLog(@"pic  ===  %@",_picDataArray);
          [self scrollViewAndPageControl];
          
-         
+         [self theTopView];
          [self theFlowersButtons];
          [self theTodayFlowes];
          [self theOneMoney];
          [self theIkenAndBess];
+         
+         
      }];
     
 }
@@ -189,21 +195,35 @@ UILabel *secondLabel;
         return;
     }
     
-    //获取城市定位
-    NSString *lat = [NSString stringWithFormat:@"%f",newLocation.coordinate.latitude];
-    NSString *lng = [NSString stringWithFormat:@"%f",newLocation.coordinate.longitude];
-    [HttpEngine convertCityName:lat withLng:lng complete:^(NSDictionary *dataDic) {
-        NSLog(@"%@",dataDic);
-
-        [[NSUserDefaults standardUserDefaults]setObject:dataDic[@"code"] forKey:@"CODE"];
-        [[NSUserDefaults standardUserDefaults]setObject:dataDic[@"name"] forKey:@"CITYNAME"];
-        [[NSUserDefaults standardUserDefaults]setObject:dataDic[@"allowed_regions"] forKey:@"ALLOWED_REGIONS"];
-        [[NSUserDefaults standardUserDefaults]setObject:dataDic[@"allowed_regions_name"] forKey:@"ALLOWED_REGIONS_NAME"];
-        self.cityLabel.text = dataDic[@"name"];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     
-    } failure:^(NSError *error) {
-        [self changeCityBtn];
-    }];
+        //获取城市定位
+        NSString *lat = [NSString stringWithFormat:@"%f",newLocation.coordinate.latitude];
+        NSString *lng = [NSString stringWithFormat:@"%f",newLocation.coordinate.longitude];
+        [HttpEngine convertCityName:lat withLng:lng complete:^(NSDictionary *dataDic) {
+            NSLog(@"%@",dataDic);
+            
+            [[NSUserDefaults standardUserDefaults]setObject:dataDic[@"code"] forKey:@"CODE"];
+            [[NSUserDefaults standardUserDefaults]setObject:dataDic[@"name"] forKey:@"CITYNAME"];
+            [[NSUserDefaults standardUserDefaults]setObject:dataDic[@"allowed_regions"] forKey:@"ALLOWED_REGIONS"];
+            [[NSUserDefaults standardUserDefaults]setObject:dataDic[@"allowed_regions_name"] forKey:@"ALLOWED_REGIONS_NAME"];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.cityLabel.text = dataDic[@"name"];
+            });
+            
+            
+        } failure:^(NSError *error) {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self changeCityBtn];
+            });
+            
+        }];
+
+        
+    });
+    
     
     
     // 停止位置更新
@@ -687,5 +707,8 @@ UILabel *secondLabel;
     [self.navigationController pushViewController:cooperateVC animated:YES];
     
 }
+
+
+
 
 @end

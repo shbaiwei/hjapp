@@ -165,7 +165,7 @@
     self.getBtn.frame = CGRectMake(LBVIEW_WIDTH1 * 0.05, LBVIEW_HEIGHT1*0.39+25, 24,24);
     self.getOff = [UIImage imageNamed:@"agreeG.png"];
     self.getOn = [UIImage imageNamed:@"agreeR.png"];
-    self.getStatus = YES;
+    self.getStatus = NO;
     [self.getBtn addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
     [self.getBtn setBackgroundImage:self.getOff  forState:UIControlStateNormal];
     [self.view addSubview:self.getBtn];
@@ -187,7 +187,7 @@
     [self.view addSubview:userProtocolLabel];
     
     UIButton *userProtocol=[[UIButton alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.52, LBVIEW_HEIGHT1*0.39+25, LBVIEW_WIDTH1*0.4, LBVIEW_HEIGHT1*0.05)];
-    [userProtocol addTarget:self action:@selector(userProtocolBtn) forControlEvents:UIControlEventTouchUpInside];
+    //[userProtocol addTarget:self action:@selector(userProtocolBtn) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:userProtocol];
     
     self.hozonBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -253,7 +253,7 @@
 
 - (void)click:(id)sender
 {
-    if (self.getStatus == NO) {
+    if (self.getStatus == YES) {
         [self.getBtn setBackgroundImage:self.getOff forState:UIControlStateNormal];
     } else {
         [self.getBtn setBackgroundImage:self.getOn forState:UIControlStateNormal];
@@ -276,6 +276,21 @@
             NSString*str=existe;
             if (![str isEqualToString:@"true"])
             {
+                
+                self.hqStatus = NO;
+                
+                [self.yzmBtn setTitle:@"" forState:UIControlStateNormal];
+                [self.yzmBtn setBackgroundColor:[UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1]];
+                [BWCommon verificationCode:^{
+                    [self.yzmBtn setBackgroundColor:[UIColor redColor]];
+                    [self.yzmBtn setTitle:@"获取手机验证码" forState:UIControlStateNormal];
+                    self.hqStatus = YES;
+                    [self.timeLimitLabel setText:@""];
+                } blockNo:^(id time) {
+                    
+                    [self.timeLimitLabel setText:[NSString stringWithFormat:@"%@秒后重新获取验证码",time]];
+                }];
+                
                 //TODO 发送验证码
                 [HttpEngine sendMessageMoblie:_phoneTF.text withKind:1];
             }
@@ -286,19 +301,7 @@
             
         }];
         
-        self.hqStatus = NO;
         
-        [self.yzmBtn setTitle:@"" forState:UIControlStateNormal];
-        [self.yzmBtn setBackgroundColor:[UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1]];
-        [BWCommon verificationCode:^{
-            [self.yzmBtn setBackgroundColor:[UIColor redColor]];
-            [self.yzmBtn setTitle:@"获取手机验证码" forState:UIControlStateNormal];
-            self.hqStatus = YES;
-            [self.timeLimitLabel setText:@""];
-        } blockNo:^(id time) {
-            
-            [self.timeLimitLabel setText:[NSString stringWithFormat:@"%@秒后重新获取验证码",time]];
-        }];
         //[self.yzmBtn setBackgroundImage:self.hqOff forState:UIControlStateNormal];
     }
     //self.hqStatus = !self.hqStatus;
@@ -306,6 +309,8 @@
 //去注册
 -(void)goRegiseter
 {
+    
+    
         if ([_pswTF.text isEqualToString:@""]||[_phoneTF.text isEqualToString:@""]||[_yzmTF.text isEqualToString:@""])
         {
             [self alert:@"请完善信息"];
@@ -331,10 +336,18 @@
            }
        }
     
-    [HttpEngine registerRequestPassword:_pswTF.text withMobile:_phoneTF.text withRegIp:@"192.168.12.23" withFlorist:@"1" complete:^(NSString *fail) {
+    if(self.getStatus==NO){
+        [self alert:@"请先同意《花集网用户协议》"];
+        return;
+    }
+    
+    [HttpEngine registerRequestPassword:_pswTF.text withMobile:_phoneTF.text withRegIp:@"" withFlorist:@"1" complete:^(NSString *fail) {
         if ([fail isEqualToString:@"true"])
         {
             [self alert:@"注册成功"];
+            
+            [self dismissViewControllerAnimated:YES completion:^{}];
+            
         }
         else
         {

@@ -71,9 +71,9 @@
     
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[BWCommon getCurrentVC].view animated:YES];
     
-    UIView *loadingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 60, 62)];
+    UIView *loadingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     UIImageView *loadingLogo =[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"loading_logo.png"]];
-    loadingLogo.frame = CGRectMake(0, 0, 59, 62);
+    loadingLogo.frame = CGRectMake(20, 0, 59, 62);
     [loadingView addSubview:loadingLogo];
     //loadingLogo.frame = CGRectMake(10, 0, 40, 40);
     /*UILabel *loadingText = [[UILabel alloc] initWithFrame:CGRectMake(0, 65, 60, 20)];
@@ -82,8 +82,21 @@
     [loadingText setText:@"加载中.."];
     [loadingText setFont:[UIFont systemFontOfSize:12]];
     [loadingView addSubview:loadingText];*/
+    
+    
+    UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc]
+                                     initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    [(UIActivityIndicatorView *)indicator startAnimating];
+    
+    indicator.frame = CGRectMake(45, 85, 10, 10);
+    [loadingView addSubview:indicator];
+    
+    
     hud.customView = loadingView;
     hud.mode = MBProgressHUDModeCustomView;
+    //hud.backgroundColor = [UIColor grayColor];
+    //hud.opacity = 0.6;
+    //hud.opaque = YES;
     
     return hud;
 }
