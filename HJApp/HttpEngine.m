@@ -126,7 +126,15 @@
 +(void)ideaFeedBackName:(NSString*)name withMoblie:(NSString*)moblie withContent:(NSString*)content
 {
 
+    
+   
+
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
+    
+    
+    
+    
+    
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/feedback/"];
     
     NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
@@ -835,6 +843,7 @@
     
     [manager POST:str parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData)
     {
+        
         [formData appendPartWithFileData:data name:@"file" fileName:fileName mimeType:@"image/jpeg"];
         
         

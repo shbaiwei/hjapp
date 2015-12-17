@@ -142,6 +142,7 @@
         
         
         UILabel*timeEndLabel=[[UILabel alloc]initWithFrame:CGRectMake(redPageImage.frame.size.width/11, redPageImage.frame.size.height-25, redPageImage.frame.size.width/3, 20)];
+        
         NSString*strTime=dic[@"end_time"];
         NSInteger intTime=[strTime integerValue];
         NSDate *confromTimesp = [NSDate dateWithTimeIntervalSince1970:intTime];
