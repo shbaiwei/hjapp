@@ -160,6 +160,15 @@
 		322776241BFEDC9C00C249FD /* loader_icon_03.png in Resources */ = {isa = PBXBuildFile; fileRef = 322776231BFEDC9C00C249FD /* loader_icon_03.png */; };
 		322776261BFEDCDD00C249FD /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 322776251BFEDCDD00C249FD /* icon.png */; };
 		322776281BFEFB4E00C249FD /* newadress.png in Resources */ = {isa = PBXBuildFile; fileRef = 322776271BFEFB4E00C249FD /* newadress.png */; };
+		3235312A1C0FFA9400E16144 /* ico_item0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 323531211C0FFA9400E16144 /* ico_item0@2x.png */; };
+		3235312B1C0FFA9400E16144 /* ico_item1_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 323531221C0FFA9400E16144 /* ico_item1_active@2x.png */; };
+		3235312C1C0FFA9400E16144 /* ico_item1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 323531231C0FFA9400E16144 /* ico_item1@2x.png */; };
+		3235312D1C0FFA9400E16144 /* ico_item2_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 323531241C0FFA9400E16144 /* ico_item2_active@2x.png */; };
+		3235312E1C0FFA9400E16144 /* ico_item2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 323531251C0FFA9400E16144 /* ico_item2@2x.png */; };
+		3235312F1C0FFA9400E16144 /* ico_item3_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 323531261C0FFA9400E16144 /* ico_item3_active@2x.png */; };
+		323531301C0FFA9400E16144 /* ico_item3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 323531271C0FFA9400E16144 /* ico_item3@2x.png */; };
+		323531311C0FFA9400E16144 /* ico_item4_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 323531281C0FFA9400E16144 /* ico_item4_active@2x.png */; };
+		323531321C0FFA9400E16144 /* ico_item4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 323531291C0FFA9400E16144 /* ico_item4@2x.png */; };
 		323648A71BFC114A007D6EF5 /* ComplainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 323648A51BFC114A007D6EF5 /* ComplainViewController.m */; };
 		323648A81BFC114A007D6EF5 /* ComplainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 323648A61BFC114A007D6EF5 /* ComplainViewController.xib */; };
 		323648AB1BFC136C007D6EF5 /* ComplainServe.m in Sources */ = {isa = PBXBuildFile; fileRef = 323648AA1BFC136C007D6EF5 /* ComplainServe.m */; };
@@ -492,6 +501,15 @@
 		322776231BFEDC9C00C249FD /* loader_icon_03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loader_icon_03.png; sourceTree = "<group>"; };
 		322776251BFEDCDD00C249FD /* icon.png */ = {isa = PBXFileReference; explicitFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		322776271BFEFB4E00C249FD /* newadress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = newadress.png; sourceTree = "<group>"; };
+		323531211C0FFA9400E16144 /* ico_item0@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ico_item0@2x.png"; sourceTree = "<group>"; };
+		323531221C0FFA9400E16144 /* ico_item1_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ico_item1_active@2x.png"; sourceTree = "<group>"; };
+		323531231C0FFA9400E16144 /* ico_item1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ico_item1@2x.png"; sourceTree = "<group>"; };
+		323531241C0FFA9400E16144 /* ico_item2_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ico_item2_active@2x.png"; sourceTree = "<group>"; };
+		323531251C0FFA9400E16144 /* ico_item2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ico_item2@2x.png"; sourceTree = "<group>"; };
+		323531261C0FFA9400E16144 /* ico_item3_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ico_item3_active@2x.png"; sourceTree = "<group>"; };
+		323531271C0FFA9400E16144 /* ico_item3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ico_item3@2x.png"; sourceTree = "<group>"; };
+		323531281C0FFA9400E16144 /* ico_item4_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ico_item4_active@2x.png"; sourceTree = "<group>"; };
+		323531291C0FFA9400E16144 /* ico_item4@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ico_item4@2x.png"; sourceTree = "<group>"; };
 		323648A41BFC114A007D6EF5 /* ComplainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComplainViewController.h; sourceTree = "<group>"; };
 		323648A51BFC114A007D6EF5 /* ComplainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComplainViewController.m; sourceTree = "<group>"; };
 		323648A61BFC114A007D6EF5 /* ComplainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ComplainViewController.xib; sourceTree = "<group>"; };
@@ -907,6 +925,15 @@
 		320BBE461BF9D4DD004DE70A /* images */ = {
 			isa = PBXGroup;
 			children = (
+				323531211C0FFA9400E16144 /* ico_item0@2x.png */,
+				323531221C0FFA9400E16144 /* ico_item1_active@2x.png */,
+				323531231C0FFA9400E16144 /* ico_item1@2x.png */,
+				323531241C0FFA9400E16144 /* ico_item2_active@2x.png */,
+				323531251C0FFA9400E16144 /* ico_item2@2x.png */,
+				323531261C0FFA9400E16144 /* ico_item3_active@2x.png */,
+				323531271C0FFA9400E16144 /* ico_item3@2x.png */,
+				323531281C0FFA9400E16144 /* ico_item4_active@2x.png */,
+				323531291C0FFA9400E16144 /* ico_item4@2x.png */,
 				32EF5CE91C0EB7760015FCC7 /* shang.png */,
 				32EF5CEA1C0EB7760015FCC7 /* xia.png */,
 				32A377661C0C558C00DE7D8C /* buy_btn.png */,
@@ -1745,6 +1772,7 @@
 				320BBECE1BF9D4DD004DE70A /* icons-my-huaji-0.png in Resources */,
 				320BBEB31BF9D4DD004DE70A /* ctrl-delete.png in Resources */,
 				320BBEFE1BF9D4DD004DE70A /* shopping-cart.png in Resources */,
+				3235312D1C0FFA9400E16144 /* ico_item2_active@2x.png in Resources */,
 				320BBEC11BF9D4DD004DE70A /* ico-voice.png in Resources */,
 				320BBEE91BF9D4DD004DE70A /* order-ddjg.png in Resources */,
 				320BBF191BF9D8AC004DE70A /* shop.png in Resources */,
@@ -1798,6 +1826,7 @@
 				320BBEEF1BF9D4DD004DE70A /* other_service_1.png in Resources */,
 				320BBEE51BF9D4DD004DE70A /* myapply_02.jpg in Resources */,
 				320BBF311BF9DCF7004DE70A /* themap.png in Resources */,
+				3235312C1C0FFA9400E16144 /* ico_item1@2x.png in Resources */,
 				320BBF021BF9D4DD004DE70A /* swiper-market-btn-b.png in Resources */,
 				320BBEE81BF9D4DD004DE70A /* order-ddh.png in Resources */,
 				320BBED31BF9D4DD004DE70A /* icons-my-huaji-5.png in Resources */,
@@ -1824,6 +1853,7 @@
 				320BBEFB1BF9D4DD004DE70A /* select1.png in Resources */,
 				320BBED61BF9D4DD004DE70A /* icons.png in Resources */,
 				320BBEEC1BF9D4DD004DE70A /* order_state1.png in Resources */,
+				323531321C0FFA9400E16144 /* ico_item4@2x.png in Resources */,
 				320BBED51BF9D4DD004DE70A /* icons-my-huaji.png in Resources */,
 				320BBEC71BF9D4DD004DE70A /* ico_item3.png in Resources */,
 				320BBF151BF9D8AC004DE70A /* MyHuaJi.PNG in Resources */,
@@ -1833,6 +1863,7 @@
 				320BBEBC1BF9D4DD004DE70A /* hongbao.png in Resources */,
 				320CB98E1BFC579600E8E54F /* maru.png in Resources */,
 				320BBEDF1BF9D4DD004DE70A /* index_peihuapeicao.png in Resources */,
+				323531301C0FFA9400E16144 /* ico_item3@2x.png in Resources */,
 				320BBEAE1BF9D4DD004DE70A /* category-arrow2.png in Resources */,
 				320BBEDA1BF9D4DD004DE70A /* index_duotouju.png in Resources */,
 				320BBEFC1BF9D4DD004DE70A /* select2.png in Resources */,
@@ -1851,6 +1882,7 @@
 				320BBECC1BF9D4DD004DE70A /* ico_tswt.png in Resources */,
 				320BBEF41BF9D4DD004DE70A /* pay1.png in Resources */,
 				320BBEAF1BF9D4DD004DE70A /* city-arr.png in Resources */,
+				3235312A1C0FFA9400E16144 /* ico_item0@2x.png in Resources */,
 				320BBEDC1BF9D4DD004DE70A /* index_kangnaixin.png in Resources */,
 				320BBECB1BF9D4DD004DE70A /* ico_tem0.png in Resources */,
 				325AC5DD1BE7407400408525 /* LoginViewController.xib in Resources */,
@@ -1859,7 +1891,9 @@
 				320BBF261BF9DCD2004DE70A /* myOder.PNG in Resources */,
 				320BBF2F1BF9DCF7004DE70A /* money.PNG in Resources */,
 				320BBED81BF9D4DD004DE70A /* index_baihe.png in Resources */,
+				323531311C0FFA9400E16144 /* ico_item4_active@2x.png in Resources */,
 				3206979D1C0319C100E77750 /* wechatGreen.png in Resources */,
+				3235312E1C0FFA9400E16144 /* ico_item2@2x.png in Resources */,
 				32DDC1181BEC8E5B00649AE5 /* PayViewController.xib in Resources */,
 				32F877B81C0AD56300CC9C3A /* ico_item0.png in Resources */,
 				32DDC1281BECB43900649AE5 /* ChangCityViewController.xib in Resources */,
@@ -1875,6 +1909,7 @@
 				320BBF171BF9D8AC004DE70A /* Oder.PNG in Resources */,
 				32E5122C1C05A9E600D08F02 /* LICENSE.txt in Resources */,
 				320BBF301BF9DCF7004DE70A /* saihu.PNG in Resources */,
+				3235312B1C0FFA9400E16144 /* ico_item1_active@2x.png in Resources */,
 				320BBEF51BF9D4DD004DE70A /* pay2-1.png in Resources */,
 				320BBEF11BF9D4DD004DE70A /* pay1 (2).png in Resources */,
 				320CB98C1BFC571B00E8E54F /* Dg.png in Resources */,
@@ -1889,6 +1924,7 @@
 				32E512171C05672500D08F02 /* huoqu1.png in Resources */,
 				320BBF2E1BF9DCF7004DE70A /* message.PNG in Resources */,
 				32B49BA81BE30F0000AB6D55 /* MyHJViewController.xib in Resources */,
+				3235312F1C0FFA9400E16144 /* ico_item3_active@2x.png in Resources */,
 				320BBEF61BF9D4DD004DE70A /* pay2-2.png in Resources */,
 				32F7E77C1C041099008DC1FE /* Map.png in Resources */,
 				320BBEB21BF9D4DD004DE70A /* colon-bg.png in Resources */,
