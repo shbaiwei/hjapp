@@ -68,7 +68,7 @@
 @property(nonatomic,strong)NSArray*notifitionArray;
 @property (nonatomic, strong) UIScrollView*notifitionScroll;
 
-
+@property(nonatomic,unsafe_unretained)BOOL changeCity;
 
 @end
 
@@ -215,8 +215,15 @@ UILabel *secondLabel;
             
         } failure:^(NSError *error) {
             
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self changeCityBtn];
+            dispatch_async(dispatch_get_main_queue(), ^
+            {
+                if (_changeCity==NO)
+                {
+                    [self changeCityBtn];
+                    _changeCity=YES;
+                }
+                
+                
             });
             
         }];
@@ -379,13 +386,13 @@ UILabel *secondLabel;
 - (void)theFlowersButtons
 {
     self.flowerView = [[UIView alloc] init];
-    self.flowerView.frame = CGRectMake(0,LBVIEW_HEIGHT1/4.5, LBVIEW_WIDTH1, LBVIEW_WIDTH1 / 2-2);
+    self.flowerView.frame = CGRectMake(0,LBVIEW_HEIGHT1/4.5, LBVIEW_WIDTH1, LBVIEW_WIDTH1 / 2+15);
     self.flowerView.backgroundColor = [UIColor whiteColor];
     [self.mainScroll addSubview:self.flowerView];
     
-    CGFloat iconW = VIEW_WIDTH/15 * 2;
+    CGFloat iconW = VIEW_WIDTH/15 * 2+10;
     CGFloat firstColumnsY = VIEW_HEIGHT * 0.02;
-    CGFloat secondColumnsY = iconW + 25 + firstColumnsY * 2;
+    CGFloat secondColumnsY = iconW + 20 + firstColumnsY * 2;
     
     self.roseButton = [self createFlowerIcon:@"index_meigui" category:1 title:@"玫瑰"];
     self.roseButton.frame = CGRectMake(VIEW_WIDTH/13, firstColumnsY, iconW, iconW);
@@ -430,18 +437,18 @@ UILabel *secondLabel;
 {
     
     //判断是否需要登陆
-    NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
-    if (str==NULL )
-    {
-        LoginViewController*loginVC=[[LoginViewController alloc]init];
-        
-        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginVC];
-        
-        [self presentViewController:navigationController animated:YES completion:^{
-            
-        }];
-        return;
-    }
+//    NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+//    if (str==NULL )
+//    {
+//        LoginViewController*loginVC=[[LoginViewController alloc]init];
+//        
+//        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginVC];
+//        
+//        [self presentViewController:navigationController animated:YES completion:^{
+//            
+//        }];
+//        return;
+//    }
     
      NSString*isTag=[NSString stringWithFormat:@"%lu",sender.tag];
     
@@ -451,10 +458,11 @@ UILabel *secondLabel;
 }
 
 
+// VIEW_WIDTH/15 * 2+10+ 20 + VIEW_HEIGHT * 0.02 * 2;
 //今日花市部分
 - (void)theTodayFlowes{
     
-    self.oneMoneyView = [[UIView alloc] initWithFrame:CGRectMake(0, LBVIEW_WIDTH1 / 2+ LBVIEW_HEIGHT1 / 4.5, LBVIEW_WIDTH1, LBVIEW_HEIGHT1 / 13)];
+    self.oneMoneyView = [[UIView alloc] initWithFrame:CGRectMake(0, LBVIEW_WIDTH1 / 2+ LBVIEW_HEIGHT1 / 4.5+17, LBVIEW_WIDTH1, LBVIEW_HEIGHT1 / 13)];
     
     self.oneMoneyView.backgroundColor = [UIColor whiteColor];
     [self.mainScroll addSubview:self.oneMoneyView];
@@ -544,7 +552,7 @@ UILabel *secondLabel;
 -(void)theOneMoney
 {
     
-    UIView *oneMoneyView = [[UIView alloc] initWithFrame:CGRectMake(0,LBVIEW_WIDTH1 / 2+ LBVIEW_HEIGHT1 / 4.5+LBVIEW_HEIGHT1/13, VIEW_WIDTH, VIEW_HEIGHT / 6)];
+    UIView *oneMoneyView = [[UIView alloc] initWithFrame:CGRectMake(0,LBVIEW_WIDTH1 / 2+ LBVIEW_HEIGHT1 / 4.5+LBVIEW_HEIGHT1/13+17, VIEW_WIDTH, VIEW_HEIGHT / 6)];
 
     self.oneMoneyImageView = [[UIImageView alloc] initWithFrame:oneMoneyView.bounds];
     NSString *deadline = @"";
@@ -617,7 +625,7 @@ UILabel *secondLabel;
     
     CGFloat promotionW = VIEW_WIDTH * 0.4;
     CGFloat promotionH = promotionW * 117/387;
-    promotionBtn = [[UIButton alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - promotionW - 10, (oneMoneyView.bounds.size.height - promotionH)/2, promotionW, promotionH)];
+    promotionBtn = [[UIButton alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - promotionW, (oneMoneyView.bounds.size.height-10 - promotionH)/2, promotionW, promotionH)];
     [promotionBtn setImage:[UIImage imageNamed:@"buy_btn"] forState:UIControlStateNormal];
     [oneMoneyView addSubview:promotionBtn];
     promotionBtn.tag = 19;

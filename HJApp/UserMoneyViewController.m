@@ -189,8 +189,15 @@
 
 -(void)addMoney
 {
-    NSString *pay_method = _lastTag==1 ? @"alipay" : @"weixin";
     
+    if ([_monenyNum.text isEqualToString:@""])
+    {
+        [self alert:@"提示" msg:@"请输入金额"];
+        
+        return;
+    }
+    
+    NSString *pay_method = _lastTag==1 ? @"alipay" : @"weixin";
     
     //[self goZhiFuBao];
     //return;

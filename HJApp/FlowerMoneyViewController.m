@@ -141,7 +141,7 @@
         [cell addSubview:redPageImage];
         
         
-        UILabel*timeEndLabel=[[UILabel alloc]initWithFrame:CGRectMake(redPageImage.frame.size.width/11, redPageImage.frame.size.height-25, redPageImage.frame.size.width/3, 20)];
+        UILabel*timeEndLabel=[[UILabel alloc]initWithFrame:CGRectMake(redPageImage.frame.size.width/11, (LBVIEW_WIDTH1-40)/5.6-22,120, 20)];
         
         NSString*strTime=dic[@"end_time"];
         NSInteger intTime=[strTime integerValue];
@@ -158,14 +158,14 @@
         timeEndLabel.textColor=[UIColor grayColor];
         [cell addSubview:timeEndLabel];
         
-        UILabel*valueLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-20-redPageImage.frame.size.width/3, redPageImage.frame.size.height-25-30, redPageImage.frame.size.width/3, 30)];
+        UILabel*valueLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-20-redPageImage.frame.size.width/3, 3, redPageImage.frame.size.width/3, 30)];
         valueLabel.text=[NSString stringWithFormat:@"¥ %@",dic[@"price"]];
         valueLabel.textColor=[UIColor whiteColor];
         valueLabel.textAlignment=NSTextAlignmentCenter;
         valueLabel.font=[UIFont systemFontOfSize:19];
         [cell addSubview:valueLabel];
         
-        UILabel*fullLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-20-redPageImage.frame.size.width/3, redPageImage.frame.size.height-25, redPageImage.frame.size.width/3, 20)];
+        UILabel*fullLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-20-redPageImage.frame.size.width/3,(LBVIEW_WIDTH1-40)/5.6-22, redPageImage.frame.size.width/3, 20)];
         fullLabel.text=[NSString stringWithFormat:@"满%@元使用",dic[@"term_price"]];
         fullLabel.textColor=[UIColor whiteColor];
         fullLabel.textAlignment=NSTextAlignmentCenter;

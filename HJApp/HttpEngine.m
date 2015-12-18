@@ -187,7 +187,7 @@
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/goods-categories/"];
     [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
-         //NSLog(@"JSON:%@",responseObject);
+         //NSLog(@"产品分类JSON:%@",responseObject);
          NSArray*array=responseObject[@"results"];
          NSMutableArray*dataArray=[[NSMutableArray alloc]init];
          for (int i=0; i<array.count; i++)
@@ -214,7 +214,7 @@
     
     [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
-         NSLog(@"JSON:%@",responseObject);
+         //NSLog(@"分类属性JSON:%@",responseObject);
          NSArray*array=responseObject;
          NSMutableArray*dataArray=[[NSMutableArray alloc]init];
          for (int i=0; i<array.count; i++)
@@ -235,12 +235,16 @@
 +(void)getProductDetail:(NSString*)idStr withLocation:(NSString*)location withProps:(NSArray*)props withPage:(NSString*)page withPageSize:(NSString*)pageSize completion:(void(^)(NSArray*dataArray))complete
 {
     
-    NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
-    NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
-    
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
     
+    NSString*login=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+    if (login)
+    {
+    NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+    NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
     [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
+    }
+    
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/goods/search/"];
     
     NSDictionary*parameters=[[NSDictionary alloc]init];
@@ -254,6 +258,7 @@
         
     }
     
+    NSLog(@"parameters===%@",parameters);
     NSMutableArray*datArray=[[NSMutableArray alloc]init];
     
     MBProgressHUD *hud = [BWCommon getHUD];
@@ -261,7 +266,7 @@
     [session GET:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
          [hud removeFromSuperview];
-         //NSLog(@"分类产品  JSON:%@",responseObject);
+         NSLog(@"分类产品  JSON:%@",responseObject);
          NSArray*array=responseObject[@"data"];
          for (int i=0; i<array.count; i++)
          {
@@ -373,7 +378,9 @@
     NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
     [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
     
-    NSDictionary*parameters=@{@"location":location,@"sku":sku,@"supplier":supplier,@"number":number};
+ NSDictionary*parameters=@{@"location":location,@"sku":sku,@"supplier":supplier,@"number":number};
+    
+    NSLog(@"parameters=====%@",parameters);
     
     [session POST:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
@@ -385,8 +392,6 @@
          [hud removeFromSuperview];
          NSLog(@"Error:%@",error);
      }];
-    
-    
     
 }
 
@@ -402,6 +407,7 @@
     {
         int num=arc4random()%10;
         srt=[NSString stringWithFormat:@"%@%d",srt,num];
+        //NSLog(@"srtsrtsrt====%@",srt);
     }
     
     NSString*message;

@@ -19,6 +19,7 @@
 #import "MessageCenterViewController.h"
 #import "MyHJTableViewCell.h"
 #import "UIImageView+WebCache.h"
+#import "RegisterViewController.h"
 
 @interface MyHJViewController ()
 
@@ -87,6 +88,10 @@
 ///////
 @property(nonatomic,strong)UITableView*tableView;
 
+@property(nonatomic,strong)MBProgressHUD*hud;
+
+@property(nonatomic,copy)NSString*loginStr;
+
 @end
 
 
@@ -105,13 +110,15 @@
     //self.navigationController.navigationBarHidden=YES;
     self.navigationController.navigationBar.translucent =NO;
 
-    
+    _loginStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+    if (!_loginStr)
+        return;
     NSString*idStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"ID"];
-    
-    MBProgressHUD *hud = [BWCommon getHUD];
+    _hud = [BWCommon getHUD];
+    [self performSelector:@selector(reMove) withObject:nil afterDelay:1];
     [HttpEngine getConsumerDetailData:idStr completion:^(NSArray *dataArray)
      {
-         [hud removeFromSuperview];
+         
          ConsumerDetail*consum=dataArray[0];
          _userName=consum.userid;
          _portrait=consum.portrait;
@@ -124,6 +131,11 @@
          _balanceDic=dic;
          [_tableView reloadData];
      }];
+}
+
+-(void)reMove
+{
+[_hud removeFromSuperview];
 }
 
 - (void)viewDidLoad
@@ -178,7 +190,26 @@
     {
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     
-        
+        if (!_loginStr)
+        {
+            NSArray*nameArray=[[NSArray alloc]initWithObjects:@"注册", @"登录",nil];
+            for (int i=0; i<2; i++)
+            {
+                UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake((LBVIEW_WIDTH1-180)/2+i*100, 25,80, 30)];
+                btn.layer.borderColor=[UIColor grayColor].CGColor;
+                btn.layer.borderWidth=1;
+                [btn setTitle:nameArray[i] forState:UIControlStateNormal];
+                btn.titleLabel.font=[UIFont systemFontOfSize:14];
+                btn.tag=332+i;
+                [btn setTitleColor:[UIColor colorWithRed:255/255.0 green:164/255.0 blue:100/255.0 alpha:1] forState:UIControlStateNormal];
+                [btn addTarget:self action:@selector(loginRegister:) forControlEvents:UIControlEventTouchUpInside];
+                btn.layer.cornerRadius=5;
+                btn.clipsToBounds=YES;
+                [cell addSubview:btn];
+            }
+        }
+        else
+        {
         UIImageView*headImage=[[UIImageView alloc]initWithFrame: CGRectMake(VIEW_WIDTH * 0.05, (80-VIEW_HEIGHT*0.09)/2, VIEW_HEIGHT * 0.09, VIEW_HEIGHT * 0.09)];
         headImage.layer.cornerRadius=VIEW_HEIGHT * 0.09/2;
         headImage.clipsToBounds=YES;
@@ -198,7 +229,7 @@
         self.szLabel.textColor = [UIColor grayColor];
         self.szLabel.font = [UIFont systemFontOfSize:15];
         [cell addSubview:self.szLabel];
-
+        }
     }
     else if (indexPath.row==1)
     {
@@ -289,6 +320,9 @@
     {
         [cell0.iconImage setImage:[UIImage imageNamed:@"money.PNG"]];
         
+        if (!_loginStr)
+        cell0.textLabel.text=@"花集余额";
+        else
         [cell0.textLabel setText:[NSString stringWithFormat:@"花集余额(%@)",_balanceDic[@"nmoney"]]];
         
         [cell0.rightLabel setText:@"充值"];
@@ -327,6 +361,20 @@
     return cell;
 }
 
+//切换到登陆
+-(void)loginRegister:(UIButton*)sender
+{
+    if (sender.tag==333)
+    {
+        LoginViewController*loginVC=[[LoginViewController alloc]init];
+        [self.navigationController pushViewController:loginVC animated:YES];
+    }
+    else
+    {
+        RegisterViewController*registerVC=[[RegisterViewController alloc]init];
+        [self.navigationController pushViewController:registerVC animated:YES];
+    }
+}
 
 //我的订单
 //所有订单
@@ -337,6 +385,13 @@
 //账单选择
 -(void)chooseOrder:(UIButton*)sender
 {
+    if (!_loginStr)
+    {
+        LoginViewController*loginVC=[[LoginViewController alloc]init];
+        [self.navigationController pushViewController:loginVC animated:YES];
+    }
+    else
+    {
     NSString*str;
     if(sender.tag==10)
     {
@@ -352,6 +407,7 @@
     }
     [[NSUserDefaults standardUserDefaults]setObject:str forKey:@"THREETAG"];
     _tabBarVC.selectedIndex=2;
+    }
 }
 
 
@@ -372,12 +428,19 @@
 //选中cell
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     if(indexPath.row == 0)
     {
+        if (!_loginStr)
+            return;
         AboutMeViewController *aboutVC = [[AboutMeViewController alloc] init];
         aboutVC.hidesBottomBarWhenPushed=YES;
         [self.navigationController pushViewController:aboutVC animated:YES];
+    }
+    if (!_loginStr)
+    {
+        LoginViewController*loginVC=[[LoginViewController alloc]init];
+        [self.navigationController pushViewController:loginVC animated:YES];
+        return;
     }
     if(indexPath.row == 1)
     {
@@ -424,7 +487,7 @@
     if(indexPath.row==8)
     {
         // 跳转页面
-        UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"是否拨打客服电话" preferredStyle: UIAlertControllerStyleAlert];
+        UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"是否拨打客服热线" preferredStyle: UIAlertControllerStyleAlert];
         UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
                               {
                                   
@@ -446,6 +509,11 @@
 -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     UIView*view=[[UIView alloc]init];
+    
+    if (!_loginStr)
+    {
+        return view;
+    }
     
     self.overButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     self.overButton.frame = CGRectMake(10,LBVIEW_HEIGHT1/20, LBVIEW_WIDTH1-20, 40);

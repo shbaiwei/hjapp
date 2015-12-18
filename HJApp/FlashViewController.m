@@ -34,17 +34,6 @@
     //[self performSelector:@selector(goToPage) withObject:nil afterDelay:1];
     
 }
--(void)goToNext
-{
-    UIWindow * window = [UIApplication sharedApplication].delegate.window ;
-    
-    //界面跳转
-    
-    [UIView transitionWithView:window duration:2 options:UIViewAnimationOptionTransitionCurlUp animations:nil completion:nil];
-        
-    [self goToPage];
-}
-
 -(void)goToPage
 {
     //TabBar
@@ -162,21 +151,13 @@
     [naviShop.navigationBar setTintColor:[UIColor whiteColor ]];
     [naviAssprt.navigationBar setTintColor:[UIColor whiteColor ]];
     
-    naviHome.tabBarItem.tag = 1;
-    naviAssprt.tabBarItem.tag = 2;
-    naviOder.tabBarItem.tag = 3;
-    naviShop.tabBarItem.tag = 4;
-    naviMyHuaJi.tabBarItem.tag = 5;
+//    naviHome.tabBarItem.tag = 1;
+//    naviAssprt.tabBarItem.tag = 2;
+//    naviOder.tabBarItem.tag = 3;
+//    naviShop.tabBarItem.tag = 4;
+//    naviMyHuaJi.tabBarItem.tag = 5;
    
     
 }
-
-
-//-(void)nextPageHomePageViewController:(HomePageViewController *)homeVC didFinish:(NSInteger)tag
-//{
-//    NSLog(@"12345678");
-//    _tabBar.selectedIndex=1;
-//
-//}
 
 @end

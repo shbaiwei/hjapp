@@ -139,9 +139,7 @@
 
 - (void) closeTouched:(UIBarButtonItem *) sender{
     
-    [self dismissViewControllerAnimated:YES completion:^{
-        
-    }];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 //取消按钮
@@ -217,17 +215,11 @@
              }
              else
              {
-                 
                  [HttpEngine getConsumerData:^(NSArray *dataArray) {
                      
                  }];
-                 
-                 [self dismissViewControllerAnimated:YES completion:^{
-                 }];
-
-               //[self.navigationController popToRootViewControllerAnimated:YES];
-//                 MyHJViewController*myHJ=[[MyHJViewController alloc]init];
-//                 [self.navigationController pushViewController:myHJ animated:YES];
+                 FlashViewController*falshVC=[[FlashViewController alloc]init];
+                 [self.navigationController pushViewController:falshVC animated:YES];
              }
          }
          ];

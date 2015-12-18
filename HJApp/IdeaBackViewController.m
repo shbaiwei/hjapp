@@ -9,7 +9,7 @@
 #import "IdeaBackViewController.h"
 #import "HttpEngine.h"
 
-@interface IdeaBackViewController ()<UITextViewDelegate>
+@interface IdeaBackViewController ()
 @property(nonatomic,copy)NSString*mobile;
 @property(nonatomic,strong)UITextView*tView;
 @property(nonatomic,strong)UIScrollView*scrollView;
@@ -59,11 +59,16 @@
         [self showPage];
     }];
     
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]
+                                   initWithTarget:self
+                                   action:@selector(dismissKeyboard)];
+    [self.view addGestureRecognizer:tap];
+    
 }
 -(void)showPage
 {
     UIScrollView*scrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1)];
-    scrollView.contentSize=CGSizeMake(LBVIEW_WIDTH1, LBVIEW_HEIGHT1+LBVIEW_HEIGHT1/5);
+    scrollView.contentSize=CGSizeMake(LBVIEW_WIDTH1, LBVIEW_HEIGHT1+256);
     [self.view addSubview:scrollView];
     
     NSArray*nameArray=[[NSArray alloc]initWithObjects:@"姓名",@"手机号", nil];
@@ -111,7 +116,7 @@
     _tView.layer.borderWidth =1.0;
     _tView.layer.cornerRadius =5.0;
     _tView.tag=3;
-    _tView.delegate=self;
+    //_tView.delegate=self;
     _tView.font=[UIFont systemFontOfSize:14];
     
     [scrollView addSubview:_tView];
@@ -143,7 +148,7 @@
                           }];
     UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
                                  {
-                                    
+                          [self.navigationController popViewControllerAnimated:YES];
                                  }];
     [alert addAction:cancel];
     [alert addAction:defaultAction];
@@ -151,19 +156,23 @@
 
     
 }
--(BOOL)textView:(UITextView
-                 *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    if([text
-        isEqualToString:@"\n"])
-        
-    {
-        [_tView
-         resignFirstResponder];
-        return NO;
-    }
-    return YES;
-}
+//-(BOOL)textView:(UITextView
+//                 *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+//    if([text
+//        isEqualToString:@"\n"])
+//        
+//    {
+//        [_tView
+//         resignFirstResponder];
+//        return NO;
+//    }
+//    return YES;
+//}
 -(void)keyDown
+{
+    [self.view endEditing:YES];
+}
+-(void)dismissKeyboard
 {
     [self.view endEditing:YES];
 }

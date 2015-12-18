@@ -57,6 +57,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.navigationController.navigationBarHidden=NO;
     self.navigationController.navigationBar.translucent=NO;
     
     self.title = @"注册";
@@ -296,7 +297,7 @@
             }
             else
             {
-                [self alert:@"该用户已存在"];
+                [self alert:@"该用户已存在" with:1];
             }
             
         }];
@@ -313,50 +314,48 @@
     
         if ([_pswTF.text isEqualToString:@""]||[_phoneTF.text isEqualToString:@""]||[_yzmTF.text isEqualToString:@""])
         {
-            [self alert:@"请完善信息"];
+            [self alert:@"请完善信息" with:1];
             return;
         }
        else
        {
            if(_pswTF.text.length<6)
            {
-               [self alert:@"密码过于简单"];
+               [self alert:@"密码过于简单" with:1];
                return;
            }
            if(![_pswTF.text isEqualToString:_psw2TF.text])
            {
-               [self alert:@"密码不一致"];
+               [self alert:@"密码不一致" with:1];
                return;
            }
            NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TEXTNUM"];
            if (![_yzmTF.text isEqualToString:str])
            {
-               [self alert:@"验证码错误"];
+               [self alert:@"验证码错误" with:1];
                return;
            }
        }
     
     if(self.getStatus==NO){
-        [self alert:@"请先同意《花集网用户协议》"];
+        [self alert:@"请先同意《花集网用户协议》" with:1];
         return;
     }
     
     [HttpEngine registerRequestPassword:_pswTF.text withMobile:_phoneTF.text withRegIp:@"" withFlorist:@"1" complete:^(NSString *fail) {
         if ([fail isEqualToString:@"true"])
         {
-            [self alert:@"注册成功"];
-            
-            [self dismissViewControllerAnimated:YES completion:^{}];
+            [self alert:@"注册成功" with:2];
             
         }
         else
         {
-            [self alert:@"用户已注册"];
+            [self alert:@"用户已注册" with:1];
         }
     }];
    
 }
--(void)alert:(NSString*)str;
+-(void)alert:(NSString*)str with:(int)tag;
 {
     UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:str preferredStyle: UIAlertControllerStyleAlert];
     UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
@@ -365,7 +364,11 @@
                           }];
     UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
                                  {
-                                     
+                                     if (tag==2)
+                                     {
+                                          [self.navigationController popViewControllerAnimated:YES];
+                                     }
+               
                                  }];
     [alert addAction:cancel];
     [alert addAction:defaultAction];

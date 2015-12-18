@@ -15,7 +15,7 @@
 {
     BOOL _isOpen[666];
     int _lastTag[666];
-
+    int _addNum[20];
 }
 @property(nonatomic,unsafe_unretained)int isTag;
 //@property(nonatomic,strong)UITabBarController*tabBarVC;
