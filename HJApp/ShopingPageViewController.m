@@ -92,12 +92,15 @@
     if (sender.tag==333)
     {
         LoginViewController*loginVC=[[LoginViewController alloc]init];
-        [self.navigationController pushViewController:loginVC animated:YES];
+        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginVC];
+        [self presentViewController:navigationController animated:YES completion:nil];
+
     }
     else
     {
         RegisterViewController*registerVC=[[RegisterViewController alloc]init];
-        [self.navigationController pushViewController:registerVC animated:YES];
+        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:registerVC];
+        [self presentViewController:navigationController animated:YES completion:nil];
     }
    
 }

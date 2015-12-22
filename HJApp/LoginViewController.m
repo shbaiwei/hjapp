@@ -139,7 +139,7 @@
 
 - (void) closeTouched:(UIBarButtonItem *) sender{
     
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 //取消按钮
@@ -228,19 +228,11 @@
     //注册
     else
     {
-        
-        
         RegisterViewController*registerVC=[[RegisterViewController alloc]init];
-        [self.navigationController pushViewController:registerVC animated:YES];
+        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:registerVC];
+        [self presentViewController:navigationController animated:YES completion:nil];
         
-        
-//        [HttpEngine getConsumerDetailData:^(NSArray *dataArray) {
-//            
-//        }];
-//        NSLog(@"zhuce");
     }
 }
-
-
 
 @end

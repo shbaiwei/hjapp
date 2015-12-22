@@ -1058,7 +1058,8 @@ NSString *locatioanStr;
     if (!login)
     {
         LoginViewController*loginVC=[[LoginViewController alloc]init];
-        [self.navigationController pushViewController:loginVC animated:YES];
+        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginVC];
+        [self presentViewController:navigationController animated:YES completion:nil];
     }
    // sender.selected=!sender.selected;
     _isOpen[sender.tag]=!_isOpen[sender.tag];
