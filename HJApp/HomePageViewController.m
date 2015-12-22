@@ -141,7 +141,8 @@ UILabel *secondLabel;
                 ShopingCar*shCa=array[i];
                 number += [shCa.number integerValue];
             }
-            if(number>0){
+            if(number>0)
+            {
                 [self updateCartCount:[NSString stringWithFormat:@"%ld",number]];
             }
         }];

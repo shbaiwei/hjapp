@@ -44,7 +44,7 @@
     
     self.navigationController.navigationBarHidden=NO;
     self.navigationController.navigationBar.translucent=NO;
-    self.title=@"登陆";
+    self.title=@"登录";
     
     self.view=[[UIView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1)];
     self.view.backgroundColor=[UIColor whiteColor];
@@ -67,7 +67,7 @@
 //    [self.view addSubview:backBtn];
     
     //输入框和登陆注册按钮
-    NSArray*labelNameArray=[[NSArray alloc]initWithObjects:@"账户名",@"登陆密码", nil];
+    NSArray*labelNameArray=[[NSArray alloc]initWithObjects:@"账户名",@"登录密码", nil];
     NSArray*tfNameArray=[[NSArray alloc]initWithObjects:@"请输入帐号",@"请输入密码",nil];
     NSArray*btnNameArray=[[NSArray alloc]initWithObjects:@"登录",@"注册" ,nil];
     for (int i=0; i<2; i++)

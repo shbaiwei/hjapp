@@ -73,7 +73,7 @@
 
     
     UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, 130+3*100, 100, 30)];
-    label.text=@"其它信息";
+    label.text=@"其它信息＊";
     label.font=[UIFont systemFontOfSize:14];
     [scrollView addSubview:label];
     

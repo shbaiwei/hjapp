@@ -58,6 +58,7 @@
     [HttpEngine getDefaultAddress:^(NSDictionary*dataDic)
      {
          _defaultAdDic=dataDic;
+         [self defaultAddressVoid];
     }];
     
 }
@@ -66,6 +67,17 @@
     [super viewDidLoad];
     self.title=@"管理收货地址";
     [self creatTableview];
+}
+
+//默认为空
+-(void)defaultAddressVoid
+{
+    if (_defaultAdDic.count==0)
+    {
+        AllAdress*alldress=_dataArray[0];
+        _defaultIndex=0;
+        [HttpEngine setDefaultAddress:alldress.addrId];
+    }
 }
 
 //刷新默认的索引值
@@ -169,8 +181,10 @@
     AllAdress*alldress=_dataArray[sender.tag-100];
    [HttpEngine setDefaultAddress:alldress.addrId];
 
-    [self performSelector:@selector(goBackPage) withObject:nil afterDelay:0.2]; 
+    [self performSelector:@selector(goBackPage) withObject:nil afterDelay:0.3];
 }
+
+
 -(void)goBackPage
 {
     if ([_payVCStr isEqualToString:@"payVC"])
@@ -274,6 +288,7 @@
 {
     [HttpEngine getAddress:^(NSArray *dataArray) {
         _dataArray=dataArray;
+        [self defaultAddressVoid];
         [_adressTV reloadData];
     }];
 }
