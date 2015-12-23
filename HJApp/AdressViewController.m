@@ -72,8 +72,9 @@
 //默认为空
 -(void)defaultAddressVoid
 {
-    if (_defaultAdDic.count==0)
+    if (_defaultAdDic.count==0&&_dataArray.count!=0)
     {
+        NSLog(@"dasd");
         AllAdress*alldress=_dataArray[0];
         _defaultIndex=0;
         [HttpEngine setDefaultAddress:alldress.addrId];
