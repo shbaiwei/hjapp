@@ -31,9 +31,14 @@
         _dataArray=dataArray;
         [self showTable];
     }];
-    
+    self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc]initWithTitle:@"添加" style:UIBarButtonItemStylePlain target:self action:@selector(rightBtn)];
     
 }
+-(void)rightBtn
+{
+    _tabBarVC.selectedIndex=2;
+}
+
 -(void)showTable
 {
     _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1) style:UITableViewStyleGrouped];

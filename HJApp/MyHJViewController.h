@@ -12,8 +12,8 @@
 
 @interface MyHJViewController : UIViewController<UITableViewDataSource,UITableViewDelegate>
 
-@property BOOL Loged;
-@property NSString *usernamestr;
+//@property BOOL Loged;
+//@property NSString *usernamestr;
 
 @property(nonatomic,strong)UITabBarController*tabBarVC;
 @end

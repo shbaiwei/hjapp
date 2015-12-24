@@ -525,22 +525,19 @@
 //登陆请求
 +(void)loginRequest:(NSString*)name with:(NSString*)pas complete:(void(^)(NSString*fail))complete
 {
-    NSLog(@"登陆请求");
-    NSLog(@"账户--%@,密码---%@",name,pas);
-    
+//    NSLog(@"登陆请求");
+//    NSLog(@"账户--%@,密码---%@",name,pas);
     AFHTTPSessionManager*manager=[AFHTTPSessionManager manager];
-    
     NSString *str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/api-token-auth/"];
-    
     NSDictionary*parameters=@{@"username":name,@"password":pas};
     [manager POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
-         NSLog(@"JSON: %@", responseObject);
+         //NSLog(@"JSON: %@", responseObject);
          NSString*str=responseObject[@"token"];
-         
          [[NSUserDefaults standardUserDefaults]setObject:str forKey:@"TOKEN_KEY"];
+         [[NSUserDefaults standardUserDefaults]setObject:name forKey:@"NAME"];
          complete(@"succese");
          
          
@@ -749,13 +746,19 @@
     
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
     
-    
     NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
     NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
     [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/orders/"];
-    NSDictionary*parameters=@{@"address_id":addressId,@"method":method,@"spaypassword":spaypassword,@"coupon_no":couponNo};
-    
+    NSDictionary*parameters;
+    if (!couponNo)
+    {
+    parameters=@{@"address_id":addressId,@"method":method,@"spaypassword":spaypassword};
+    }
+    else
+    {
+    parameters=@{@"address_id":addressId,@"method":method,@"spaypassword":spaypassword,@"coupon_no":couponNo};
+    }
     NSLog(@"parameters==%@",parameters);
     
     [session POST:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
@@ -978,11 +981,13 @@
     
     NSDictionary*parameters=@{@"default_flag":@"1"};
     
+    NSLog(@"parameters====%@",parameters);
+    NSLog(@"strstrstr====%@",str);
     [session PUT:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
          NSLog(@"设置默认地址＝＝JSON:%@",responseObject);
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-         NSLog(@"Error:%@",error);
+         NSLog(@"设置默认地址===Error:%@",error);
      }];
 }
 //获取默认收货地址
@@ -999,7 +1004,7 @@
     
     [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
-         NSLog(@"JSON:%@",responseObject);
+         //NSLog(@"默认地址－－JSON:%@",responseObject);
          complete(responseObject);    
          
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {

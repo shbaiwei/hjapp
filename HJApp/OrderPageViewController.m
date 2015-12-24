@@ -434,7 +434,12 @@
     
     
     UILabel *dNamelable=[[UILabel alloc]initWithFrame:CGRectMake(20+LBVIEW_HEIGHT1*0.025, 15, 100,20)];
-    dNamelable.text=dic[@"to_florist_name"];
+    NSString*str=dic[@"to_florist_name"];
+    if (str.length>4)
+    {
+        str=[str substringToIndex:4];
+    }
+    dNamelable.text=str;
     dNamelable.font=[UIFont systemFontOfSize:14];
     //dNamelable.textAlignment=NSTextAlignmentCenter;
     dNamelable.backgroundColor=[UIColor clearColor];

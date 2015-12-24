@@ -47,40 +47,33 @@
 {
     //self.navigationController.navigationBarHidden=NO;
     self.navigationController.navigationBar.translucent =NO;
-    [HttpEngine getAddress:^(NSArray *dataArray)
-     {
-         _dataArray=dataArray;
-         [self refreshData];
-         [_adressTV reloadData];
-     }];
-    
     //获取默认地址
     [HttpEngine getDefaultAddress:^(NSDictionary*dataDic)
      {
          _defaultAdDic=dataDic;
+         NSLog(@"_defaultAdDic=====%@",_defaultAdDic);
          [self defaultAddressVoid];
-    }];
+     }];
     
 }
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.title=@"管理收货地址";
-    [self creatTableview];
+     [self creatTableview];
 }
 
 //默认为空
 -(void)defaultAddressVoid
 {
-    if (_defaultAdDic.count==0&&_dataArray.count!=0)
-    {
-        NSLog(@"dasd");
-        AllAdress*alldress=_dataArray[0];
-        _defaultIndex=0;
-        [HttpEngine setDefaultAddress:alldress.addrId];
-    }
+    [HttpEngine getAddress:^(NSArray *dataArray)
+     {
+         _dataArray=dataArray;
+         [self refreshData];
+         [_adressTV reloadData];
+     }];
+   
 }
-
 //刷新默认的索引值
 -(void)refreshData
 {
@@ -92,6 +85,16 @@
         if ([str2 isEqualToString:str1])
         {
             _defaultIndex=i;
+            return;
+        }
+        else
+        {
+            if (i==_dataArray.count-1)
+            {
+                _defaultIndex=0;
+                AllAdress*alldress=_dataArray[0];
+                [HttpEngine setDefaultAddress:alldress.addrId];
+            }
         }
     }
 }
@@ -198,6 +201,7 @@
     [HttpEngine getDefaultAddress:^(NSDictionary*dataDic)
      {
          _defaultAdDic=dataDic;
+        //NSLog(@"_defaultAdDic====%@",_defaultAdDic);
          [self refreshData];
          [_adressTV reloadData];
          
@@ -259,7 +263,7 @@
                                      NSString*adr_id=adress.addrId;
                                      [HttpEngine deleteAddress:adr_id];
                                      
-                                     [self performSelector:@selector(shuaiXin) withObject:nil afterDelay:0.1];
+                                     [self performSelector:@selector(defaultAddressVoid) withObject:nil afterDelay:0.2];
                                  }];
     [alert addAction:cancel];
     [alert addAction:defaultAction];
@@ -282,16 +286,6 @@
     newVC.addrId=adress.addrId;
     [self.navigationController pushViewController:newVC animated:YES];
 
-}
-
-//刷新表
--(void)shuaiXin
-{
-    [HttpEngine getAddress:^(NSArray *dataArray) {
-        _dataArray=dataArray;
-        [self defaultAddressVoid];
-        [_adressTV reloadData];
-    }];
 }
 
 @end

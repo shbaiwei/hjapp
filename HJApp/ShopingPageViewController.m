@@ -80,7 +80,6 @@
     
     [HttpEngine getSimpleCart:^(NSArray *array) {
         _dataArray=array;
-        
         [self refreshCartCount:array];
 
         [self showTableView];
@@ -196,12 +195,11 @@
 {
     if (_dataArray.count==0)
     {
-        self.tabBarVC.selectedIndex=1;
+        self.tbBarVC.selectedIndex=1;
     }
     else
     {
         PayViewController*payVC=[[PayViewController alloc]init];
-        //[self hidesTabBar:YES];
         payVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:payVC animated:YES];
     }
@@ -255,11 +253,6 @@
         picLabel.textColor=[UIColor redColor];
         [picLabel setFont:font];
         [cell addSubview:picLabel];
-        
-//        UILabel*xlabel=[[UILabel alloc]initWithFrame:CGRectMake((3*LBVIEW_WIDTH1*0.5-70+size.width)/2, 25, 20, 20)];
-//        xlabel.text=@"X";
-//        xlabel.textColor=[UIColor grayColor];
-//        [cell addSubview:xlabel];
         
         UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-60, 25, 20, 20)];
         numLabel.text=[NSString stringWithFormat:@"%@",spCa.number];

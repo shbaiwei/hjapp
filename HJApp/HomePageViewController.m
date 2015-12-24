@@ -636,19 +636,15 @@ UILabel *secondLabel;
 
     //加入倒计时
     promotionTimer=[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(promotionAnimation) userInfo:nil repeats:YES];
-        
-
     
     [self.mainScroll addSubview:oneMoneyView];
     
 }
 
-
 -(void)promotionAnimation{
     
     if(timeGap>0){
         //NSLog(@"%ld",timeGap);
-        
         int hour = (int)floor(timeGap / 3600);
         int minute = (int)floor((timeGap - hour * 3600) / 60);
         int second = (int)(timeGap - hour * 3600 - minute * 60);
@@ -659,9 +655,8 @@ UILabel *secondLabel;
         timeGap--;
         return;
     }
-    
     [promotionBtn setHidden:NO];
-    promotionTimer = nil;
+     promotionTimer = nil;
 }
 
 

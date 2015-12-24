@@ -24,58 +24,12 @@
 @interface MyHJViewController ()
 
 
-@property(nonatomic,strong)NSArray*ConsumerArray;
 //个人信息
-@property (nonatomic, strong) UIView *topView;
-@property (nonatomic, strong) UIButton *userImaButton;
 @property (nonatomic, strong) UILabel *userLabel;
 @property (nonatomic, strong) UILabel *szLabel;
-@property (nonatomic, strong) UIImageView *jtImageV;
-@property (nonatomic, strong) UIButton *topButton;
 @property(nonatomic,copy)NSString*userName;
 @property(nonatomic,copy)NSString*portrait;
-//我的订单
-@property (nonatomic, strong) UIView *oderView;
-@property (nonatomic, strong) UIImageView *oderImageV;
-@property (nonatomic, strong) UILabel *myOderLabel;
-@property (nonatomic, strong) UIImageView *odJtImageV;
-@property (nonatomic, strong) UIButton *oderButton;
-//管理收货地址
-@property (nonatomic, strong) UIView *addressView;
-@property (nonatomic, strong) UIImageView *addressImageV;
-@property (nonatomic, strong) UILabel *addressLabel;
-@property (nonatomic, strong) UIImageView *adJtImageV;
-@property (nonatomic, strong) UIButton *addsButton;
-//花集红包
-@property (nonatomic, strong) UIView *saihuView;
-@property (nonatomic, strong) UIImageView *saihuImageV;
-@property (nonatomic, strong) UILabel *saihuLabel;
-@property (nonatomic, strong) UIImageView *shJtImageV;
-@property (nonatomic, strong) UIButton *shButton;
-//消息中心
-@property (nonatomic, strong) UIView *messageView;
-@property (nonatomic, strong) UIImageView *messageImageV;
-@property (nonatomic, strong) UILabel *messageLabel;
-@property (nonatomic, strong) UIImageView *mesJtImageV;
-@property (nonatomic, strong) UIButton *messButton;
-//花售余额
-@property (nonatomic, strong) UIView *moneyView;
-@property (nonatomic, strong) UIImageView *moneyImageV;
-@property (nonatomic, strong) UILabel *moneyLabel;
-@property (nonatomic, strong) UIImageView *monJtImageV;
-@property (nonatomic, strong) UILabel *czLabel;
-@property (nonatomic, strong) UIButton *monButton;
-///
 @property(nonatomic,strong)NSDictionary*balanceDic;
-
-
-
-//我的售后
-@property (nonatomic, strong) UIView *aferView;
-@property (nonatomic, strong) UIImageView *aferImageV;
-@property (nonatomic, strong) UILabel *aferLabel;
-@property (nonatomic, strong) UIImageView *afJtImageV;
-@property (nonatomic, strong) UIButton *afButton;
 //客服电话
 @property (nonatomic, strong) UIView *phoneView;
 @property (nonatomic, strong) UIImageView *phoneImageV;
@@ -87,10 +41,13 @@
 
 ///////
 @property(nonatomic,strong)UITableView*tableView;
-
 @property(nonatomic,strong)MBProgressHUD*hud;
-
 @property(nonatomic,copy)NSString*loginStr;
+
+//账单数目
+@property(nonatomic,unsafe_unretained)NSUInteger Fnum;
+@property(nonatomic,unsafe_unretained)NSUInteger Snum;
+@property(nonatomic,unsafe_unretained)NSUInteger Tnum;
 
 @end
 
@@ -98,7 +55,6 @@
 //宏定义宽高
 #define VIEW_WIDTH self.view.bounds.size.width
 #define VIEW_HEIGHT self.view.bounds.size.height
-
 #define LBVIEW_WIDTH1 [UIScreen mainScreen].bounds.size.width
 #define LBVIEW_HEIGHT1 [UIScreen mainScreen].bounds.size.height
 
@@ -107,37 +63,63 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    //self.navigationController.navigationBarHidden=YES;
     self.navigationController.navigationBar.translucent =NO;
 
+    _hud = [BWCommon getHUD];
+    
+    //用户是否登录了
     _loginStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
     if (!_loginStr)
-        return;
+    {
+       [_hud removeFromSuperview];
+       return;
+    }
+    //获取用户信息
     NSString*idStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"ID"];
-    _hud = [BWCommon getHUD];
-    [self performSelector:@selector(reMove) withObject:nil afterDelay:1];
     [HttpEngine getConsumerDetailData:idStr completion:^(NSArray *dataArray)
      {
-         
          ConsumerDetail*consum=dataArray[0];
          _userName=consum.userid;
          _portrait=consum.portrait;
+         [_hud removeFromSuperview];
          [_tableView reloadData];
      }];
-    
     //花售余额部分
     [HttpEngine getBalance:^(NSDictionary *dic)
      {
          _balanceDic=dic;
          [_tableView reloadData];
      }];
+    //账单数目显示
+    for (int i=0; i<3; i++)
+    {
+        NSString*str;
+        if (i==0)
+        {
+            str=[NSString stringWithFormat:@"%d",i];
+        }
+        else
+        {
+            str=[NSString stringWithFormat:@"%d",i+1];
+        }
+        [HttpEngine myOrder:@"1" with:@"1" with:@"10" with:str completion:^(NSArray *dataArray)
+         {
+             if (i==0)
+             {
+                 _Fnum=dataArray.count;
+             }
+             else if (i==2)
+             {
+                 _Snum=dataArray.count;
+             }
+             else
+             {
+                 _Tnum=dataArray.count;
+             }
+             [_tableView reloadData];
+        }];
+    }
 }
-
--(void)reMove
-{
-[_hud removeFromSuperview];
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -151,12 +133,10 @@
     _tableView.dataSource=self;
     _tableView.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     [self.view addSubview:_tableView];
-
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-
     return 9;
 }
 
@@ -183,13 +163,10 @@
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
     }
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
-    
     MyHJTableViewCell *cell0 = [MyHJTableViewCell cellWithTableView:tableView];
-    
     if(indexPath.row == 0)
     {
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-    
         if (!_loginStr)
         {
             NSArray*nameArray=[[NSArray alloc]initWithObjects:@"注册", @"登录",nil];
@@ -236,26 +213,15 @@
         
         [cell0.iconImage setImage:[UIImage imageNamed:@"myOder.PNG"]];
         [cell0.textLabel setText:@"我的订单"];
-        
         [cell0.rightLabel setText:@"查看全部购买商品"];
         return cell0;
-        //[cell addSubview:self.oderImageV];
-        //全部订单
-        /*
-        UIButton*allBtn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 60)];
-        [allBtn addTarget:self action:@selector(allOrder) forControlEvents:UIControlEventTouchUpInside];
-        [cell addSubview:allBtn];
-        */
     }
     else if (indexPath.row==2)
     {
         //订单分类
-        
         NSArray*array=[[NSArray alloc]initWithObjects:@"待付款",@"待收货",@"退款／售后", nil];
-        
         for (int i=0; i<3; i++)
         {
-            
             UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(i*LBVIEW_WIDTH1/3, 30, LBVIEW_WIDTH1/3, 20)];
             label.text=array[i];
             label.textColor=[UIColor blackColor];
@@ -268,11 +234,50 @@
             imageV.image=[UIImage imageNamed:[NSString stringWithFormat:@"order_state%d.png",i+1]];
             [cell addSubview:imageV];
             
+            if (i==0)
+            {
+                if (_Fnum!=0)
+                {
+                    UIImageView*imageNum=[self imageOrder];
+                    imageNum.frame=CGRectMake(LBVIEW_WIDTH1/7+18, 5, 14, 14);
+                    [cell addSubview:imageNum];
+                    
+                    UILabel*numLabel=[self numOrder:_Fnum];
+                    numLabel.frame=CGRectMake(LBVIEW_WIDTH1/7+18, 5, 14, 14);
+                    [cell addSubview:numLabel];
+                }
+            }
+            else if (i==1)
+            {
+                if (_Snum!=0)
+                {
+                    UIImageView*imageNum=[self imageOrder];
+                    imageNum.frame=CGRectMake(LBVIEW_WIDTH1/7+LBVIEW_WIDTH1/3+18, 5, 14, 14);
+                    [cell addSubview:imageNum];
+                    
+                    UILabel*numLabel=[self numOrder:_Snum];
+                    numLabel.frame=CGRectMake(LBVIEW_WIDTH1/7+LBVIEW_WIDTH1/3+18, 5, 14, 14);
+                    [cell addSubview:numLabel];
+                }
+            }
+            else
+            {
+                if (_Tnum!=0)
+                {
+                    UIImageView*imageNum=[self imageOrder];
+                    imageNum.frame=CGRectMake(LBVIEW_WIDTH1/7+2*LBVIEW_WIDTH1/3+18, 5, 14, 14);
+                    [cell addSubview:imageNum];
+                    
+                    UILabel*numLabel=[self numOrder:_Tnum];
+                    numLabel.frame=CGRectMake(LBVIEW_WIDTH1/7+2*LBVIEW_WIDTH1/3+18, 5, 14, 14);
+                    [cell addSubview:numLabel];
+                }
+            }
+            
             UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(i*LBVIEW_WIDTH1/3, 0, LBVIEW_WIDTH1/3, 60)];
             btn.tag=i+10;
             [btn addTarget:self action:@selector(chooseOrder:) forControlEvents:UIControlEventTouchUpInside];
             [cell addSubview:btn];
-            
             
             if (i==0)
             {
@@ -287,13 +292,11 @@
                 [cell addSubview:line2];
             }
         }
-        
     }
     else if (indexPath.row==3)
     {
         
         [cell0.iconImage setImage:[UIImage imageNamed:@"icons-my-huaji-1.png"]];
-        
         [cell0.textLabel setText:@"管理收货地址"];
         [cell0.rightLabel setText:nil];
         return cell0;
@@ -301,7 +304,6 @@
     else if (indexPath.row==4)
     {
         [cell0.iconImage setImage:[UIImage imageNamed:@"saihu.PNG"]];
-        
         [cell0.textLabel setText:@"花集红包"];
         [cell0.rightLabel setText:nil];
         return cell0;
@@ -310,7 +312,6 @@
     else if (indexPath.row==5)
     {
         [cell0.iconImage setImage:[UIImage imageNamed:@"message.PNG"]];
-        
         [cell0.textLabel setText:@"消息中心"];
         [cell0.rightLabel setText:nil];
         return cell0;
@@ -319,25 +320,20 @@
     else if (indexPath.row==6)
     {
         [cell0.iconImage setImage:[UIImage imageNamed:@"money.PNG"]];
-        
         if (!_loginStr)
         cell0.textLabel.text=@"花集余额";
         else
         [cell0.textLabel setText:[NSString stringWithFormat:@"花集余额(%@)",_balanceDic[@"nmoney"]]];
         
         [cell0.rightLabel setText:@"充值"];
-        
         return cell0;
-        
     }
     else if (indexPath.row==7)
     {
-        
         [cell0.iconImage setImage:[UIImage imageNamed:@"afer.PNG"]];
         [cell0.textLabel setText:@"我的售后"];
         [cell0.rightLabel setText:nil];
         return cell0;
-        
     }
     else if (indexPath.row==8)
     {
@@ -355,10 +351,26 @@
         self.phoneLabel.textAlignment=NSTextAlignmentCenter;
         self.phoneLabel.font = NJTitleFont;
         [cell addSubview:self.phoneLabel];
-        
     }
-    
     return cell;
+}
+#pragma mark ------  账单数目
+-(UIImageView*)imageOrder
+{
+    UIImageView*imageNum=[[UIImageView alloc]init];
+    imageNum.backgroundColor=[UIColor redColor];
+    imageNum.layer.cornerRadius=7;
+    imageNum.clipsToBounds=YES;
+    return imageNum;
+}
+-(UILabel*)numOrder:(NSUInteger)num
+{
+    UILabel*numLabel=[[UILabel alloc]init];
+    numLabel.text=[NSString stringWithFormat:@"%lu",num];
+    numLabel.font=[UIFont boldSystemFontOfSize:12];
+    numLabel.textColor=[UIColor whiteColor];
+    numLabel.textAlignment=NSTextAlignmentCenter;
+    return numLabel;
 }
 
 //切换到登陆
@@ -369,10 +381,7 @@
         LoginViewController*loginVC=[[LoginViewController alloc]init];
         
         UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginVC];
-        
-        [self presentViewController:navigationController animated:YES completion:^{
-            
-        }];
+        [self presentViewController:navigationController animated:YES completion:nil];
     }
     else
     {
@@ -396,7 +405,6 @@
         LoginViewController*loginVC=[[LoginViewController alloc]init];
         UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginVC];
         [self presentViewController:navigationController animated:YES completion:nil];
-
     }
     else
     {
@@ -422,17 +430,7 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return 0.001;
-    //return 80;
 }
-
-//-(void)theTopButtonAction:(UIButton *)sender
-//{
-//    AboutMeViewController *aboutVC = [[AboutMeViewController alloc] init];
-//    aboutVC.hidesBottomBarWhenPushed=YES;
-//    [self.navigationController pushViewController:aboutVC animated:YES];
-//}
-
-
 //选中cell
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -476,7 +474,6 @@
         MessageCenterViewController*messageVC=[[MessageCenterViewController alloc]init];
         messageVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:messageVC animated:YES];
-        
     }
     //花集余额
     if(indexPath.row==6)
@@ -490,6 +487,7 @@
     {
         ComplainViewController*complainVC=[[ComplainViewController alloc]init];
         complainVC.hidesBottomBarWhenPushed = YES;
+        complainVC.tabBarVC=_tabBarVC;
         [self.navigationController pushViewController:complainVC animated:YES];
     }
     //客服电话
@@ -499,7 +497,6 @@
         UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"是否拨打客服热线" preferredStyle: UIAlertControllerStyleAlert];
         UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
                               {
-                                  
                               }];
         UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
                               {
@@ -526,16 +523,12 @@
     
     self.overButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     self.overButton.frame = CGRectMake(10,LBVIEW_HEIGHT1/20, LBVIEW_WIDTH1-20, 40);
-//    UIImage *over = [UIImage imageNamed:@"over.png"];
-//    over = [over imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-//    [self.overButton setImage:over forState:UIControlStateNormal];
     [self.overButton setTitle:@"退出登录" forState:UIControlStateNormal];
     self.overButton.titleLabel.font=[UIFont systemFontOfSize:14];
     [self.overButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.overButton setBackgroundColor:[UIColor redColor]];
     self.overButton.layer.cornerRadius=5;
     self.overButton.clipsToBounds=YES;
-    
     [self.overButton addTarget:self action:@selector(goToSleep) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:self.overButton];
     
@@ -564,7 +557,5 @@
     [alert addAction:cancel];
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
-    
-    
 }
 @end

@@ -86,10 +86,14 @@
         [view addSubview:label];
         
         UITextField*field=[[UITextField alloc]initWithFrame:CGRectMake(20+LBVIEW_WIDTH1/4.5, 0, view.frame.size.width-label.frame.size.width-20, LBVIEW_HEIGHT1/15.0)];
+        if (i==0)
+        {
+            NSString*nameStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"NAME"];
+            field.text=nameStr;
+        }
         field.placeholder=tfNameArray[i];
         field.font=[UIFont systemFontOfSize:16];
         field.clearsOnBeginEditing=YES;
-        //field.borderStyle=UITextBorderStyleBezel;
         if (i==1)
         {
             field.secureTextEntry=YES;
@@ -136,19 +140,10 @@
     [self.navigationController pushViewController:forgetVC animated:NO];
 
 }
-
 - (void) closeTouched:(UIBarButtonItem *) sender{
     
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
-
-//取消按钮
-//-(void)backBtn:(UIButton*)sender
-//{
-//    FlashViewController*flashVC=[[FlashViewController alloc]init];
-//    [self.navigationController pushViewController:flashVC animated:YES];
-//    
-//}
 //登陆注册按钮
 -(void)lgBtnClick:(UIButton*)sender
 {

@@ -120,7 +120,7 @@
     
     homeVC.tabBarVC=_tabBar;
     myHuaJiVC.tabBarVC=_tabBar;
-    shopVC.tabBarVC=_tabBar;
+    shopVC.tbBarVC=_tabBar;
     assortVC.tabBarVC=_tabBar;
     _tabBar.viewControllers = @[naviHome, naviAssprt, naviOder, naviShop, naviMyHuaJi];
     

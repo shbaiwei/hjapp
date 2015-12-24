@@ -12,5 +12,5 @@
 
 @interface ShopingPageViewController : HJViewController
 
-//@property(nonatomic,strong)UITabBarController*tabBarVC;
+@property(nonatomic,strong)UITabBarController*tbBarVC;
 @end
