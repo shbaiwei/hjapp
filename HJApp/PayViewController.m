@@ -385,7 +385,6 @@ NSInteger pay_type;
     
     [HttpEngine submitOrderAddressId:_addrId withMethod:[pay_method objectAtIndex:pay_type] withSpaypassword:_password withCouponNo:_preferNo completion:^(NSDictionary *dict)
      {
-         
          UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"温馨提醒" message:dict[@"msg"] preferredStyle:UIAlertControllerStyleAlert];
          
          NSString *actionTitle = pay_type == 0 ? @"查看我的订单" : @"去支付";
@@ -407,7 +406,6 @@ NSInteger pay_type;
              {
                  [self WeiXinPay:dict[@"out_trade_no"]];
              }
-//             [self tabBarVC].selectedIndex = 2;
              [self.navigationController popViewControllerAnimated:YES];
          }];
          if (pay_type!=0)

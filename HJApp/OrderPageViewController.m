@@ -519,7 +519,7 @@
     order.recvMobile=dic[@"recv_mobile"];
     order.recvAddress=dic[@"recv_address"];
     order.orderPrice=dic[@"order_price"];
-    order.preferMoney=dic[@"prefer_money"];
+    order.preferMoney=dic[@"addon_price"];
     order.discountPrice=dic[@"discount_price"];
     order.paymentPrice=dic[@"payment_price"];
     order.dataArray=dic[@"detail"];
@@ -573,8 +573,8 @@
     priceLable.font=font1;
     [view addSubview:priceLable];
     
-    UILabel *freeLable=[[UILabel alloc]initWithFrame:CGRectMake(10+size.width+size1.width, 10, 80,20)];
-    freeLable.text=@"(含运费¥0.00)";
+    UILabel *freeLable=[[UILabel alloc]initWithFrame:CGRectMake(10+size.width+size1.width, 10, 100,20)];
+    freeLable.text=[NSString stringWithFormat:@"(含配送费%@)",dic[@"addon_price"]];
     freeLable.textColor=[UIColor grayColor];
     freeLable.font=[UIFont systemFontOfSize:12];
     [view addSubview:freeLable];

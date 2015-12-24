@@ -764,7 +764,6 @@
     [session POST:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
     {
         NSDictionary*dic=responseObject;
-        NSLog(@"str==%@",dic);
         complete(dic);
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
         NSLog(@"Error:%@",error);
