@@ -424,15 +424,6 @@ NSInteger pay_type;
      }];
 }
 
--(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if(indexPath.section == 1){
-        [self changeAddress];
-    }else if(indexPath.section == 3){
-        //UITableViewCell *cell=[tableView cellForRowAtIndexPath:indexPath];
-        pay_type = indexPath.row;
-        [tableView reloadData];
-    }
-}
 //输入密码
 -(void)inputPassword
 {
@@ -521,12 +512,7 @@ NSInteger pay_type;
             _styleLabel.textColor=[UIColor blackColor];
             _styleLabel.font=[UIFont systemFontOfSize:14];
             [cell addSubview:_styleLabel];
-            
             cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-            
-            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 40)];
-            [btn addTarget:self action:@selector(cutAddress) forControlEvents:UIControlEventTouchUpInside];
-            [cell addSubview:btn];
         }
             break;
         case 1:
@@ -540,8 +526,7 @@ NSInteger pay_type;
         _distributionAddrsDetailLabel.text=[NSString stringWithFormat:@"%@ %@ %@",_defaultAddressDic[@"chinese_province"],_defaultAddressDic[@"chinese_city"],_defaultAddressDic[@"chinese_town"]];
         _distributionAddrsDetailLabel.font=[UIFont systemFontOfSize:14];
         [cell addSubview:_distributionAddrsDetailLabel];
-            
-            cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
             
         }
             break;
@@ -553,12 +538,7 @@ NSInteger pay_type;
             _distributionLabel.textColor=[UIColor blackColor];
             _distributionLabel.font=[UIFont systemFontOfSize:14];
             [cell addSubview:_distributionLabel];
-            
             cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-
-            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 40)];
-            [btn addTarget:self action:@selector(distributionTime) forControlEvents:UIControlEventTouchUpInside];
-            [cell addSubview:btn];
         }
             break;
             
@@ -607,7 +587,6 @@ NSInteger pay_type;
             tView.layer.borderWidth =1.0;
             tView.layer.cornerRadius =5.0;
             tView.tag=3;
-            
             self.cust_message = tView;
             [cell addSubview:tView];
         }
@@ -675,15 +654,41 @@ NSInteger pay_type;
     }
     return cell;
 }
-
-//切换地址按钮
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if (indexPath.section==0)
+    {
+        [self cutAddress];
+    }else
+        if(indexPath.section == 1){
+            [self changeAddress];
+        }else
+            if(indexPath.section == 2)
+            {
+                [self distributionTime];
+            }
+            else
+                if (indexPath.section==3)
+                {
+                    pay_type = indexPath.row;
+                    [tableView reloadData];
+                }
+}
+//切换配送方式
 -(void)cutAddress
 {
     DistributionStyleViewController*distribuVC=[[DistributionStyleViewController alloc]init];
     distribuVC.payVC=self;
     [self.navigationController pushViewController:distribuVC animated:YES];
 }
-
+//更换地址
+-(void)changeAddress
+{
+    AdressViewController*adressVC=[[AdressViewController alloc]init];
+    adressVC.payVCStr=@"payVC";
+    adressVC.payVC=self;
+    [self.navigationController pushViewController:adressVC animated:YES];
+    
+}
 //配送时间
 -(void)distributionTime
 {
@@ -766,16 +771,6 @@ NSInteger pay_type;
     //[self.tableView endEditing:YES];
 }
 
-
-//更换地址
--(void)changeAddress
-{
-    AdressViewController*adressVC=[[AdressViewController alloc]init];
-    adressVC.payVCStr=@"payVC";
-    adressVC.payVC=self;
-    [self.navigationController pushViewController:adressVC animated:YES];
-    
-}
 //自定义区尾
 -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {

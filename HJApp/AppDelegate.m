@@ -30,12 +30,10 @@
     if (![[NSFileManager defaultManager] fileExistsAtPath:destionPath])
     {
         [[NSFileManager defaultManager]copyItemAtPath:path toPath:destionPath error:nil];
-        NSLog(@"1323");
     }
-    
     else
     {
-        NSLog(@"文件已经存在");
+       // NSLog(@"文件已经存在");
     }
 }
 

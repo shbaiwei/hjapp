@@ -24,4 +24,6 @@
 -(void)alipay:(NSString *)out_trade_no amount:(NSString *) amount completion:(void(^)(BOOL success))complete;
 
 - (void)alert:(NSString *)title msg:(NSString *)msg;
+-(BOOL) isLogin:(UIViewController*)VC withTitle:(NSString*)tilestr with:(int)height;
++(BOOL)needShowPage;
 @end

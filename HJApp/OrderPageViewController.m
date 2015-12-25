@@ -39,6 +39,7 @@
 
 @property(nonatomic,strong)UITableView *paymentTableView;
 
+@property(nonatomic,unsafe_unretained)BOOL isBool;
 @end
 
 
@@ -55,36 +56,16 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     self.navigationController.navigationBarHidden=YES;
-    //self.navigationController.navigationBar.translucent=NO;
-    
-    NSString*login=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
-    if (!login)
-    {
-        UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(20, LBVIEW_HEIGHT1/3, LBVIEW_WIDTH1-20, 20)];
-        label.text=@"登录后，可查看自己的订单详情";
-        label.textColor=[UIColor grayColor];
-        label.textAlignment=NSTextAlignmentCenter;
-        label.font=[UIFont systemFontOfSize:12];
-        [self.view addSubview:label];
         
-        NSArray*nameArray=[[NSArray alloc]initWithObjects:@"注册", @"登录",nil];
-        for (int i=0; i<2; i++)
+    HJViewController*hj=[[HJViewController alloc]init];
+    if (!_isBool)
+    {
+        _isBool=YES;
+        if ([hj isLogin:self withTitle:@"登录后，可查看自己的订单详情"  with:1])
         {
-            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(40+i*(LBVIEW_WIDTH1-60)/2, LBVIEW_HEIGHT1/3+90,(LBVIEW_WIDTH1-100)/2, 40)];
-            btn.layer.borderColor=[UIColor grayColor].CGColor;
-            btn.layer.borderWidth=1;
-            [btn setTitle:nameArray[i] forState:UIControlStateNormal];
-            btn.titleLabel.font=[UIFont systemFontOfSize:14];
-            [btn setTitleColor:[UIColor colorWithRed:255/255.0 green:164/255.0 blue:100/255.0 alpha:1] forState:UIControlStateNormal];
-            [btn addTarget:self action:@selector(loginRegister:) forControlEvents:UIControlEventTouchUpInside];
-            btn.tag=332+i;
-            btn.layer.cornerRadius=5;
-            btn.clipsToBounds=YES;
-            [self.view addSubview:btn];
+            return;
         }
-          return;
     }
-    
     
     //获取上个页面所选取的种类
     _chooseValue=[[NSUserDefaults standardUserDefaults]objectForKey:@"THREETAG"];
@@ -112,41 +93,13 @@
     _pageNum=10;
 }
 
-//切换到登陆
--(void)loginRegister:(UIButton*)sender
-{
-    if (sender.tag==333)
-    {
-        LoginViewController*loginVC=[[LoginViewController alloc]init];
-        
-        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginVC];
-        
-        [self presentViewController:navigationController animated:YES completion:nil];
-
-    }
-    else
-    {
-        RegisterViewController*registerVC=[[RegisterViewController alloc]init];
-        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:registerVC];
-        [self presentViewController:navigationController animated:YES completion:nil];
-    }
-
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     _pay_type = 0;
-  
     UIView*headView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1,64)];
     headView.backgroundColor=[UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1];
     [self.view addSubview:headView];
-    
-//    UIButton*backBtn=[[UIButton alloc]initWithFrame:CGRectMake(10, 30, 50, 20)];
-//    [backBtn setTitle:@"返回" forState:UIControlStateNormal];
-//    [backBtn addTarget:self action:@selector(backBtn) forControlEvents:UIControlEventTouchUpInside];
-//    [headView addSubview:backBtn];
     
     //我的订单
     _myOrderBtn=[[MyButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.3, 25, LBVIEW_WIDTH1*0.4, 30)];
@@ -177,9 +130,7 @@
     {
         return;
     }
-    
     __weak OrderPageViewController *weakSelf = self;
-    
     [HttpEngine myOrder:@"1" with:@"1" with:@"10" with:@"" completion:^(NSArray *dataArray)
      {
          _dataArray=dataArray;
@@ -213,12 +164,6 @@
     [weakSelf.tableView.infiniteScrollingView stopAnimating];
 
 }
-
-//-(void)backBtn
-//{
-//    MyHJViewController*myHJVC=[[MyHJViewController alloc]init];
-//    [self.navigationController pushViewController:myHJVC animated:YES];
-//}
 
 -(void)myOrderBtnClick
 {

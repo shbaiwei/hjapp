@@ -26,12 +26,7 @@
 {
     [super viewDidLoad];
     
-    //UIImageView*image=[[UIImageView alloc]initWithFrame:self.view.frame];
-    //image.image=[UIImage imageNamed:@"536a7024bd7b7.png"];
-    //[self.view addSubview:image];
-    //延迟执行
     [self goToPage];
-    //[self performSelector:@selector(goToPage) withObject:nil afterDelay:1];
     
 }
 -(void)goToPage
