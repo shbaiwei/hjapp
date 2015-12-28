@@ -18,19 +18,21 @@
     
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/location/convert/"];
-    [session GET:str parameters:@{@"latitude":lat,@"longitude":lng} success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
+    
+    [session GET:str parameters:@{@"latitude":lat,@"longitude":lng} progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject)
      {
-         //[hud removeFromSuperview];
          NSLog(@"JSON:%@",responseObject);
          NSDictionary *dict=responseObject;
          complete(dict);
          
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
-         //[hud removeFromSuperview];
-         failure(error);
-         NSLog(@"location Error:%@",error);
-     }];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error)
+    {
+        failure(error);
+        NSLog(@"location Error:%@",error);
+    }];
+    
 }
 //获取城市
 +(void)getCityNameBackcompletion:(void(^)(NSArray*dataArray))complete
@@ -40,23 +42,25 @@
     
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/location/full/"];
-    [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
+    [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject)
      {
          [hud removeFromSuperview];
          NSLog(@"JSON:%@",responseObject);
          NSArray*array=responseObject;
          complete(array);
          
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
-         [hud removeFromSuperview];
-         NSLog(@"Error:%@",error);
-     }];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error)
+    {
+        [hud removeFromSuperview];
+        NSLog(@"Error:%@",error);
+    }];
+    
 }
 
 //广告图
-+(void)getPicture:(void(^)(NSArray*dataArray))complete
++(void)getPictureWithTime:(NSString*)time with:(void(^)(NSArray*dataArray))complete
 {
     
     MBProgressHUD *hud = [BWCommon getHUD];
@@ -67,93 +71,88 @@
     NSString *now_str = [dformat stringFromDate:now];
     
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
-    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/advertisement/?ordering=-sort_order&start_date=%@&end_date=%@",now_str,now_str];
-    [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         
-         [hud removeFromSuperview];
-         NSLog(@"JSON:%@",responseObject);
-         
-         NSArray*array=responseObject[@"results"];
-         NSMutableArray*dataArray=[[NSMutableArray alloc]init];
-         for (int i=0; i<array.count; i++)
-         {
-             GetPic*getPic=[[GetPic alloc]init];
-             NSDictionary*dic=array[i];
-             getPic.pictureUrlStr=dic[@"image"];
-             getPic.title=dic[@"title"];
-             getPic.deadline=dic[@"deadline"];
-             getPic.position=dic[@"position"];
-             getPic.linkurl=dic[@"linkurl"];
-             [dataArray addObject:getPic];
-             
-         }
-         complete(dataArray);
-         
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
-         [hud removeFromSuperview];
-         NSLog(@"Error:%@",error);
-     }];
+    
+    NSString*str;
+    if ([time isEqualToString:@"NO"])
+    {
+       str=@"http://hjapi.baiwei.org/advertisement/";
+    }
+    else
+    {
+       str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/advertisement/?ordering=-sort_order&start_date=%@&end_date=%@",now_str,now_str];
+    }
+    [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress)
+    {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [hud removeFromSuperview];
+        NSLog(@"广告的JSON:%@",responseObject);
+        
+        NSArray*array=responseObject[@"results"];
+        NSMutableArray*dataArray=[[NSMutableArray alloc]init];
+        for (int i=0; i<array.count; i++)
+        {
+            NSDictionary*dic=array[i];
+            GetPic*getPic=[GetPic getPicWithDictionary:dic];
+            [dataArray addObject:getPic];
+        }
+        complete(dataArray);
+
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error)
+    {
+        [hud removeFromSuperview];
+         NSLog(@"广告的Error:%@",error);
+    }];
 }
 //花集公告
 +(void)getNotifition:(void(^)(NSArray*dataArray))complete
 {
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/article/"];
-    [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         NSLog(@"JSON===:%@",responseObject);
-         NSArray*array=responseObject[@"results"];
-         NSMutableArray*dataArray=[[NSMutableArray alloc]init];
-         for (int i=0; i<array.count; i++)
-         {
-             NSDictionary*dic=array[i];
-             HJNotifiton*hj=[HJNotifiton getPicWithDictionary:dic];
-             [dataArray addObject:hj];
-         }
-         complete(dataArray);
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
-         NSLog(@"Error:%@",error);
-     }];
+    
+    [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject)
+    {
+        NSLog(@"JSON===:%@",responseObject);
+        NSArray*array=responseObject[@"results"];
+        NSMutableArray*dataArray=[[NSMutableArray alloc]init];
+        for (int i=0; i<array.count; i++)
+        {
+            NSDictionary*dic=array[i];
+            HJNotifiton*hj=[HJNotifiton getPicWithDictionary:dic];
+            [dataArray addObject:hj];
+        }
+        complete(dataArray);
 
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error)
+    {
+         NSLog(@"Error:%@",error);
+    }];
 }
 
 //意见反馈
 +(void)ideaFeedBackName:(NSString*)name withMoblie:(NSString*)moblie withContent:(NSString*)content
 {
 
-    
-   
-
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
-    
-    
-    
-    
     
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/feedback/"];
     
     NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
     NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
     [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
-    
     NSDictionary*parameters=@{@"name":name,@"mobile":moblie,@"feedback_type":@"1",@"content":content,@"ip":@"192.168.33.259"};
     
-    [session POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData)
-     {
-         
-     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         NSLog(@"JSON:%@",responseObject);
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
-         NSLog(@"Error:%@",error);
-     }];
+    [session POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"JSON:%@",responseObject);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"Error:%@",error);
+    }];
 
 }
 

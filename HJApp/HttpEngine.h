@@ -31,7 +31,7 @@
 +(void)getCityNameBackcompletion:(void(^)(NSArray*dataArray))complete;
 
 //广告图
-+(void)getPicture:(void(^)(NSArray*dataArray))complete;
++(void)getPictureWithTime:(NSString*)time with:(void(^)(NSArray*dataArray))complete;
 
 //花集公告
 +(void)getNotifition:(void(^)(NSArray*dataArray))complete;

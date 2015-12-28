@@ -64,6 +64,7 @@
 
 //////////////
 @property(nonatomic,strong)NSArray*picDataArray;
+@property(nonatomic,strong)NSArray*picTimeDataArray;
 @property(nonatomic,strong)NSArray*cityNameArray;
 @property(nonatomic,strong)NSArray*notifitionArray;
 @property (nonatomic, strong) UIScrollView*notifitionScroll;
@@ -142,7 +143,7 @@ UILabel *secondLabel;
     [self ScrollViewMain];
     
     //滑动轮播图部分
-    [HttpEngine getPicture:^(NSArray *dataArray)
+    [HttpEngine getPictureWithTime:@"NO" with:^(NSArray *dataArray)
      {
          
          _picDataArray=dataArray;
@@ -150,10 +151,13 @@ UILabel *secondLabel;
          [self theTopView];
          [self theFlowersButtons];
          [self theTodayFlowes];
-         [self theOneMoney];
          [self theIkenAndBess];
-         
-         
+ 
+     }];
+    [HttpEngine getPictureWithTime:@"TIME" with:^(NSArray *dataArray)
+     {
+         _picTimeDataArray=dataArray;
+         [self theOneMoney];
      }];
     
 }
@@ -510,8 +514,8 @@ UILabel *secondLabel;
     UIView *oneMoneyView = [[UIView alloc] initWithFrame:CGRectMake(0,LBVIEW_WIDTH1 / 2+ LBVIEW_HEIGHT1 / 4.5+LBVIEW_HEIGHT1/13+17, VIEW_WIDTH, VIEW_HEIGHT / 6)];
     self.oneMoneyImageView = [[UIImageView alloc] initWithFrame:oneMoneyView.bounds];
     NSString *deadline = @"";
-    for(NSInteger i=0;i<[_picDataArray count];i++){
-        GetPic*getpic=_picDataArray[i];
+    for(NSInteger i=0;i<[_picTimeDataArray count];i++){
+        GetPic*getpic=_picTimeDataArray[i];
         if([getpic.position isEqualToString:@"promotion"]){
             NSURL*urlStr=[NSURL URLWithString:getpic.pictureUrlStr];
             [self.oneMoneyImageView sd_setImageWithURL:urlStr];
