@@ -117,6 +117,7 @@
     myHuaJiVC.tabBarVC=_tabBar;
     shopVC.tbBarVC=_tabBar;
     assortVC.tabBarVC=_tabBar;
+    oderVC.tbBarVC=_tabBar;
     _tabBar.viewControllers = @[naviHome, naviAssprt, naviOder, naviShop, naviMyHuaJi];
     
     //设置导航栏背景色

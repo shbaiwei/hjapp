@@ -137,7 +137,6 @@
             _totalPrice=[NSString stringWithFormat:@"%0.2f",sum];
         }
     }
-    
     NSString*allPrice=[NSString stringWithFormat:@"总计%@",_totalPrice];
     UIFont*font=[UIFont systemFontOfSize:17];
     CGSize size=[allPrice boundingRectWithSize:CGSizeMake(LBVIEW_WIDTH1, LBVIEW_HEIGHT1 / 15) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
@@ -266,63 +265,34 @@
 //增加按钮
 -(void)addBtn:(UIButton*)sender
 {
-    [HttpEngine getSimpleCart:^(NSArray *array)
-     {
-         _dataArray=array;
-         
-         NSInteger number = 0;
-         for (NSInteger i=0; i<array.count; i++) {
-             ShopingCar*shCa=array[i];
-             number += [shCa.number integerValue];
-         }
-         if(number>0){
-             [self updateCartCount:[NSString stringWithFormat:@"%ld",number]];
-         }
-
-         [self add:(sender.tag)];
-    }];
-    
-}
-//添加
--(void)add:(NSInteger)tag
-{
-    ShopingCar*spCa=_dataArray[tag];
+    ShopingCar*spCa=_dataArray[sender.tag];
     NSString*numer=spCa.number;
     numer=[NSString stringWithFormat:@"%lu",[numer integerValue]+1];
-    //NSLog(@"----%@",numer);
-    //添加
-    //NSLog(@"===%@,===%@",spCa.skuId,spCa.supplierId);
-    
     NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
     [HttpEngine addGoodsLocation:str withSku:spCa.skuId withSupplier:spCa.supplierId withNumber:numer];
     [self performSelector:@selector(shuaiXin) withObject:numer afterDelay:0.1];
-    
-    
 }
 
-
--(void) refreshCartCount:(NSArray *)array {
-    
-    
-    
-    
+-(void) refreshCartCount:(NSArray *)array
+{
+    UITabBarItem *item = [self.tbBarVC.tabBar.items objectAtIndex:3];
     NSInteger number = 0;
     for (NSInteger i=0; i<array.count; i++) {
         ShopingCar*shCa=array[i];
         number += [shCa.number integerValue];
     }
     if(number>0){
-        [self updateCartCount:[NSString stringWithFormat:@"%ld",number]];
+        //[self updateCartCount:[NSString stringWithFormat:@"%ld",number]];
+        item.badgeValue = [NSString stringWithFormat:@"%ld",number];
     }else{
-        [self updateCartCount:nil];
+        //[self updateCartCount:nil];
+        item.badgeValue=nil;
     }
-
 }
 
 //删除按钮
 -(void)subBtn:(UIButton*)sender
 {
-
 [HttpEngine getSimpleCart:^(NSArray *array)
  {
     _dataArray=array;
@@ -339,8 +309,6 @@
     {
         return;
     }
-    
-
     ShopingCar*spCa=_dataArray[tag];
     NSString*numer=spCa.number;
     numer=[NSString stringWithFormat:@"%lu",[numer integerValue]-1];
@@ -357,9 +325,7 @@
     [HttpEngine getSimpleCart:^(NSArray *array)
      {
          _dataArray=array;
-         
          [self refreshCartCount:array];
-         
          
          float sum=0;
          if (_dataArray.count==0)

@@ -165,17 +165,15 @@
     
   NSDictionary*parameters=@{@"name":name,@"mobile":moblie,@"email":email,@"company":danWei,@"content":other,@"feedback_type":@"2",@"ip":ip};
     
-    [session POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData)
-     {
-         
-     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
+    [session POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          NSLog(@"JSON:%@",responseObject);
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error:%@",error);
-     }];
+    }];
 
 }
 
@@ -184,26 +182,29 @@
 {
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/goods-categories/"];
-    [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         //NSLog(@"产品分类JSON:%@",responseObject);
-         NSArray*array=responseObject[@"results"];
-         NSMutableArray*dataArray=[[NSMutableArray alloc]init];
-         for (int i=0; i<array.count; i++)
-         {
-             AllFlower*allFlower=[[AllFlower alloc]init];
-             NSDictionary*dic=array[i];
-             allFlower.name=[dic[@"name"]copy];
-             allFlower.flowerId=[dic[@"id"]copy];
-             [dataArray addObject:allFlower];
-             
-         }
-         complete(dataArray);
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
-         NSLog(@"Error:%@",error);
-     }];
+    [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        //NSLog(@"产品分类JSON:%@",responseObject);
+        NSArray*array=responseObject[@"results"];
+        NSMutableArray*dataArray=[[NSMutableArray alloc]init];
+        for (int i=0; i<array.count; i++)
+        {
+            AllFlower*allFlower=[[AllFlower alloc]init];
+            NSDictionary*dic=array[i];
+            allFlower.name=[dic[@"name"]copy];
+            allFlower.flowerId=[dic[@"id"]copy];
+            [dataArray addObject:allFlower];
+            
+        }
+        complete(dataArray);
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"Error:%@",error);
+
+    }];
+
+    
 }
 //获取分类属性
 +(void)getProduct:(NSString*)idStr completion:(void(^)(NSArray*dataArray))complete
@@ -211,23 +212,25 @@
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/goods-categories/%@/props/",idStr];
     
-    [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         //NSLog(@"分类属性JSON:%@",responseObject);
-         NSArray*array=responseObject;
-         NSMutableArray*dataArray=[[NSMutableArray alloc]init];
-         for (int i=0; i<array.count; i++)
-         {
-             NSDictionary*dic=array[i];
-             FlowerCatalogue*flower=[FlowerCatalogue getCatalogueDictionary:dic];
-             [dataArray addObject:flower];
-         }
-         complete(dataArray);
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
-         NSLog(@"Error:%@",error);
-     }];
+    [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        //NSLog(@"分类属性JSON:%@",responseObject);
+        NSArray*array=responseObject;
+        NSMutableArray*dataArray=[[NSMutableArray alloc]init];
+        for (int i=0; i<array.count; i++)
+        {
+            NSDictionary*dic=array[i];
+            FlowerCatalogue*flower=[FlowerCatalogue getCatalogueDictionary:dic];
+            [dataArray addObject:flower];
+        }
+        complete(dataArray);
+
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"Error:%@",error);
+    }];
+
+    
 }
 
 //获取产品
@@ -261,27 +264,27 @@
     NSMutableArray*datArray=[[NSMutableArray alloc]init];
     
     MBProgressHUD *hud = [BWCommon getHUD];
+
+    [session GET:str parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [hud removeFromSuperview];
+        NSLog(@"分类产品  JSON:%@",responseObject);
+        NSArray*array=responseObject[@"data"];
+        for (int i=0; i<array.count; i++)
+        {
+            NSDictionary*dic=array[i];
+            FlowerDetail*flow=[FlowerDetail getAllFlowerDictionary:dic];
+            //NSLog(@"~~~~~%@",dic);
+            [datArray addObject:flow];
+        }
+        complete(datArray);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"Error:%@",error);
+        [hud removeFromSuperview];
+    }];
+
     
-    [session GET:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         [hud removeFromSuperview];
-         NSLog(@"分类产品  JSON:%@",responseObject);
-         NSArray*array=responseObject[@"data"];
-         for (int i=0; i<array.count; i++)
-         {
-             NSDictionary*dic=array[i];
-             FlowerDetail*flow=[FlowerDetail getAllFlowerDictionary:dic];
-             //NSLog(@"~~~~~%@",dic);
-             [datArray addObject:flow];
-         }
-         complete(datArray);
-         
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
-         NSLog(@"Error:%@",error);
-         [hud removeFromSuperview];
-     }];
 }
 
 //购物车列表
@@ -299,30 +302,26 @@
     NSString*location=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
     str = [NSString stringWithFormat:@"%@?location=%@",str,location];
     NSLog(@"%@",str);
-    [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         //NSLog(@"123==JSON:%@",responseObject);
-         NSArray*array=responseObject[@"cart_list"];
-         NSMutableArray*dataArray=[[NSMutableArray alloc]init];
-         for (int i=0; i<array.count; i++)
-         {
-             NSDictionary*dic=array[i];
-             ShopingCarDetail*shCa=[ShopingCarDetail ConsumerDetailDictionary:dic];
-             [dataArray addObject:shCa];
-         }
-         complete(responseObject,dataArray,responseObject[@"total_price"],responseObject[@"shipping_fee"],responseObject[@"payment_price"],@"");
-         
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
-         NSLog(@"checkout== Error:%@",error);
-         
+    [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        //NSLog(@"123==JSON:%@",responseObject);
+        NSArray*array=responseObject[@"cart_list"];
+        NSMutableArray*dataArray=[[NSMutableArray alloc]init];
+        for (int i=0; i<array.count; i++)
+        {
+            NSDictionary*dic=array[i];
+            ShopingCarDetail*shCa=[ShopingCarDetail ConsumerDetailDictionary:dic];
+            [dataArray addObject:shCa];
+        }
+        complete(responseObject,dataArray,responseObject[@"total_price"],responseObject[@"shipping_fee"],responseObject[@"payment_price"],@"");
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"checkout== Error:%@",error);
         NSDictionary*userInfo=error.userInfo;
         NSString*errorStr=[self errorData:userInfo];
-         complete(nil,nil,@"",@"",@"",errorStr);
-         
-     }];
+        complete(nil,nil,@"",@"",@"",errorStr);
+    }];
+
     
     
 }
@@ -340,27 +339,24 @@
     NSString*location=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
     str = [NSString stringWithFormat:@"%@?location=%@",str,location];
     
-    [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         NSLog(@"123购物车==JSON:%@",responseObject);
-         //skuName,*price,*number
-         
-         NSArray*array=responseObject;
-         NSMutableArray*dataArray=[[NSMutableArray alloc]init];
-         for (int i=0; i<array.count; i++)
-         {
-             NSDictionary*dic=array[i];
-             ShopingCar*shCa=[ShopingCar ConsumerDetailDictionary:dic];
-             [dataArray addObject:shCa];
-         }
-         complete(dataArray);
-         
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
-         NSLog(@"checkout== Error:%@",error);
-         
-     }];
+    [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"123购物车==JSON:%@",responseObject);
+        //skuName,*price,*number
+        
+        NSArray*array=responseObject;
+        NSMutableArray*dataArray=[[NSMutableArray alloc]init];
+        for (int i=0; i<array.count; i++)
+        {
+            NSDictionary*dic=array[i];
+            ShopingCar*shCa=[ShopingCar ConsumerDetailDictionary:dic];
+            [dataArray addObject:shCa];
+        }
+        complete(dataArray);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"checkout== Error:%@",error);
+    }];
 
 
 }
@@ -381,17 +377,17 @@
     
     NSLog(@"parameters=====%@",parameters);
     
-    [session POST:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         //NSLog(@"JSON:%@",responseObject);
-         [hud removeFromSuperview];
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
-         [hud removeFromSuperview];
-         NSLog(@"Error:%@",error);
-     }];
-    
+    [session POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        //NSLog(@"JSON:%@",responseObject);
+        [hud removeFromSuperview];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [hud removeFromSuperview];
+        NSLog(@"Error:%@",error);
+    }];
 }
 
 //发送短信
@@ -425,19 +421,17 @@
     NSString*pinjie=[NSString stringWithFormat:@"%@|%@|Zaq1Xsw2",mobliePhone,message];
     NSString*token=[pinjie MD5];
     NSDictionary*parameters=@{@"mobile":mobliePhone,@"message":message,@"token":token};
+    
     [manager POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         NSLog(@"JSON: %@", responseObject);
-         
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
-         NSLog(@"12345Error: %@", error);
-
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
         
-     }];
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"JSON: %@", responseObject);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"12345Error: %@", error);
+    }];
+
     
 }
 //查询手机号是否存在
@@ -448,21 +442,21 @@
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/auth/queryUser/"];
     NSString*nameStr=phone;
     NSDictionary*parameters=@{@"username":nameStr};
-    [magager GET:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         NSLog(@"JSON:%@",responseObject);
-         complete(@"true");
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
-         NSLog(@"Error:%@",error);
-         NSDictionary*userInfo=error.userInfo;
+
+    [magager GET:str parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"JSON:%@",responseObject);
+        complete(@"true");
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"Error:%@",error);
+        NSDictionary*userInfo=error.userInfo;
     NSData*data=userInfo[@"com.alamofire.serialization.response.error.data"];
-         NSString*str=[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
-         NSLog(@"str====%@",str);
-         complete(@"false");
-     }];
-    
+        NSString*str=[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"str====%@",str);
+        complete(@"false");
+    }];
+
 }
 
 +(void)queryUser:(NSString *)username with:(void (^)(NSDictionary * dict))complete failure:(void (^)(NSString *))failure{
@@ -471,22 +465,21 @@
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/auth/queryUser/"];
 
     NSDictionary*parameters=@{@"username":username};
-    [magager GET:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         NSLog(@"JSON:%@",responseObject);
-         complete(responseObject);
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
-         NSLog(@"Error:%@",error);
-         NSDictionary*userInfo=error.userInfo;
-         NSData*data=userInfo[@"com.alamofire.serialization.response.error.data"];
-         NSString*str=[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
-         NSLog(@"str====%@",str);
-         //complete(@"false");
-         failure(str);
-     }];
-    
+    [magager GET:str parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"JSON:%@",responseObject);
+        complete(responseObject);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"Error:%@",error);
+        NSDictionary*userInfo=error.userInfo;
+        NSData*data=userInfo[@"com.alamofire.serialization.response.error.data"];
+        NSString*str=[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"str====%@",str);
+        //complete(@"false");
+        failure(str);
+    }];
+
 }
 
 //用户注册
@@ -501,22 +494,24 @@
     //username,password,mobile,reg_ip
     NSDictionary*parameters=@{@"username":username,@"password":password,@"mobile":mobile};
     
-    
     NSLog(@"parameters ==  %@",parameters);
-
-    [session POST:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         NSLog(@"JSON:%@",responseObject);
-         complete(@"true");
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-         NSLog(@"Error:%@",error);
-         NSDictionary*dic=error.userInfo;
-         NSData*data=dic[@"com.alamofire.serialization.response.error.data"];
-         NSString*strr=[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
-         NSLog(@"strr====%@",strr);
-         complete(@"flase");
-     }];
     
+    [session POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"JSON:%@",responseObject);
+        complete(@"true");
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"Error:%@",error);
+        NSDictionary*dic=error.userInfo;
+        NSData*data=dic[@"com.alamofire.serialization.response.error.data"];
+        NSString*strr=[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"strr====%@",strr);
+        complete(@"flase");
+    }];
+
     
 }
 
@@ -529,23 +524,21 @@
     AFHTTPSessionManager*manager=[AFHTTPSessionManager manager];
     NSString *str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/api-token-auth/"];
     NSDictionary*parameters=@{@"username":name,@"password":pas};
+    
     [manager POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         //NSLog(@"JSON: %@", responseObject);
-         NSString*str=responseObject[@"token"];
-         [[NSUserDefaults standardUserDefaults]setObject:str forKey:@"TOKEN_KEY"];
-         [[NSUserDefaults standardUserDefaults]setObject:name forKey:@"NAME"];
-         complete(@"succese");
-         
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
-         complete(@"fail");
-         NSLog(@"Error: %@", error);
-     }];
-    
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        //NSLog(@"JSON: %@", responseObject);
+        NSString*str=responseObject[@"token"];
+        [[NSUserDefaults standardUserDefaults]setObject:str forKey:@"TOKEN_KEY"];
+        [[NSUserDefaults standardUserDefaults]setObject:name forKey:@"NAME"];
+        complete(@"succese");
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        complete(@"fail");
+        NSLog(@"Error: %@", error);
+    }];
 }
 
 //修改密码
@@ -563,24 +556,23 @@
     NSString*token=[pinjie MD5];
     //username,password,mobile,reg_ip
     NSDictionary*parameters=@{@"username":username,@"password":password,@"time":timeSp,@"token":token};
-    
-    
     NSLog(@"parameters ==  %@",parameters);
     
-    [session POST:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         NSLog(@"JSON:%@",responseObject);
-         complete(@"true");
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-         NSLog(@"Error:%@",error);
-         NSDictionary*dic=error.userInfo;
-         NSData*data=dic[@"com.alamofire.serialization.response.error.data"];
-         NSString*strr=[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
-         NSLog(@"strr====%@",strr);
-         complete(@"flase");
-     }];
- 
-
+    [session POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"JSON:%@",responseObject);
+        complete(@"true");
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"Error:%@",error);
+        NSDictionary*dic=error.userInfo;
+        NSData*data=dic[@"com.alamofire.serialization.response.error.data"];
+        NSString*strr=[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"strr====%@",strr);
+        complete(@"flase");
+    }];
 
 }
 
@@ -595,18 +587,15 @@
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/users/userinfo/"];
     [magager.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
     
-    [magager GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         NSLog(@"个人信息＝＝JSON:%@",responseObject);
-         NSString*idStr=responseObject[@"id"];
-         
-         [[NSUserDefaults standardUserDefaults]setObject:idStr forKey:@"ID"];
-         
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
-         NSLog(@"Error:%@",error);
-     }];
+    [magager GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"个人信息＝＝JSON:%@",responseObject);
+        NSString*idStr=responseObject[@"id"];
+        [[NSUserDefaults standardUserDefaults]setObject:idStr forKey:@"ID"];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"Error:%@",error);
+    }];
     
 }
 
@@ -622,26 +611,26 @@
     [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
     
     NSMutableArray*dataArray=[[NSMutableArray alloc]init];
-    [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         NSLog(@"JSON:%@",responseObject);
-         ConsumerDetail*consumer=[[ConsumerDetail alloc]init];
-         consumer.userid=responseObject[@"userid"];
-         consumer.uniqueid=responseObject[@"uniqueid"];
-         //将uniqueid存入本地
-         // [[NSUserDefaults standardUserDefaults]setObject:consumer.userid forKey:@"UNIQUEID"];
-         consumer.realName=responseObject[@"real_name"];
-         consumer.gender=responseObject[@"gender"];
-         consumer.birthday=responseObject[@"birthday"];
-         consumer.mobile=responseObject[@"mobile"];
-         consumer.portrait=responseObject[@"portrait"];
-         [dataArray addObject:consumer];
-         complete(dataArray);
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
+    [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"JSON:%@",responseObject);
+        ConsumerDetail*consumer=[[ConsumerDetail alloc]init];
+        consumer.userid=responseObject[@"userid"];
+        consumer.uniqueid=responseObject[@"uniqueid"];
+        //将uniqueid存入本地
+        // [[NSUserDefaults standardUserDefaults]setObject:consumer.userid forKey:@"UNIQUEID"];
+        consumer.realName=responseObject[@"real_name"];
+        consumer.gender=responseObject[@"gender"];
+        consumer.birthday=responseObject[@"birthday"];
+        consumer.mobile=responseObject[@"mobile"];
+        consumer.portrait=responseObject[@"portrait"];
+        [dataArray addObject:consumer];
+        complete(dataArray);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error:%@",error);
-     }];
+    }];
+
     
 }
 //我的订单
@@ -673,21 +662,19 @@
         parameters=@{@"uniqueid":uniqueidStr,@"full":full,@"page":page,@"page_size":pageSize,@"status":status};
     }
     
-    [session GET:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         
-         NSArray*array=responseObject[@"data"];
-         NSLog(@"array====%@",array);
-         
-         [hud removeFromSuperview];
-         complete(array);
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
-         [hud removeFromSuperview];
-         NSLog(@"Error:%@",error);
-     }];
-    
+    [session GET:str parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSArray*array=responseObject[@"data"];
+        NSLog(@"array====%@",array);
+        
+        [hud removeFromSuperview];
+        complete(array);
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [hud removeFromSuperview];
+        NSLog(@"Error:%@",error);
+    }];
     
 }
 
@@ -703,40 +690,41 @@
     
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/orders/%@/",idStr];
     
-    
-    [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         NSDictionary*dic=responseObject;
-         NSLog(@"dic====%@",dic);
-         complete(dic);
-         
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
+    [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary*dic=responseObject;
+        NSLog(@"dic====%@",dic);
+        complete(dic);
+
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error:%@",error);
-     }];
+    }];
+    
+    
 }
 //再次购买
 +(void)anginBuy:(NSString*)order
 {
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
     
-    
     NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
     NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
     [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
-
+    
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/orders/%@/reorder/",order];
     
-    [session POST:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
+    [session POST:str parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject)
      {
-         NSLog(@"JSON:%@",responseObject);
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-         NSLog(@"Error:%@",error);
-     }];
-
-
+        NSLog(@"Agin==JSON:%@",responseObject);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"Agin==Error:%@",error);
+    }];
+    
 }
 
 //订单提交
@@ -760,13 +748,17 @@
     }
     NSLog(@"parameters==%@",parameters);
     
-    [session POST:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-    {
+    [session POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary*dic=responseObject;
         complete(dic);
-    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"Error:%@",error);
     }];
+    
 }
 //订单支付
 +(void)payOrderNum:(NSString*)num withSpaypassword:(NSString*)spaypassword withMethod:(NSString*)method withCoupon:(NSString*)couponNo Completion:(void(^)(NSString*orderNo,NSString*price))complete
@@ -785,15 +777,17 @@
     {
         parameter=@{@"method":method,@"spaypassword":@"",@"coupon_no":couponNo};
     }
-    [session POST:str parameters:parameter success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         NSLog(@"JSON:%@",responseObject);
-         complete(responseObject[@"out_trade_no"],responseObject[@"payment_price"]);
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-         NSLog(@"Error:%@",error);
-     }];
 
+    [session POST:str parameters:parameter constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+       // NSLog(@"JSON:%@",responseObject);
+        complete(responseObject[@"out_trade_no"],responseObject[@"payment_price"]);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+           NSLog(@"Error:%@",error);
+    }];
 }
 
 //编辑个人资料
@@ -847,16 +841,14 @@
     formatter.dateFormat = @"yyyyMMddHHmmss";
     NSString *strr = [formatter stringFromDate:[NSDate date]];
     NSString *fileName = [NSString stringWithFormat:@"%@.jpg", strr];
-    
-    [manager POST:str parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData)
-    {
-        
-        [formData appendPartWithFileData:data name:@"file" fileName:fileName mimeType:@"image/jpeg"];
-        
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        NSLog(@"pic===JSON:%@",responseObject);
-    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+
+    [manager POST:str parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+      [formData appendPartWithFileData:data name:@"file" fileName:fileName mimeType:@"image/jpeg"];
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+      
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+       NSLog(@"pic===JSON:%@",responseObject);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"Error:%@",error);
     }];
 
@@ -874,23 +866,23 @@
     
     [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
     
-    [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         NSLog(@"JSON:%@",responseObject);
-         NSMutableArray*dataArray=[[NSMutableArray alloc]init];
-         NSArray*array=responseObject;
-         for (int i=0; i<array.count; i++)
-         {
-             NSDictionary*dic=array[i];
-             AllAdress*adress=[AllAdress ConsumerDetailDictionary:dic];
-             [dataArray addObject:adress];
-         }
-         complete(dataArray);
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+    [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"JSON:%@",responseObject);
+        NSMutableArray*dataArray=[[NSMutableArray alloc]init];
+        NSArray*array=responseObject;
+        for (int i=0; i<array.count; i++)
+        {
+            NSDictionary*dic=array[i];
+            AllAdress*adress=[AllAdress ConsumerDetailDictionary:dic];
+            [dataArray addObject:adress];
+        }
+        complete(dataArray);
+
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error:%@",error);
-     }];
-    
+    }];
     
 }
 //地址编辑
@@ -937,12 +929,13 @@
     
     [manager POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSLog(@"JSON:%@",responseObject);
-    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"Error:%@",error);
     }];
-    
 }
 //地址删除
 +(void)deleteAddress:(NSString*)addrId
@@ -1000,14 +993,14 @@
     
     [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
     
-    [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         //NSLog(@"默认地址－－JSON:%@",responseObject);
-         complete(responseObject);    
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+    [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        //NSLog(@"默认地址－－JSON:%@",responseObject);
+        complete(responseObject);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error:%@",error);
-     }];
+    }];
 
 }
 
@@ -1023,18 +1016,16 @@
     
     NSDictionary*parameters=@{@"status":status};
     
-    [session GET:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         NSLog(@"购物车 JSON:%@",responseObject);
-         NSArray*array=responseObject;
-         complete(array);
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
-         NSLog(@"Error:%@",error);
-         complete(nil);
-     }];
-    
+    [session GET:str parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"购物车 JSON:%@",responseObject);
+        NSArray*array=responseObject;
+        complete(array);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"Error:%@",error);
+        complete(nil);
+    }];
     
 }
 
@@ -1049,17 +1040,16 @@
     NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
     [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
     
-    [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         NSLog(@"购物车 JSON:%@",responseObject);
-         NSDictionary*dic=responseObject;
-         NSLog(@"dic===%@",dic);
-         complete(dic);
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
+    [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        //NSLog(@"JSON:%@",responseObject);
+        NSDictionary*dic=responseObject;
+        //NSLog(@"dic===%@",dic);
+        complete(dic);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error:%@",error);
-     }];
+    }];
 }
 //amount,method
 //花集余额充值
@@ -1076,30 +1066,32 @@
     
     NSDictionary*parameters=@{@"amount":amount,@"method":method};
     
-    [session POST:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         NSLog(@"JSON:%@",responseObject);
-         
-         complete(responseObject);
-
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+    [session POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"JSON:%@",responseObject);
+        
+        complete(responseObject);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error:%@",error);
-     }];
+    }];
 }
 
 +(void)wxPayRequest:(NSString *)out_trade_no completion:(void (^)(NSDictionary *))complete{
     
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
     NSString*str=[NSString stringWithFormat:@"http://weixin.huaji.com/app_payment/handle/app.php?out_trade_no=%@",out_trade_no];
-    
-    [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
+
+    [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         complete(responseObject);
-         
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error:%@",error);
-     }];
+    }];
+    
 }
 
 //我的售后
@@ -1112,23 +1104,25 @@
     NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
     [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
     
-    [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         NSLog(@"售后 JSON:%@",responseObject);
-         
-         NSMutableArray*dataArray=[[NSMutableArray alloc]init];
-         NSArray*resultArray=responseObject[@"results"];
-         for (int i=0; i<resultArray.count; i++)
-         {
-             NSDictionary*dic=resultArray[i];
-             ComplainServe*com=[ComplainServe ConsumerDetailDictionary:dic];
-             [dataArray addObject:com];
-         }
-         complete(dataArray);
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
-         NSLog(@"Error:%@",error);
-     }];
+    [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"售后 JSON:%@",responseObject);
+        
+        NSMutableArray*dataArray=[[NSMutableArray alloc]init];
+        NSArray*resultArray=responseObject[@"results"];
+        for (int i=0; i<resultArray.count; i++)
+        {
+            NSDictionary*dic=resultArray[i];
+            ComplainServe*com=[ComplainServe ConsumerDetailDictionary:dic];
+            [dataArray addObject:com];
+        }
+        complete(dataArray);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"Error:%@",error);
+    }];
+    
+    
 }
 //消息中心
 +(void)messageCentercompletion:(void(^)(NSArray*dataArray))complete
@@ -1139,15 +1133,14 @@
     NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
     [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
     
-    [session GET:str parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
-     {
-         NSLog(@"消息 JSON:%@",responseObject);
-         
-         complete(responseObject);
-     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
-     {
+    [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"消息 JSON:%@",responseObject);
+        complete(responseObject);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error:%@",error);
-     }];
+    }];
 
 }
 
