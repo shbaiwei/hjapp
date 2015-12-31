@@ -62,7 +62,6 @@
 //广告图
 +(void)getPictureWithTime:(NSString*)time with:(void(^)(NSArray*dataArray))complete
 {
-    
     MBProgressHUD *hud = [BWCommon getHUD];
     NSDate *now = [NSDate date];
     NSDateFormatter *dformat = [[NSDateFormatter alloc] init];

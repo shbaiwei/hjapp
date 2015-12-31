@@ -34,7 +34,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>weixin</string>
+			<string>Wechat</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>wxf454e1c4757a9d2b</string>

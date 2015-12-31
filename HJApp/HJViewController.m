@@ -25,7 +25,8 @@
 #define LBVIEW_HEIGHT1 [UIScreen mainScreen].bounds.size.height
 @implementation HJViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     
     [self.tabBarVC setDelegate:self];

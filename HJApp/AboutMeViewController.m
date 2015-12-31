@@ -447,11 +447,4 @@
     [self.view endEditing:YES];
      _tableView.frame=CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-64);
 }
-
-//键盘下去
-//-(void)keyDown
-//{
-//    _tableView.frame=CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-64-216);
-//    [_trueNameTF resignFirstResponder];
-//}
 @end
