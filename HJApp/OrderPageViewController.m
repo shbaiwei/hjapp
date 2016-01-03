@@ -39,6 +39,7 @@
 
 @property(nonatomic,strong)UITableView *paymentTableView;
 
+@property(nonatomic,unsafe_unretained)BOOL isBool;
 @end
 
 
@@ -55,36 +56,16 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     self.navigationController.navigationBarHidden=YES;
-    //self.navigationController.navigationBar.translucent=NO;
-    
-    NSString*login=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
-    if (!login)
-    {
-        UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(20, LBVIEW_HEIGHT1/3, LBVIEW_WIDTH1-20, 20)];
-        label.text=@"登录后，可查看自己的订单详情";
-        label.textColor=[UIColor grayColor];
-        label.textAlignment=NSTextAlignmentCenter;
-        label.font=[UIFont systemFontOfSize:12];
-        [self.view addSubview:label];
         
-        NSArray*nameArray=[[NSArray alloc]initWithObjects:@"注册", @"登录",nil];
-        for (int i=0; i<2; i++)
+    HJViewController*hj=[[HJViewController alloc]init];
+    if (!_isBool)
+    {
+        _isBool=YES;
+        if ([hj isLogin:self withTitle:@"登录后，可查看自己的订单详情"  with:1])
         {
-            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(40+i*(LBVIEW_WIDTH1-60)/2, LBVIEW_HEIGHT1/3+90,(LBVIEW_WIDTH1-100)/2, 40)];
-            btn.layer.borderColor=[UIColor grayColor].CGColor;
-            btn.layer.borderWidth=1;
-            [btn setTitle:nameArray[i] forState:UIControlStateNormal];
-            btn.titleLabel.font=[UIFont systemFontOfSize:14];
-            [btn setTitleColor:[UIColor colorWithRed:255/255.0 green:164/255.0 blue:100/255.0 alpha:1] forState:UIControlStateNormal];
-            [btn addTarget:self action:@selector(loginRegister:) forControlEvents:UIControlEventTouchUpInside];
-            btn.tag=332+i;
-            btn.layer.cornerRadius=5;
-            btn.clipsToBounds=YES;
-            [self.view addSubview:btn];
+            return;
         }
-          return;
     }
-    
     
     //获取上个页面所选取的种类
     _chooseValue=[[NSUserDefaults standardUserDefaults]objectForKey:@"THREETAG"];
@@ -112,36 +93,13 @@
     _pageNum=10;
 }
 
-//切换到登陆
--(void)loginRegister:(UIButton*)sender
-{
-    if (sender.tag==333)
-    {
-        LoginViewController*loginVC=[[LoginViewController alloc]init];
-        [self.navigationController pushViewController:loginVC animated:YES];
-    }
-    else
-    {
-        RegisterViewController*registerVC=[[RegisterViewController alloc]init];
-        [self.navigationController pushViewController:registerVC animated:YES];
-    }
-
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     _pay_type = 0;
-  
     UIView*headView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1,64)];
     headView.backgroundColor=[UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1];
     [self.view addSubview:headView];
-    
-//    UIButton*backBtn=[[UIButton alloc]initWithFrame:CGRectMake(10, 30, 50, 20)];
-//    [backBtn setTitle:@"返回" forState:UIControlStateNormal];
-//    [backBtn addTarget:self action:@selector(backBtn) forControlEvents:UIControlEventTouchUpInside];
-//    [headView addSubview:backBtn];
     
     //我的订单
     _myOrderBtn=[[MyButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.3, 25, LBVIEW_WIDTH1*0.4, 30)];
@@ -172,9 +130,7 @@
     {
         return;
     }
-    
     __weak OrderPageViewController *weakSelf = self;
-    
     [HttpEngine myOrder:@"1" with:@"1" with:@"10" with:@"" completion:^(NSArray *dataArray)
      {
          _dataArray=dataArray;
@@ -209,14 +165,17 @@
 
 }
 
-//-(void)backBtn
-//{
-//    MyHJViewController*myHJVC=[[MyHJViewController alloc]init];
-//    [self.navigationController pushViewController:myHJVC animated:YES];
-//}
-
 -(void)myOrderBtnClick
 {
+    NSString*login=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+    if (!login)
+    {
+        LoginViewController*loginVC=[[LoginViewController alloc]init];
+        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginVC];
+        [self presentViewController:navigationController animated:YES completion:nil];
+        return;
+    }
+    
     _stausBtn.selected=!_stausBtn.selected;
     if (_myOrderBtn.isOpen==NO)
     {
@@ -420,7 +379,12 @@
     
     
     UILabel *dNamelable=[[UILabel alloc]initWithFrame:CGRectMake(20+LBVIEW_HEIGHT1*0.025, 15, 100,20)];
-    dNamelable.text=dic[@"to_florist_name"];
+    NSString*str=dic[@"to_florist_name"];
+    if (str.length>4)
+    {
+        str=[str substringToIndex:4];
+    }
+    dNamelable.text=str;
     dNamelable.font=[UIFont systemFontOfSize:14];
     //dNamelable.textAlignment=NSTextAlignmentCenter;
     dNamelable.backgroundColor=[UIColor clearColor];
@@ -500,7 +464,7 @@
     order.recvMobile=dic[@"recv_mobile"];
     order.recvAddress=dic[@"recv_address"];
     order.orderPrice=dic[@"order_price"];
-    order.preferMoney=dic[@"prefer_money"];
+    order.preferMoney=dic[@"addon_price"];
     order.discountPrice=dic[@"discount_price"];
     order.paymentPrice=dic[@"payment_price"];
     order.dataArray=dic[@"detail"];
@@ -529,9 +493,7 @@
         return view;
     }
     NSDictionary*dic=_dataArray[section];
-    // NSLog(@"_dataArray[5]==%@",_dataArray[0]);
     NSArray*detailArray=dic[@"detail"];
-    
     
     view.backgroundColor=[UIColor whiteColor];
     
@@ -554,8 +516,8 @@
     priceLable.font=font1;
     [view addSubview:priceLable];
     
-    UILabel *freeLable=[[UILabel alloc]initWithFrame:CGRectMake(10+size.width+size1.width, 10, 80,20)];
-    freeLable.text=@"(含运费¥0.00)";
+    UILabel *freeLable=[[UILabel alloc]initWithFrame:CGRectMake(10+size.width+size1.width, 10, 100,20)];
+    freeLable.text=[NSString stringWithFormat:@"(含配送费%@)",dic[@"addon_price"]];
     freeLable.textColor=[UIColor grayColor];
     freeLable.font=[UIFont systemFontOfSize:12];
     [view addSubview:freeLable];
@@ -566,7 +528,7 @@
     btn.layer.borderWidth=1;
     btn.layer.cornerRadius=5;
     btn.clipsToBounds=YES;
-    btn.titleLabel.font=[UIFont systemFontOfSize:14];
+    btn.titleLabel.font=[UIFont systemFontOfSize:12];
     btn.frame=CGRectMake(LBVIEW_WIDTH1-80, LBVIEW_HEIGHT1*0.1-30, 70, 25);
     
     int status=[dic[@"status"] intValue];
@@ -577,28 +539,26 @@
         [view addSubview:btn];
     }
     else
-    {
-       //[btn setTitle:@"再次购买" forState:UIControlStateNormal];
-        //[btn addTarget:self action:@selector(reorder:) forControlEvents:UIControlEventTouchUpInside];
-    }
-
+        if (status==5)
+        {
+            [btn setTitle:@"再次购买" forState:UIControlStateNormal];
+            [btn addTarget:self action:@selector(reorder:) forControlEvents:UIControlEventTouchUpInside];
+            [view addSubview:btn];
+        }
     [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     btn.tag=section+500;
     btn.status=status;
     
-    
-    
     return view;
 }
 
--(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-
-        //UITableViewCell *cell=[tableView cellForRowAtIndexPath:indexPath];
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    //UITableViewCell *cell=[tableView cellForRowAtIndexPath:indexPath];
     if([tableView isEqual:self.paymentTableView]){
         _pay_type = (int)indexPath.row;
         [self.paymentTableView reloadData];
     }
-
 }
 
 -(void) payorder:(MyButton *)sender{
@@ -607,64 +567,17 @@
 //再次购买
 -(void)reorder:(MyButton*)sender{
 
-    //self.tabBarVC.selectedIndex=4;
-            NSDictionary*dic=_dataArray[sender.tag-500];
-            NSArray*array=dic[@"detail"];
-            NSDictionary*dicc=array[0];
-            NSLog(@"dicc[order_no]===%@",dicc[@"order_no"]);
-            [HttpEngine anginBuy:dicc[@"order_no"]];
-            
-    
+    NSDictionary*dic=_dataArray[sender.tag-500];
+    NSArray*array=dic[@"detail"];
+    NSDictionary*dicc=array[0];
+    NSLog(@"dicc[order_no]===%@",dicc[@"order_no"]);
+    [HttpEngine anginBuy:dicc[@"order_no"]];
+    self.tbBarVC.selectedIndex=3;
 }
 
 -(void)gotoPayOrder:(NSInteger)tag
 {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"\n\n\n\n\n\n" message:nil preferredStyle:UIAlertControllerStyleAlert];
-    
-    //CGRect frame = self.paymentTableView.frame;
-    //frame.size.width = alertController.view.bounds.size.width;
-    //self.paymentTableView.frame = frame;
-    
-    
-     //NSArray*array=[[NSArray alloc]initWithObjects:@"花集余额",@"支付宝",@"微信支付", nil];
-    
-    /*for (int i=0; i<5; i++)
-    {
-        if (i==0)
-        {
-            UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, 0, LBVIEW_WIDTH1*0.8-20, LBVIEW_HEIGHT1*0.5/5)];
-            label.text=@"选择支付方式";
-            label.font=[UIFont systemFontOfSize:14];
-            [alertController.view addSubview:label];
-        }else
-        if (i==4)
-        {
-            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.3, LBVIEW_HEIGHT1*0.4/5*4, LBVIEW_WIDTH1*0.2, 20)];
-            [btn setTitle:@"去支付" forState:UIControlStateNormal];
-             [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            btn.layer.borderColor=[UIColor grayColor].CGColor;
-            btn.layer.borderWidth=1;
-            btn.layer.cornerRadius=5;
-            btn.clipsToBounds=YES;
-            [btn addTarget:self action:@selector(btnpay:) forControlEvents:UIControlEventTouchUpInside];
-            btn.titleLabel.font=[UIFont systemFontOfSize:14];
-            btn.tag=str;
-            [alertController.view addSubview:btn];
-        }else
-        {
-            UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(40,(LBVIEW_HEIGHT1*0.4/5-1)*i, 100, LBVIEW_HEIGHT1*0.4/4)];
-            label.text=array[i-1];
-            label.font=[UIFont systemFontOfSize:14];
-            [_shadowV addSubview:label];
-            UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(10, (LBVIEW_HEIGHT1*0.4/5-20)/2+LBVIEW_HEIGHT1*0.4/5*i, 20, 20)];
-            image.image=[UIImage imageNamed:[NSString stringWithFormat:@"pay1-%d.png",i]];
-            [alertController.view addSubview:image];
-
-            
-  
-        }
-        
-    }*/
     [alertController.view addSubview:self.paymentTableView];
     
     UIAlertAction*cancelAction=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action){
@@ -714,13 +627,10 @@
                                              }];
                        
                                         }];
-        
         [alertController addAction:cancelAction];
         [alertController addAction:confirmAction];
         
         [self presentViewController:alertController animated:YES completion:nil];
-        
-       
     }
     if (_pay_type==1)
     {
@@ -732,9 +642,6 @@
                   
               }];
          }];
-        
-            
-    
     }
     if (_pay_type==2)
     {
@@ -743,8 +650,6 @@
              [self WeiXinPay:orderNo];
         }];
     }
-    
-
 }
 -(void)ay:(UIButton*)sender
 {
@@ -755,7 +660,5 @@
         btn.selected=NO;
     }
     _lastTag=(int)sender.tag;
-    
-   
 }
 @end

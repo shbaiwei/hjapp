@@ -44,7 +44,7 @@
     
     self.navigationController.navigationBarHidden=NO;
     self.navigationController.navigationBar.translucent=NO;
-    self.title=@"登陆";
+    self.title=@"登录";
     
     self.view=[[UIView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1)];
     self.view.backgroundColor=[UIColor whiteColor];
@@ -67,7 +67,7 @@
 //    [self.view addSubview:backBtn];
     
     //输入框和登陆注册按钮
-    NSArray*labelNameArray=[[NSArray alloc]initWithObjects:@"账户名",@"登陆密码", nil];
+    NSArray*labelNameArray=[[NSArray alloc]initWithObjects:@"账户名",@"登录密码", nil];
     NSArray*tfNameArray=[[NSArray alloc]initWithObjects:@"请输入帐号",@"请输入密码",nil];
     NSArray*btnNameArray=[[NSArray alloc]initWithObjects:@"登录",@"注册" ,nil];
     for (int i=0; i<2; i++)
@@ -86,10 +86,14 @@
         [view addSubview:label];
         
         UITextField*field=[[UITextField alloc]initWithFrame:CGRectMake(20+LBVIEW_WIDTH1/4.5, 0, view.frame.size.width-label.frame.size.width-20, LBVIEW_HEIGHT1/15.0)];
+        if (i==0)
+        {
+            NSString*nameStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"NAME"];
+            field.text=nameStr;
+        }
         field.placeholder=tfNameArray[i];
         field.font=[UIFont systemFontOfSize:16];
         field.clearsOnBeginEditing=YES;
-        //field.borderStyle=UITextBorderStyleBezel;
         if (i==1)
         {
             field.secureTextEntry=YES;
@@ -136,19 +140,10 @@
     [self.navigationController pushViewController:forgetVC animated:NO];
 
 }
-
 - (void) closeTouched:(UIBarButtonItem *) sender{
     
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
-
-//取消按钮
-//-(void)backBtn:(UIButton*)sender
-//{
-//    FlashViewController*flashVC=[[FlashViewController alloc]init];
-//    [self.navigationController pushViewController:flashVC animated:YES];
-//    
-//}
 //登陆注册按钮
 -(void)lgBtnClick:(UIButton*)sender
 {
@@ -228,19 +223,11 @@
     //注册
     else
     {
-        
-        
         RegisterViewController*registerVC=[[RegisterViewController alloc]init];
-        [self.navigationController pushViewController:registerVC animated:YES];
+        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:registerVC];
+        [self presentViewController:navigationController animated:YES completion:nil];
         
-        
-//        [HttpEngine getConsumerDetailData:^(NSArray *dataArray) {
-//            
-//        }];
-//        NSLog(@"zhuce");
     }
 }
-
-
 
 @end

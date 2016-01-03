@@ -57,14 +57,30 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationController.navigationBarHidden=NO;
     self.navigationController.navigationBar.translucent=NO;
+    self.navigationController.navigationBarHidden=NO;
+    
+    self.navigationController.navigationBar.barStyle = UIStatusBarStyleDefault;
+    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor ]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1]];
+    
+    NSDictionary * dict=[NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
+    [self.navigationController.navigationBar setTitleTextAttributes:dict];
+    
+    UIBarButtonItem *closeItem = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(closeTouched:)];
+    self.navigationItem.leftBarButtonItem = closeItem;
+    
     
     self.title = @"注册";
     self.view.backgroundColor = [UIColor whiteColor];
     
     [self registerPage];
     
+}
+
+- (void) closeTouched:(UIBarButtonItem *) sender{
+    
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)keybordHide:(UITapGestureRecognizer *)tap
@@ -366,7 +382,7 @@
                                  {
                                      if (tag==2)
                                      {
-                                          [self.navigationController popViewControllerAnimated:YES];
+                                        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
                                      }
                
                                  }];

@@ -10,4 +10,5 @@
 
 @interface ComplainViewController : UIViewController
 
+@property(nonatomic,strong)UITabBarController*tabBarVC;
 @end

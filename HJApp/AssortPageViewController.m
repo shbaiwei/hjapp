@@ -85,27 +85,12 @@ NSString *locatioanStr;
     self.navigationController.navigationBar.translucent =NO;
     self.navigationItem.hidesBackButton=YES;
     self.title=@"选择品类";
-    //[self hidesTabBar:NO];
-    
     [HttpEngine getAllFlower:^(NSArray *dataArray)
      {
          //左Uitableview
          _floerNameArray=dataArray;
          [self judgeIsTag];
      }];
-    
-
-    
-    //获取购物车物品总数量
-//    [HttpEngine getSimpleCart:^(NSArray *array) {
-//        int num=0;
-//                for (int i=0; i<array.count; i++)
-//               {
-//                    ShopingCar*shCar=array[i];
-//                    num=[shCar.number intValue]+num;
-//               }
-//                _numLabel.text=[NSString stringWithFormat:@"%d",num];
-//    }];
 
     if(!_leftTableV)
     {
@@ -117,20 +102,16 @@ NSString *locatioanStr;
              [self showLeftTableView];
             // [self getRightData];
          }];
-
     }
-    
     if(!_rightTableV)
     {
       [self performSelector:@selector(getRightData) withObject:nil afterDelay:0.5];
     }
-    
     [HttpEngine getSimpleCart:^(NSArray *array)
      {
         _cartList = [array mutableCopy];
      }];
 }
-
 -(void)judgeIsTag
 {
     [self delayGetProduct];
@@ -142,14 +123,10 @@ NSString *locatioanStr;
         //_isTag=[isTagStr intValue];
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"TWOTAG"];
         //NSLog(@"_isTag===%d",_isTag);
-        
         page = 1;
         [self loadDetailData];
-        
     }
-
 }
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -157,25 +134,18 @@ NSString *locatioanStr;
     self.view.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     
     //_addNum=0;
-    
     page=1;
-    
     cid = @"1";
-    
     _cartList = [[NSMutableArray alloc] init];
-    
-    
-    
+   
 }
 
 //获取右边tableview数据
 -(void)getRightData
 {
     [self showRightTableView];
-    
     page = 1;
     [self loadDetailData];
-    
 }
 
 //获取分类栏属性
@@ -257,14 +227,11 @@ NSString *locatioanStr;
 //分类栏收缩
 -(void)shouSuo
 {
-    
-    
     if (_chooseBtn.isOpen==NO)
     {
         [_chooseBtn setTitle:@"收起筛选" forState:UIControlStateNormal];
         _headView=[[UIView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3.5, 70, LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5, 30*_catalogueArray.count)];
         _headView.backgroundColor=[UIColor whiteColor];
-        
         
         for (int i=1; i<_catalogueArray.count; i++)
         {
@@ -280,11 +247,8 @@ NSString *locatioanStr;
             btnScrollView.contentSize=CGSizeMake(65*flower.catalogueArray.count+40, 20);
             btnScrollView.showsHorizontalScrollIndicator=NO;
             btnScrollView.bounces=NO;
-            
             btnScrollView.tag=100+i;
-            
             [_headView addSubview:btnScrollView];
-            
             
             for (int j=0; j<flower.catalogueArray.count; j++)
             {
@@ -327,18 +291,14 @@ NSString *locatioanStr;
         _rightTableV.frame=CGRectMake(LBVIEW_WIDTH1/3.5, 80, 5*LBVIEW_WIDTH1/6, LBVIEW_HEIGHT1-80-113);
         [_headView removeFromSuperview];
     }
-    
     _chooseBtn.isOpen=!_chooseBtn.isOpen;
-    
     
 }
 
 -(void) setBottomBorder:(UIView *)view color:(UIColor *)color{
     
     [view sizeToFit];
-    
     CALayer* layer = [view layer];
-    
     CALayer *bottomBorder = [CALayer layer];
     bottomBorder.borderWidth = 1;
     bottomBorder.frame = CGRectMake(-1, layer.frame.size.height, layer.frame.size.width, 1);
@@ -1058,7 +1018,8 @@ NSString *locatioanStr;
     if (!login)
     {
         LoginViewController*loginVC=[[LoginViewController alloc]init];
-        [self.navigationController pushViewController:loginVC animated:YES];
+        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginVC];
+        [self presentViewController:navigationController animated:YES completion:nil];
     }
    // sender.selected=!sender.selected;
     _isOpen[sender.tag]=!_isOpen[sender.tag];

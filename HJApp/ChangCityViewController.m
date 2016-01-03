@@ -51,7 +51,6 @@
     [self.view addSubview:scrollView];
     
     UILabel*chooseCityLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 60)];
-    
     chooseCityLabel.text=[[NSUserDefaults standardUserDefaults]objectForKey:@"CITYNAME"];
     chooseCityLabel.textAlignment=NSTextAlignmentCenter;
     chooseCityLabel.textColor=[UIColor redColor];

@@ -30,15 +30,10 @@
     if(str==NULL)
     {
         UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"请登陆后反馈" preferredStyle: UIAlertControllerStyleAlert];
-        UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
-                              {
-                                  [self.navigationController popViewControllerAnimated:YES];
-                              }];
         UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
                                      {
                                   [self.navigationController popViewControllerAnimated:YES];
                                      }];
-        [alert addAction:cancel];
         [alert addAction:defaultAction];
         [self presentViewController:alert animated:YES completion:nil];
     

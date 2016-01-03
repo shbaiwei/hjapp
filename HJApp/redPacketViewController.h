@@ -13,4 +13,5 @@
 
 @property(nonatomic,strong)PayViewController*payVC;
 @property(nonatomic,strong)NSArray*dataArray;
+@property(nonatomic,copy)NSString*payPrice;
 @end

@@ -12,4 +12,5 @@
 @interface OrderPageViewController : HJViewController<UITableViewDataSource,UITableViewDelegate>
 
 @property(nonatomic,copy)NSString* chooseValue;
+@property(nonatomic,strong)UITabBarController*tbBarVC;
 @end

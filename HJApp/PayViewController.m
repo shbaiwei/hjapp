@@ -19,9 +19,11 @@
 #import "PayTableViewCell.h"
 #import "WxApi.h"
 #import "OrderPageViewController.h"
+#import "ChangCityViewController.h"
 
 
 @interface PayViewController () <UIScrollViewDelegate>
+
 @property(nonatomic,strong)UITableView*tableView;
 @property(nonatomic,strong)NSArray*payStyleArray;
 @property(nonatomic,strong)NSArray*orderArray;
@@ -43,8 +45,6 @@
 
 @property(nonatomic,unsafe_unretained)BOOL show_deadline;
 @property(nonatomic,unsafe_unretained)BOOL self_pickup;
-
-
 
 //送货方式
 @property(nonatomic,strong)UIView*shadView;
@@ -69,7 +69,12 @@
 @property(nonatomic,strong)NSArray*redArray;
 @property(nonatomic,strong)UILabel*redLabel;
 @property(nonatomic,copy)NSString*redStr;
+@property(nonatomic,copy)NSString*preferNo;
+@property(nonatomic,copy)NSString*priceRed;
 
+@property(nonatomic,copy)NSString*defaultPayPrice;
+@property(nonatomic,unsafe_unretained)int ttPrice;
+@property(nonatomic,strong)UILabel*ttLabel;
 
 @end
 
@@ -83,7 +88,7 @@ NSInteger pay_type;
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    //判断是否返回错误信息
+    //判断是否返回错误信息（用来防止某些时间段不能付款）
     [HttpEngine getCart:^(NSDictionary*allDic,NSArray *dataArray, NSString *totalPrice, NSString *shippingFee, NSString *paymentPrice,NSString*error)
      {
          if ([error isEqualToString:@""])
@@ -92,6 +97,11 @@ NSInteger pay_type;
          }
          
      }];
+
+    if (_defaultPayPrice)
+    {
+        _paymentPrice=_defaultPayPrice;
+    }
     
     //返回配送方式
     if (_isTag==10)
@@ -112,16 +122,21 @@ NSInteger pay_type;
         }
     }
     //返回配送红包
-    if(_isTagRedPacket!=nil)
+    if(![_isTagRedPacket isEqualToString:@""])
     {
-        _redStr=_isTagRedPacket;
+        _redStr=[NSString stringWithFormat:@"%@元红包",_isTagRedPacket];
+        _priceRed=[_isTagRedPacket substringToIndex:2];
+        _ttPrice=[_paymentPrice intValue]-[_priceRed intValue];
+        _ttLabel.text=[NSString stringWithFormat:@"¥%d.00",_ttPrice];
+        _paymentPrice=[NSString stringWithFormat:@"%d",_ttPrice];
+        _preferNo=_couponNo;
+
     }
     
     if([WXApi isWXAppInstalled]) // 判断 用户是否安装微信
     {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getOrderPayResult:) name:@"order_pay_notification" object:nil];//监听一个通知
     }
-
 }
 
 #pragma mark - 通知信息
@@ -145,27 +160,12 @@ NSInteger pay_type;
     [HttpEngine getDefaultAddress:^(NSDictionary*dataDic)
      {
          _defaultAddressDic=dataDic;
-         
          _addrId = [NSString stringWithFormat:@"%@",_defaultAddressDic[@"addr_id"]];
-         NSLog(@"_defaultAddressArray==%@",_defaultAddressDic);
-         //[self judgeIsNull];
+         //NSLog(@"_defaultAddressArray==%@",_defaultAddressDic);
          [self judgeCity];
          [_tableView reloadData];
      }];
 }
-
-//-(void)judgeIsNull
-//{
-//    if (_defaultAddressDic.count==0)
-//    {
-//        [HttpEngine getAddress:^(NSArray *dataArray)
-//         {
-//             NSArray*array=dataArray;
-//             _defaultAddressDic=array[array.count-1];
-//             [_tableView reloadData];
-//        }];
-//    }
-//}
 
 -(void)judgeCity
 {
@@ -175,18 +175,21 @@ NSInteger pay_type;
     
     NSArray *allowed_regions = [[[NSUserDefaults standardUserDefaults]objectForKey:@"ALLOWED_REGIONS"] componentsSeparatedByString:@","];
     
-    
     NSString*location=[NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"]];
-    
-
+    //判断有没有选择城市
+    NSString*code=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
+    if (!code)
+    {
+        [self alert];
+        return;
+    }
     NSString *errorMessage = @"";
-    if (provinceCode != location && cityCode != location)
+    if (![provinceCode isEqualToString:location]&&![cityCode isEqualToString:location])
     {
         errorMessage = [NSString stringWithFormat:@"收货地址不在当前选中的城市中。\n可配送区域\n%@",[[NSUserDefaults standardUserDefaults]objectForKey:@"ALLOWED_REGIONS_NAME"]];
     }
     else if(![allowed_regions containsObject:townCode] && ![allowed_regions containsObject:cityCode])
     {
-        //errorMessage = @"收货地址所在区域暂未开通配送服务。\n 可配送区域\n";
         errorMessage = [NSString stringWithFormat:@"收货地址所在区域暂未开通配送服务。\n可配送区域\n%@",[[NSUserDefaults standardUserDefaults]objectForKey:@"ALLOWED_REGIONS_NAME"]];
     }
     
@@ -212,6 +215,25 @@ NSInteger pay_type;
 
 }
 
+//选择默认城市
+-(void)alert
+{
+    UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"您还未选择城市" preferredStyle: UIAlertControllerStyleAlert];
+    UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
+                          {
+                              
+                          }];
+    UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"前往" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
+                                 {
+                                     ChangCityViewController*changVC=[[ChangCityViewController alloc]init];
+                                     changVC.hidesBottomBarWhenPushed=YES;
+                                     [self.navigationController pushViewController:changVC animated:YES];
+                                 }];
+    [alert addAction:cancel];
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -221,14 +243,19 @@ NSInteger pay_type;
     _isTagRedPacket = @"";
     _password = @"";
     
+    if (!_priceRed)
+    {
+        _priceRed=@"0";
+    }
+    
     MBProgressHUD *hud = [BWCommon getHUD];
+    //获取错误信息  防止时间段不供应
     [HttpEngine getCart:^(NSDictionary*allDic,NSArray *dataArray, NSString *totalPrice, NSString *shippingFee, NSString *paymentPrice,NSString*error)
     {
-        [hud removeFromSuperview];
+             [hud removeFromSuperview];
              if (![error isEqualToString:@""])
              {
                  UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:error preferredStyle: UIAlertControllerStyleAlert];
-                 
                  UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action)
                                               {
                                                   [self.navigationController popViewControllerAnimated:YES];
@@ -236,11 +263,9 @@ NSInteger pay_type;
                  UIAlertAction*cancal=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
                      [self.navigationController popViewControllerAnimated:YES];
                  }];
-                 
                  [alert addAction:defaultAction];
                  [alert addAction:cancal];
                  [self presentViewController:alert animated:YES completion:nil];
-                 
                  return ;
              }
 
@@ -248,13 +273,11 @@ NSInteger pay_type;
         _styleDic=allDic;
         _show_deadline = allDic[@"show_deadline"];
         _self_pickup = allDic[@"self_pickup"];
-        //_self_pickup = 0;
-        //NSLog(@"self_pickup  %@",_styleDic);
-        //NSLog(@"self_pickup  %d",_self_pickup);
         NSArray*array=_styleDic[@"deadline"];
         _distributionTimeStr=array[0];
         _totalPrice=totalPrice;
         _paymentPrice=paymentPrice;
+        _defaultPayPrice=paymentPrice;
         _shippingFee=shippingFee;
         [self showTableView];
         
@@ -270,7 +293,6 @@ NSInteger pay_type;
     _tableView.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     
     UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard)];
-    
     gestureRecognizer.cancelsTouchesInView = NO;
     
     [_tableView addGestureRecognizer:gestureRecognizer];
@@ -278,7 +300,7 @@ NSInteger pay_type;
     [self.view addSubview:_tableView];
     _payStyleArray=[[NSArray alloc]initWithObjects:@"花集余额",@"支付宝",@"微信支付",nil];
     _orderArray=[[NSArray alloc]initWithObjects:@"总价",@"配送费",@"花集红包", nil];
-    _priceOrderArray=[[NSArray alloc]initWithObjects:_totalPrice,_shippingFee,@"0", nil];
+    _priceOrderArray=[[NSArray alloc]initWithObjects:_totalPrice,_shippingFee,_priceRed, nil];
     
     //配送方式字符串
     _styleStr=@"送货上门";
@@ -301,13 +323,17 @@ NSInteger pay_type;
                  NSDictionary*dic=_redArray[i];
                  NSString*termPriceStr=[NSString stringWithFormat:@"%@",dic[@"term_price"]];
                  int termPrice=[termPriceStr intValue];
-                 if (price<termPrice)
+                 if (price>termPrice)
                  {
-                     _redStr=@"暂无可用红包";
+                     _redStr=@"请选择红包";
+                     break;
                  }
                  else
                  {
-                     _redStr=@"请选择红包";
+                     if (i==_redArray.count-1)
+                     {
+                         _redStr=@"红包不可用";
+                     }
                  }
              }
              
@@ -323,12 +349,12 @@ NSInteger pay_type;
     payView.backgroundColor=[UIColor blackColor];
     [self.view addSubview:payView];
     
-    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1-LBVIEW_WIDTH1/2.95, LBVIEW_HEIGHT1/13)];
+    _ttLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1-LBVIEW_WIDTH1/2.95, LBVIEW_HEIGHT1/13)];
    // label.backgroundColor=[UIColor blackColor];
-    label.textColor=[UIColor whiteColor];
-    label.textAlignment=NSTextAlignmentCenter;
-    label.text=[NSString stringWithFormat:@"实付款:  ¥%@",_paymentPrice];
-    [payView addSubview:label];
+    _ttLabel.textColor=[UIColor whiteColor];
+    _ttLabel.textAlignment=NSTextAlignmentCenter;
+    _ttLabel.text=[NSString stringWithFormat:@"实付款:  ¥%@.00",_paymentPrice];
+    [payView addSubview:_ttLabel];
     
     UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-LBVIEW_WIDTH1/2.95, 0, LBVIEW_WIDTH1/2.95,payView.frame.size.height)];
 //    [btn setBackgroundImage:[UIImage imageNamed:@"kessan.png"] forState:UIControlStateNormal];
@@ -350,20 +376,15 @@ NSInteger pay_type;
     else
     {
         [self createOrder];
-    
     }
 
 }
 -(void)createOrder
 {
-    
-   
-    
     NSArray *pay_method = [[NSArray alloc] initWithObjects:@"huaji",@"alipay",@"weixin", nil];
     
-    [HttpEngine submitOrderAddressId:_addrId withMethod:[pay_method objectAtIndex:pay_type] withSpaypassword:_password withCouponNo:_isTagRedPacket completion:^(NSDictionary *dict)
+    [HttpEngine submitOrderAddressId:_addrId withMethod:[pay_method objectAtIndex:pay_type] withSpaypassword:_password withCouponNo:_preferNo completion:^(NSDictionary *dict)
      {
-         
          UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"温馨提醒" message:dict[@"msg"] preferredStyle:UIAlertControllerStyleAlert];
          
          NSString *actionTitle = pay_type == 0 ? @"查看我的订单" : @"去支付";
@@ -379,15 +400,12 @@ NSInteger pay_type;
                  [self alipay:dict[@"out_trade_no"] amount:dict[@"payment_price"] completion:^(BOOL success)
                   {
                       //order page
-                      
                   }];
              }
              else if (pay_type==2)
              {
-                 
                  [self WeiXinPay:dict[@"out_trade_no"]];
              }
-//             [self tabBarVC].selectedIndex = 2;
              [self.navigationController popViewControllerAnimated:YES];
          }];
          if (pay_type!=0)
@@ -406,15 +424,6 @@ NSInteger pay_type;
      }];
 }
 
--(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if(indexPath.section == 1){
-        [self changeAddress];
-    }else if(indexPath.section == 3){
-        //UITableViewCell *cell=[tableView cellForRowAtIndexPath:indexPath];
-        pay_type = indexPath.row;
-        [tableView reloadData];
-    }
-}
 //输入密码
 -(void)inputPassword
 {
@@ -498,24 +507,12 @@ NSInteger pay_type;
     {
         case 0:
         {
-//            UIView*view=[[UIView alloc]initWithFrame:CGRectMake(10, 0, 120,40)];
-//            [cell addSubview:view];
-            
             _styleLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 5, 90, 30)];
             _styleLabel.text=_styleStr;
             _styleLabel.textColor=[UIColor blackColor];
             _styleLabel.font=[UIFont systemFontOfSize:14];
             [cell addSubview:_styleLabel];
-            
             cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-            
-            //UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-30, 5, 10, 20)];
-            //image.image=[UIImage imageNamed:@"item-r.png"];
-            //[view addSubview:image];
-            
-            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 40)];
-            [btn addTarget:self action:@selector(cutAddress) forControlEvents:UIControlEventTouchUpInside];
-            [cell addSubview:btn];
         }
             break;
         case 1:
@@ -529,53 +526,27 @@ NSInteger pay_type;
         _distributionAddrsDetailLabel.text=[NSString stringWithFormat:@"%@ %@ %@",_defaultAddressDic[@"chinese_province"],_defaultAddressDic[@"chinese_city"],_defaultAddressDic[@"chinese_town"]];
         _distributionAddrsDetailLabel.font=[UIFont systemFontOfSize:14];
         [cell addSubview:_distributionAddrsDetailLabel];
-            
-            cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
             
         }
             break;
             
         case 2:
         {
-//            UIView*view=[[UIView alloc]initWithFrame:CGRectMake(10, 0, 200,30)];
-//            [cell addSubview:view];
-            
             _distributionLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 5, 160, 30)];
             _distributionLabel.text=_distributionTimeStr;
             _distributionLabel.textColor=[UIColor blackColor];
             _distributionLabel.font=[UIFont systemFontOfSize:14];
             [cell addSubview:_distributionLabel];
-            
             cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-            
-            //UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-30, 5, 10, 20)];
-            //image.image=[UIImage imageNamed:@"item-r.png"];
-            //[view addSubview:image];
-            
-            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 40)];
-            [btn addTarget:self action:@selector(distributionTime) forControlEvents:UIControlEventTouchUpInside];
-            [cell addSubview:btn];
         }
             break;
             
         case 3:
         {
             PayTableViewCell *cell0 = [PayTableViewCell cellWithTableView:tableView];
-            
-            //UIImageView *iconImage = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 24, 24)];
             [cell0.iconImage setImage:[UIImage imageNamed:[NSString stringWithFormat:@"pay1-%lu.png",indexPath.row+1]]];
-            //cell0.iconImage = iconImage;
-            //cell.imageView.frame = CGRectMake(0, 0, 24, 24);
             cell0.textLabel.text=_payStyleArray[indexPath.row];
-            //cell0.selected = YES;
-            /*UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-30, 5, 20, 20)];
-            [btn setBackgroundImage:[UIImage imageNamed:@"maru.png"] forState:UIControlStateNormal];
-            [btn setBackgroundImage:[UIImage imageNamed:@"Dg.png"] forState:UIControlStateSelected];
-            btn.selected=NO;
-            btn.tag=indexPath.row+10;
-            [btn addTarget:self action:@selector(choosePayStyle:) forControlEvents:UIControlEventTouchUpInside];
-            [cell0 addSubview:btn];*/
-            
             if(pay_type == indexPath.row){
                 cell0.accessoryType = UITableViewCellAccessoryCheckmark;
             }else{
@@ -588,19 +559,13 @@ NSInteger pay_type;
             
         case 4:
         {
-    
                 _redLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 5, 120, 30)];
                 _redLabel.text=_redStr;
                 _redLabel.font=[UIFont systemFontOfSize:14];
                 _redLabel.textColor=[UIColor blackColor];
                 [cell addSubview:_redLabel];
-            
-            
-            //UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-20, 5, 10, 20)];
-            //image.image=[UIImage imageNamed:@"item-r.png"];
-            //[cell addSubview:image];
-            
-            if (![_redStr isEqualToString:@"暂无可用红包"]&&![_redStr isEqualToString:@"暂无红包"])
+
+            if (![_redStr isEqualToString:@"红包不可用"]&&![_redStr isEqualToString:@"暂无红包"])
             {
                 UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 40)];
                 [btn addTarget:self action:@selector(chooseRedPage) forControlEvents:UIControlEventTouchUpInside];
@@ -622,7 +587,6 @@ NSInteger pay_type;
             tView.layer.borderWidth =1.0;
             tView.layer.cornerRadius =5.0;
             tView.tag=3;
-            
             self.cust_message = tView;
             [cell addSubview:tView];
         }
@@ -633,7 +597,14 @@ NSInteger pay_type;
             cell.textLabel.text=_orderArray[indexPath.row];
             cell.textLabel.font=[UIFont systemFontOfSize:14];
             UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-50, 0, LBVIEW_WIDTH1*0.2, 30)];
+            if (indexPath.row==2)
+            {
+                label.text=[NSString stringWithFormat:@"¥-%@",_priceRed];
+            }
+            else
+            {
             label.text=[NSString stringWithFormat:@"¥%@",_priceOrderArray[indexPath.row]];
+            }
             label.font=[UIFont systemFontOfSize:14];
             [cell addSubview:label];
             
@@ -661,18 +632,18 @@ NSInteger pay_type;
             
             UILabel*nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(20,0, LBVIEW_WIDTH1*0.5, 30)];
             nameLabel.font=[UIFont systemFontOfSize:14];
-            nameLabel.text=[NSString stringWithFormat:@"%@ %@",spCa.skuName,attributeStr] ;
+            nameLabel.text=[NSString stringWithFormat:@"%@ %@",spCa.skuName,attributeStr];
             [cell addSubview:nameLabel];
             
-            UILabel*picLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-50, 0, LBVIEW_WIDTH1*0.2, 30)];
+            UILabel*picLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-65, 0, LBVIEW_WIDTH1*0.2+10, 30)];
             picLabel.text=[NSString stringWithFormat:@"¥%@",spCa.price];
             picLabel.textColor=[UIColor redColor];
             picLabel.font=[UIFont systemFontOfSize:14];
             [cell addSubview:picLabel];
             
-            UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.8, 0, 20, 30)];
+            UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.8-28, 0, 20, 30)];
             numLabel.text=[NSString stringWithFormat:@"x%@",spCa.number];
-            numLabel.textAlignment=NSTextAlignmentCenter;
+            numLabel.textAlignment=NSTextAlignmentRight;
             numLabel.font=[UIFont systemFontOfSize:14];
             [cell addSubview:numLabel];
         }
@@ -683,16 +654,41 @@ NSInteger pay_type;
     }
     return cell;
 }
-
-//切换地址按钮
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if (indexPath.section==0)
+    {
+        [self cutAddress];
+    }else
+        if(indexPath.section == 1){
+            [self changeAddress];
+        }else
+            if(indexPath.section == 2)
+            {
+                [self distributionTime];
+            }
+            else
+                if (indexPath.section==3)
+                {
+                    pay_type = indexPath.row;
+                    [tableView reloadData];
+                }
+}
+//切换配送方式
 -(void)cutAddress
 {
     DistributionStyleViewController*distribuVC=[[DistributionStyleViewController alloc]init];
     distribuVC.payVC=self;
     [self.navigationController pushViewController:distribuVC animated:YES];
-
 }
-
+//更换地址
+-(void)changeAddress
+{
+    AdressViewController*adressVC=[[AdressViewController alloc]init];
+    adressVC.payVCStr=@"payVC";
+    adressVC.payVC=self;
+    [self.navigationController pushViewController:adressVC animated:YES];
+    
+}
 //配送时间
 -(void)distributionTime
 {
@@ -707,9 +703,9 @@ NSInteger pay_type;
     redPacketViewController*redPacketVC=[[redPacketViewController alloc]init];
     redPacketVC.payVC=self;
     redPacketVC.dataArray=_redArray;
+    redPacketVC.payPrice=_paymentPrice;
     [self.navigationController pushViewController:redPacketVC animated:YES];
 }
-
 
 //选择支付方式
 -(void)choosePayStyle:(UIButton*)sender
@@ -743,21 +739,6 @@ NSInteger pay_type;
     [label setFont:NJTitleFont];
     [view addSubview:label];
     
-  /*  if (section==1)
-    {
-        UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-140, 10, 120, 20)];
-        [btn setTitle:@"选择其它收货地址" forState:UIControlStateNormal];
-        btn.titleLabel.font=[UIFont systemFontOfSize:12];
-        [btn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-        [btn addTarget:self action:@selector(changeAddress) forControlEvents:UIControlEventTouchUpInside];
-        [view addSubview:btn];
-        
-        UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-20, 10, 10, 12)];
-        image.image=[UIImage imageNamed:@"item-r.png"];
-        [view addSubview:image];
-    }
-   */
-    
     return view;
     
 }
@@ -790,32 +771,24 @@ NSInteger pay_type;
     //[self.tableView endEditing:YES];
 }
 
-
-//更换地址
--(void)changeAddress
-{
-    AdressViewController*adressVC=[[AdressViewController alloc]init];
-    adressVC.payVCStr=@"payVC";
-    adressVC.payVC=self;
-    [self.navigationController pushViewController:adressVC animated:YES];
-    
-}
 //自定义区尾
 -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     UIView*view=[[UIView alloc]init];
     view.backgroundColor=[UIColor whiteColor];
-    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-120, 5, 120, 30)];
+    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-130, 5, 110, 30)];
     label.text=@"实际支付";
+    label.font=[UIFont systemFontOfSize:14];
     label.textColor=[UIColor blackColor];
     [view addSubview:label];
     
-    UIFont*font=[UIFont systemFontOfSize:17];
+    UIFont*font=[UIFont systemFontOfSize:14];
     CGSize size=[label.text boundingRectWithSize:CGSizeMake(100, 30) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
     
-    UILabel*labelp=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-115+size.width, 5, 50, 30)];
-    labelp.text=[NSString stringWithFormat:@"¥%@",_paymentPrice];
+    UILabel*labelp=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-120+size.width, 5, 65, 30)];
+    labelp.text=[NSString stringWithFormat:@"¥%@.00",_paymentPrice];
     labelp.textColor=[UIColor redColor];
+    labelp.font=[UIFont systemFontOfSize:14];
     [view addSubview:labelp];
     
     if (section==6)

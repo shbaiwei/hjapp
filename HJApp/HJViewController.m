@@ -8,6 +8,7 @@
 
 #import "HJViewController.h"
 #import "LoginViewController.h"
+#import "RegisterViewController.h"
 
 //zhifubao
 #import <AlipaySDK/AlipaySDK.h>
@@ -20,35 +21,85 @@
 @interface HJViewController ()
 
 @end
-
+#define LBVIEW_WIDTH1 [UIScreen mainScreen].bounds.size.width
+#define LBVIEW_HEIGHT1 [UIScreen mainScreen].bounds.size.height
 @implementation HJViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     
     [self.tabBarVC setDelegate:self];
-    // Do any additional setup after loading the view.
+  
 }
 
--(BOOL) tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController{
-    //NSLog(@"~~~~~ %ld",viewController.tabBarItem.tag );
-    //判断是否需要登陆
+-(BOOL) isLogin:(UIViewController*)VC withTitle:(NSString*)tilestr with:(int)height
+{
     NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
-    if (str==NULL && viewController.tabBarItem.tag >1)
+    
+    if (!str)
+    {
+        UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(20, LBVIEW_HEIGHT1/3-64, LBVIEW_WIDTH1-20, 20)];
+        if (height==1)
+        {
+            label.frame=CGRectMake(20, LBVIEW_HEIGHT1/3, LBVIEW_WIDTH1-20, 20);
+        }
+        label.text=tilestr;
+        label.textColor=[UIColor grayColor];
+        label.textAlignment=NSTextAlignmentCenter;
+        label.font=[UIFont systemFontOfSize:12];
+        [VC.view addSubview:label];
+        
+        NSArray*nameArray=[[NSArray alloc]initWithObjects:@"注册", @"登录",nil];
+        for (int i=0; i<2; i++)
+        {
+            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(40+i*(LBVIEW_WIDTH1-60)/2, LBVIEW_HEIGHT1/3+26,(LBVIEW_WIDTH1-100)/2, 40)];
+            if (height==1)
+            {
+                btn.frame=CGRectMake(40+i*(LBVIEW_WIDTH1-60)/2, LBVIEW_HEIGHT1/3+90,(LBVIEW_WIDTH1-100)/2, 40);
+            }
+            btn.layer.borderColor=[UIColor grayColor].CGColor;
+            btn.layer.borderWidth=1;
+            [btn setTitle:nameArray[i] forState:UIControlStateNormal];
+            btn.titleLabel.font=[UIFont systemFontOfSize:14];
+            [btn setTitleColor:[UIColor colorWithRed:255/255.0 green:164/255.0 blue:100/255.0 alpha:1] forState:UIControlStateNormal];
+            [btn addTarget:self action:@selector(loginRegister:) forControlEvents:UIControlEventTouchUpInside];
+            btn.layer.cornerRadius=5;
+            btn.clipsToBounds=YES;
+            btn.tag=332+i;
+            [VC.view addSubview:btn];
+        }
+        return YES;
+    }
+    return NO;
+}
+
+//切换到登陆
+-(void)loginRegister:(UIButton*)sender
+{
+    if (sender.tag==333)
     {
         LoginViewController*loginVC=[[LoginViewController alloc]init];
-        
         UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginVC];
-        
-        [self presentViewController:navigationController animated:YES completion:^{
-            
-        }];
-        
-        return NO;
+        [self presentViewController:navigationController animated:YES completion:nil];
     }
-    return YES;
+    else
+    {
+        RegisterViewController*registerVC=[[RegisterViewController alloc]init];
+        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:registerVC];
+        [self presentViewController:navigationController animated:YES completion:nil];
+    }
+    
 }
 
++(BOOL)needShowPage
+{
+    NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+    if (!str)
+        return YES;
+    else
+        return NO;
+}
 -(void) updateCartCount:(NSString *) number{
     
     UITabBarItem *item = [self.tabBarVC.tabBar.items objectAtIndex:3];
@@ -185,14 +236,4 @@
     }
     
 }
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
 @end

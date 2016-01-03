@@ -64,6 +64,7 @@
 
 //////////////
 @property(nonatomic,strong)NSArray*picDataArray;
+//@property(nonatomic,strong)NSArray*picTimeDataArray;
 @property(nonatomic,strong)NSArray*cityNameArray;
 @property(nonatomic,strong)NSArray*notifitionArray;
 @property (nonatomic, strong) UIScrollView*notifitionScroll;
@@ -121,16 +122,6 @@ UILabel *secondLabel;
     }
     
     
-    
-    /*[HttpEngine getCityNameBackcompletion:^(NSArray *dataArray)
-     {
-         _cityNameArray=dataArray;
-         //显示顶部视图
-         [self theTopView];
-         
-     }];
-     */
-    
     NSString*login=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
     if (login )
     {
@@ -141,7 +132,8 @@ UILabel *secondLabel;
                 ShopingCar*shCa=array[i];
                 number += [shCa.number integerValue];
             }
-            if(number>0){
+            if(number>0)
+            {
                 [self updateCartCount:[NSString stringWithFormat:@"%ld",number]];
             }
         }];
@@ -150,28 +142,24 @@ UILabel *secondLabel;
     //主scrollView
     [self ScrollViewMain];
     
-    
-    
-    
-    
-    
-    
     //滑动轮播图部分
-    [HttpEngine getPicture:^(NSArray *dataArray)
+    [HttpEngine getPictureWithTime:@"NO" with:^(NSArray *dataArray)
      {
          
          _picDataArray=dataArray;
-         //NSLog(@"pic  ===  %@",_picDataArray);
          [self scrollViewAndPageControl];
-         
          [self theTopView];
          [self theFlowersButtons];
          [self theTodayFlowes];
-         [self theOneMoney];
          [self theIkenAndBess];
-         
-         
+         [self theOneMoney];
+ 
      }];
+//    [HttpEngine getPictureWithTime:@"TIME" with:^(NSArray *dataArray)
+//     {
+//         _picTimeDataArray=dataArray;
+//         
+//     }];
     
 }
 
@@ -230,9 +218,7 @@ UILabel *secondLabel;
 
         
     });
-    
-    
-    
+
     // 停止位置更新
     [self.manager stopUpdatingLocation];
 }
@@ -435,38 +421,18 @@ UILabel *secondLabel;
 }
 -(void)btnClick:(UIButton*)sender
 {
-    
-    //判断是否需要登陆
-//    NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
-//    if (str==NULL )
-//    {
-//        LoginViewController*loginVC=[[LoginViewController alloc]init];
-//        
-//        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginVC];
-//        
-//        [self presentViewController:navigationController animated:YES completion:^{
-//            
-//        }];
-//        return;
-//    }
-    
      NSString*isTag=[NSString stringWithFormat:@"%lu",sender.tag];
-    
     [[NSUserDefaults standardUserDefaults]setObject:isTag forKey:@"TWOTAG"];
-    
      self.tabBarVC.selectedIndex=1;
 }
-
 
 // VIEW_WIDTH/15 * 2+10+ 20 + VIEW_HEIGHT * 0.02 * 2;
 //今日花市部分
 - (void)theTodayFlowes{
     
     self.oneMoneyView = [[UIView alloc] initWithFrame:CGRectMake(0, LBVIEW_WIDTH1 / 2+ LBVIEW_HEIGHT1 / 4.5+17, LBVIEW_WIDTH1, LBVIEW_HEIGHT1 / 13)];
-    
     self.oneMoneyView.backgroundColor = [UIColor whiteColor];
     [self.mainScroll addSubview:self.oneMoneyView];
-    
     
     UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, (LBVIEW_HEIGHT1 / 13- LBVIEW_HEIGHT1 / 15)/2, VIEW_WIDTH / 4, LBVIEW_HEIGHT1 / 15)];
     label.text=@"花集公告";
@@ -475,7 +441,6 @@ UILabel *secondLabel;
     label.font=[UIFont boldSystemFontOfSize:14];
     
     [self.oneMoneyView addSubview:label];
-    
     UILabel*lineLabel=[[UILabel alloc]initWithFrame:CGRectMake(10+VIEW_WIDTH / 4-1,(LBVIEW_HEIGHT1 / 13- LBVIEW_HEIGHT1 / 20)/2, 1, LBVIEW_HEIGHT1 / 20)];
     lineLabel.backgroundColor=[UIColor colorWithRed:200/255.0 green:200/255.0 blue:200/255.0 alpha:1];
     [self.oneMoneyView addSubview:lineLabel];
@@ -524,7 +489,6 @@ UILabel *secondLabel;
     
 }
 
-
 -(void)animotion
 {
     //上面
@@ -545,18 +509,13 @@ UILabel *secondLabel;
     [self.notifitionScroll setContentOffset:CGPointMake(0,_countT*LBVIEW_HEIGHT1 / 15)  animated:YES];
 }
 
-
-
-
 //限时秒杀部分
 -(void)theOneMoney
 {
-    
     UIView *oneMoneyView = [[UIView alloc] initWithFrame:CGRectMake(0,LBVIEW_WIDTH1 / 2+ LBVIEW_HEIGHT1 / 4.5+LBVIEW_HEIGHT1/13+17, VIEW_WIDTH, VIEW_HEIGHT / 6)];
-
     self.oneMoneyImageView = [[UIImageView alloc] initWithFrame:oneMoneyView.bounds];
     NSString *deadline = @"";
-    for(NSInteger i=0;i<[_picDataArray count];i++){
+    for(int i=0;i<_picDataArray.count;i++){
         GetPic*getpic=_picDataArray[i];
         if([getpic.position isEqualToString:@"promotion"]){
             NSURL*urlStr=[NSURL URLWithString:getpic.pictureUrlStr];
@@ -635,19 +594,15 @@ UILabel *secondLabel;
 
     //加入倒计时
     promotionTimer=[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(promotionAnimation) userInfo:nil repeats:YES];
-        
-
     
     [self.mainScroll addSubview:oneMoneyView];
     
 }
 
-
 -(void)promotionAnimation{
     
     if(timeGap>0){
         //NSLog(@"%ld",timeGap);
-        
         int hour = (int)floor(timeGap / 3600);
         int minute = (int)floor((timeGap - hour * 3600) / 60);
         int second = (int)(timeGap - hour * 3600 - minute * 60);
@@ -658,16 +613,13 @@ UILabel *secondLabel;
         timeGap--;
         return;
     }
-    
     [promotionBtn setHidden:NO];
-    promotionTimer = nil;
+     promotionTimer = nil;
 }
-
 
 //意见反馈以及商务合作部分
 - (void)theIkenAndBess
 {
-    
     NSArray*array=[[NSArray alloc]initWithObjects:@"意见反馈",@"商务合作", nil];
     for (int i=0; i<2;i++)
     {
@@ -706,17 +658,11 @@ UILabel *secondLabel;
     IdeaBackViewController*ideaVC=[[IdeaBackViewController alloc]init];
     ideaVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:ideaVC animated:YES];
-    
 }
 -(void)bessButton:(UIButton*)sender
 {
     CooperateViewController*cooperateVC=[[CooperateViewController alloc]init];
     cooperateVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:cooperateVC animated:YES];
-    
 }
-
-
-
-
 @end

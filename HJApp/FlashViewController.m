@@ -26,12 +26,7 @@
 {
     [super viewDidLoad];
     
-    //UIImageView*image=[[UIImageView alloc]initWithFrame:self.view.frame];
-    //image.image=[UIImage imageNamed:@"536a7024bd7b7.png"];
-    //[self.view addSubview:image];
-    //延迟执行
     [self goToPage];
-    //[self performSelector:@selector(goToPage) withObject:nil afterDelay:1];
     
 }
 -(void)goToPage
@@ -120,8 +115,9 @@
     
     homeVC.tabBarVC=_tabBar;
     myHuaJiVC.tabBarVC=_tabBar;
-    shopVC.tabBarVC=_tabBar;
+    shopVC.tbBarVC=_tabBar;
     assortVC.tabBarVC=_tabBar;
+    oderVC.tbBarVC=_tabBar;
     _tabBar.viewControllers = @[naviHome, naviAssprt, naviOder, naviShop, naviMyHuaJi];
     
     //设置导航栏背景色

@@ -12,6 +12,7 @@
 #import "AssortPageViewController.h"
 #import "LoginViewController.h"
 #import "RegisterViewController.h"
+#import "ChangCityViewController.h"
 
 @interface ShopingPageViewController ()<UITableViewDataSource,UITableViewDelegate>
 
@@ -27,7 +28,7 @@
 @property(nonatomic,copy)NSString*shippingFee;
 @property(nonatomic,strong)UILabel*shippingFeeLabel;
 
-
+@property(nonatomic,unsafe_unretained)BOOL isBool;
 @end
 
 
@@ -42,92 +43,82 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    //[self hidesTabBar:NO];
     self.navigationController.navigationBarHidden=NO;
     self.navigationController.navigationBar.translucent =NO;
     
-    NSString*login=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
-    if (!login)
+    HJViewController*hj=[[HJViewController alloc]init];
+    if (!_isBool)
     {
-        UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(20, LBVIEW_HEIGHT1/3-64, LBVIEW_WIDTH1-20, 20)];
-        label.text=@"登录后，可查看自己的购物车列表";
-        label.textColor=[UIColor grayColor];
-        label.textAlignment=NSTextAlignmentCenter;
-        label.font=[UIFont systemFontOfSize:12];
-        [self.view addSubview:label];
-        
-        NSArray*nameArray=[[NSArray alloc]initWithObjects:@"注册", @"登录",nil];
-        for (int i=0; i<2; i++)
+        _isBool=YES;
+        if ([hj isLogin:self withTitle:@"登录后，可查看自己的购物车列表"  with:2])
         {
-            UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(40+i*(LBVIEW_WIDTH1-60)/2, LBVIEW_HEIGHT1/3+26,(LBVIEW_WIDTH1-100)/2, 40)];
-            btn.layer.borderColor=[UIColor grayColor].CGColor;
-            btn.layer.borderWidth=1;
-            [btn setTitle:nameArray[i] forState:UIControlStateNormal];
-            btn.titleLabel.font=[UIFont systemFontOfSize:14];
-            [btn setTitleColor:[UIColor colorWithRed:255/255.0 green:164/255.0 blue:100/255.0 alpha:1] forState:UIControlStateNormal];
-            [btn addTarget:self action:@selector(loginRegister:) forControlEvents:UIControlEventTouchUpInside];
-            btn.layer.cornerRadius=5;
-            btn.clipsToBounds=YES;
-            btn.tag=332+i;
-            [self.view addSubview:btn];
+            return;
         }
-        
+    }
+    
+    if ([HJViewController needShowPage])
+        return;
+    NSString*code=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
+    
+    if(!code)
+    {
+        [self alert];
         return;
     }
-
-    
-    
     
     [HttpEngine getSimpleCart:^(NSArray *array) {
         _dataArray=array;
-        
         [self refreshCartCount:array];
-
-        [self showTableView];
+        [self update];
+        [_tableView reloadData];
     }];
 }
-//切换到登陆
--(void)loginRegister:(UIButton*)sender
-{
-    if (sender.tag==333)
-    {
-        LoginViewController*loginVC=[[LoginViewController alloc]init];
-        [self.navigationController pushViewController:loginVC animated:YES];
-    }
-    else
-    {
-        RegisterViewController*registerVC=[[RegisterViewController alloc]init];
-        [self.navigationController pushViewController:registerVC animated:YES];
-    }
-   
-}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    [self showTableView];
 }
 
 -(void)showTableView
 {
-    
     _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-54)];
     _tableView.dataSource=self;
     _tableView.delegate=self;
     _tableView.tableFooterView=[[UIView alloc]initWithFrame:CGRectZero];
     [self.view addSubview:_tableView];
-    
     _tableView.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     
-    [self goToPayView];
     
-    
-}
--(void)goToPayView
-{
     UIView*priceView=[[UIView alloc]initWithFrame:CGRectMake(0, LBVIEW_HEIGHT1-165, VIEW_WIDTH , LBVIEW_HEIGHT1 / 13)];
     priceView.backgroundColor=[UIColor blackColor];
     [self.view addSubview:priceView];
     
+    self.okaneL = [[UILabel alloc] init];
+    self.okaneL.textColor = [UIColor whiteColor];
+    self.okaneL.backgroundColor=[UIColor blackColor];
+    [priceView addSubview:self.okaneL];
+    
+   
+    _shippingFeeLabel=[[UILabel alloc]init];
+    _shippingFeeLabel.textColor=[UIColor whiteColor];
+    [priceView addSubview:_shippingFeeLabel];
+    
+    
+    self.kessanBtn=[[UIButton alloc]init];
+    self.kessanBtn.frame = CGRectMake(LBVIEW_WIDTH1 * 0.665, 0, LBVIEW_WIDTH1-LBVIEW_WIDTH1 * 0.665, priceView.frame.size.height);
+    [self.kessanBtn setBackgroundColor:[UIColor colorWithRed:0/255.0 green:136/255.0 blue:215/255.0 alpha:1]];
+    [self.kessanBtn setTitle:@"去结算" forState:UIControlStateNormal];
+    [self.kessanBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    self.kessanBtn.titleLabel.font=[UIFont systemFontOfSize:17];
+    [self.kessanBtn addTarget:self action:@selector(gotopayAction) forControlEvents:UIControlEventTouchUpInside];
+    [priceView addSubview:self.kessanBtn];
+    
+    [self update];
+    
+}
+-(void)update
+{
     float sum=0;
     if (_dataArray.count==0)
     {
@@ -135,30 +126,23 @@
     }
     else
     {
-    for (int i=0; i<_dataArray.count; i++)
-    {
-        ShopingCar*shopCar=_dataArray[i];
-        NSString*numberStr=[NSString stringWithFormat:@"%@",shopCar.number];
-        float num=[numberStr floatValue];
-        NSString*priceStr=[NSString stringWithFormat:@"%@",shopCar.price];
-        float price=[priceStr floatValue];
-        sum=sum+price*num;
-        _totalPrice=[NSString stringWithFormat:@"%0.2f",sum];
+        for (int i=0; i<_dataArray.count; i++)
+        {
+            ShopingCar*shopCar=_dataArray[i];
+            NSString*numberStr=[NSString stringWithFormat:@"%@",shopCar.number];
+            float num=[numberStr floatValue];
+            NSString*priceStr=[NSString stringWithFormat:@"%@",shopCar.price];
+            float price=[priceStr floatValue];
+            sum=sum+price*num;
+            _totalPrice=[NSString stringWithFormat:@"%0.2f",sum];
+        }
     }
-    }
-    
     NSString*allPrice=[NSString stringWithFormat:@"总计%@",_totalPrice];
-    UIFont*font=[UIFont systemFontOfSize:18];
+    UIFont*font=[UIFont systemFontOfSize:17];
     CGSize size=[allPrice boundingRectWithSize:CGSizeMake(LBVIEW_WIDTH1, LBVIEW_HEIGHT1 / 15) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
-    
-    self.okaneL = [[UILabel alloc] init];
     self.okaneL.text =allPrice;
-    self.okaneL.textColor = [UIColor whiteColor];
-    self.okaneL.backgroundColor=[UIColor blackColor];
     self.okaneL.font = font;
-    self.okaneL.frame = CGRectMake(5, (LBVIEW_HEIGHT1/13-LBVIEW_HEIGHT1/15)/2, size.width, VIEW_HEIGHT / 15);
-    [priceView addSubview:self.okaneL];
-    
+    self.okaneL.frame = CGRectMake(5, (LBVIEW_HEIGHT1/13-LBVIEW_HEIGHT1/15)/2, size.width, LBVIEW_HEIGHT1 / 15);
     
     int value=[_totalPrice intValue];
     if (value>99)
@@ -172,33 +156,30 @@
     }
     UIFont*font1=[UIFont systemFontOfSize:12];
     CGSize size1=[_shippingFee boundingRectWithSize:CGSizeMake(LBVIEW_WIDTH1, LBVIEW_HEIGHT1 / 15) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font1} context:nil].size;
-    _shippingFeeLabel=[[UILabel alloc]initWithFrame:CGRectMake(10+size.width, (LBVIEW_HEIGHT1/13-LBVIEW_HEIGHT1/15)/2, size1.width, LBVIEW_HEIGHT1/15)];
-    _shippingFeeLabel.text=_shippingFee;
+    _shippingFeeLabel.frame=CGRectMake(10+size.width, (LBVIEW_HEIGHT1/13-LBVIEW_HEIGHT1/15)/2, size1.width, LBVIEW_HEIGHT1/15);
     _shippingFeeLabel.font=font1;
-    _shippingFeeLabel.textColor=[UIColor whiteColor];
-    [priceView addSubview:_shippingFeeLabel];
+    _shippingFeeLabel.text=_shippingFee;
     
-    
-    self.kessanBtn=[[UIButton alloc]init];
-    self.kessanBtn.frame = CGRectMake(VIEW_WIDTH * 0.665, 0, VIEW_WIDTH-VIEW_WIDTH * 0.665, priceView.frame.size.height);
-    [self.kessanBtn setBackgroundColor:[UIColor colorWithRed:0/255.0 green:136/255.0 blue:215/255.0 alpha:1]];
-    [self.kessanBtn setTitle:@"去结算" forState:UIControlStateNormal];
-    [self.kessanBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    self.kessanBtn.titleLabel.font=[UIFont systemFontOfSize:21];
-    [self.kessanBtn addTarget:self action:@selector(gotopayAction) forControlEvents:UIControlEventTouchUpInside];
-    [priceView addSubview:self.kessanBtn];
     
 }
 -(void)gotopayAction
 {
+    NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+    if (!str)
+    {
+        LoginViewController*loginVC=[[LoginViewController alloc]init];
+        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginVC];
+        [self presentViewController:navigationController animated:YES completion:nil];
+        return;
+    }
+    
     if (_dataArray.count==0)
     {
-        self.tabBarVC.selectedIndex=1;
+        self.tbBarVC.selectedIndex=1;
     }
     else
     {
         PayViewController*payVC=[[PayViewController alloc]init];
-        //[self hidesTabBar:YES];
         payVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:payVC animated:YES];
     }
@@ -253,11 +234,6 @@
         [picLabel setFont:font];
         [cell addSubview:picLabel];
         
-//        UILabel*xlabel=[[UILabel alloc]initWithFrame:CGRectMake((3*LBVIEW_WIDTH1*0.5-70+size.width)/2, 25, 20, 20)];
-//        xlabel.text=@"X";
-//        xlabel.textColor=[UIColor grayColor];
-//        [cell addSubview:xlabel];
-        
         UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-60, 25, 20, 20)];
         numLabel.text=[NSString stringWithFormat:@"%@",spCa.number];
         numLabel.textAlignment=NSTextAlignmentCenter;
@@ -289,60 +265,34 @@
 //增加按钮
 -(void)addBtn:(UIButton*)sender
 {
-    [HttpEngine getSimpleCart:^(NSArray *array)
-     {
-         _dataArray=array;
-         
-         NSInteger number = 0;
-         for (NSInteger i=0; i<array.count; i++) {
-             ShopingCar*shCa=array[i];
-             number += [shCa.number integerValue];
-         }
-         if(number>0){
-             [self updateCartCount:[NSString stringWithFormat:@"%ld",number]];
-         }
-
-         [self add:(sender.tag)];
-    }];
-    
-}
-//添加
--(void)add:(NSInteger)tag
-{
-    ShopingCar*spCa=_dataArray[tag];
+    ShopingCar*spCa=_dataArray[sender.tag];
     NSString*numer=spCa.number;
     numer=[NSString stringWithFormat:@"%lu",[numer integerValue]+1];
-    NSLog(@"----%@",numer);
-    //添加
-    NSLog(@"===%@,===%@",spCa.skuId,spCa.supplierId);
-    
     NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
     [HttpEngine addGoodsLocation:str withSku:spCa.skuId withSupplier:spCa.supplierId withNumber:numer];
     [self performSelector:@selector(shuaiXin) withObject:numer afterDelay:0.1];
-    
-    
 }
 
-
--(void) refreshCartCount:(NSArray *)array {
-    
+-(void) refreshCartCount:(NSArray *)array
+{
+    UITabBarItem *item = [self.tbBarVC.tabBar.items objectAtIndex:3];
     NSInteger number = 0;
     for (NSInteger i=0; i<array.count; i++) {
         ShopingCar*shCa=array[i];
         number += [shCa.number integerValue];
     }
     if(number>0){
-        [self updateCartCount:[NSString stringWithFormat:@"%ld",number]];
+        //[self updateCartCount:[NSString stringWithFormat:@"%ld",number]];
+        item.badgeValue = [NSString stringWithFormat:@"%ld",number];
     }else{
-        [self updateCartCount:nil];
+        //[self updateCartCount:nil];
+        item.badgeValue=nil;
     }
-
 }
 
 //删除按钮
 -(void)subBtn:(UIButton*)sender
 {
-
 [HttpEngine getSimpleCart:^(NSArray *array)
  {
     _dataArray=array;
@@ -359,13 +309,11 @@
     {
         return;
     }
-    
-
     ShopingCar*spCa=_dataArray[tag];
     NSString*numer=spCa.number;
     numer=[NSString stringWithFormat:@"%lu",[numer integerValue]-1];
     //添加
-    NSLog(@"===%@,===%@",spCa.skuId,spCa.supplierId);
+    //NSLog(@"===%@,===%@",spCa.skuId,spCa.supplierId);
     NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
     [HttpEngine addGoodsLocation:str withSku:spCa.skuId withSupplier:spCa.supplierId withNumber:numer];
     [self performSelector:@selector(shuaiXin) withObject:numer afterDelay:0.1];
@@ -377,9 +325,7 @@
     [HttpEngine getSimpleCart:^(NSArray *array)
      {
          _dataArray=array;
-         
          [self refreshCartCount:array];
-         
          
          float sum=0;
          if (_dataArray.count==0)
@@ -420,12 +366,29 @@
          UIFont*font1=[UIFont systemFontOfSize:12];
          CGSize size1=[_shippingFee boundingRectWithSize:CGSizeMake(LBVIEW_WIDTH1, LBVIEW_HEIGHT1 / 15) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font1} context:nil].size;
          self.shippingFeeLabel.text=_shippingFee;
-         NSLog(@"_shippingFeeLabel===%@",_shippingFeeLabel.text);
+         //NSLog(@"_shippingFeeLabel===%@",_shippingFeeLabel.text);
          self.shippingFeeLabel.frame=CGRectMake(10+size.width, (LBVIEW_HEIGHT1/13-LBVIEW_HEIGHT1/15)/2, size1.width, LBVIEW_HEIGHT1/15);
          
          [_tableView reloadData];
      }];
     
 }
-
+//选择默认城市
+-(void)alert
+{
+    UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"您还未选择城市" preferredStyle: UIAlertControllerStyleAlert];
+    UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
+                          {
+                              
+                          }];
+    UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"前往" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
+                                 {
+                                     ChangCityViewController*changVC=[[ChangCityViewController alloc]init];
+                                     changVC.hidesBottomBarWhenPushed=YES;
+                                     [self.navigationController pushViewController:changVC animated:YES];
+                                 }];
+    [alert addAction:cancel];
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
 @end
