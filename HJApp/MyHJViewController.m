@@ -173,12 +173,12 @@
             for (int i=0; i<2; i++)
             {
                 UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake((LBVIEW_WIDTH1-180)/2+i*100, 25,80, 30)];
-                btn.layer.borderColor=[UIColor grayColor].CGColor;
+                btn.layer.borderColor=[UIColor colorWithRed:37/255.0 green:119/255.0 blue:188/255.0 alpha:1].CGColor;
                 btn.layer.borderWidth=1;
                 [btn setTitle:nameArray[i] forState:UIControlStateNormal];
                 btn.titleLabel.font=[UIFont systemFontOfSize:14];
                 btn.tag=332+i;
-                [btn setTitleColor:[UIColor colorWithRed:255/255.0 green:164/255.0 blue:100/255.0 alpha:1] forState:UIControlStateNormal];
+                [btn setTitleColor:[UIColor colorWithRed:37/255.0 green:119/255.0 blue:188/255.0 alpha:1] forState:UIControlStateNormal];
                 [btn addTarget:self action:@selector(loginRegister:) forControlEvents:UIControlEventTouchUpInside];
                 btn.layer.cornerRadius=5;
                 btn.clipsToBounds=YES;

@@ -104,9 +104,9 @@
     [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [btn setTitle:@"更换头像" forState:UIControlStateNormal];
     btn.titleLabel.font=[UIFont systemFontOfSize:14];
-    btn.layer.borderColor=[UIColor grayColor].CGColor;
+    btn.layer.borderColor=[UIColor colorWithRed:200/255.0f green:200/255.0f blue:200/255.0f alpha:1].CGColor;
     btn.layer.borderWidth=1;
-    btn.layer.cornerRadius=10;
+    btn.layer.cornerRadius=5;
     btn.clipsToBounds=YES;
     _isOpen=NO;
     [btn addTarget:self action:@selector(uploadPic) forControlEvents:UIControlEventTouchUpInside];
@@ -302,8 +302,8 @@
                 
                 _birthdayBtn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 10,LBVIEW_WIDTH1/2, 40)];
                 _birthdayBtn.layer.borderWidth=1;
-                _birthdayBtn.layer.borderColor=[UIColor grayColor].CGColor;
-                _birthdayBtn.layer.cornerRadius=10;
+                _birthdayBtn.layer.borderColor=[UIColor colorWithRed:200/255.0f green:200/255.0f blue:200/255.0f alpha:1].CGColor;
+                _birthdayBtn.layer.cornerRadius=5;
                 _birthdayBtn.clipsToBounds=YES;
                 [_birthdayBtn addTarget:self action:@selector(changeBirthday) forControlEvents:UIControlEventTouchUpInside];
                 [cell addSubview:_birthdayBtn];

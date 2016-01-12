@@ -368,6 +368,7 @@
         {
             [self alert:@"用户已注册" with:1];
         }
+        
     }];
    
 }
@@ -382,7 +383,7 @@
                                  {
                                      if (tag==2)
                                      {
-                                        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+                                        [self dismissViewControllerAnimated:YES completion:nil];
                                      }
                
                                  }];

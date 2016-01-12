@@ -69,6 +69,8 @@
     
     NSString *now_str = [dformat stringFromDate:now];
     
+    NSString*code=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
+    
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
     
     NSString*str;
@@ -78,14 +80,15 @@
     }
     else
     {
-       str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/advertisement/?ordering=-sort_order&start_date=%@&end_date=%@",now_str,now_str];
+       str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/advertisement/?ordering=-sort_order&start_date=%@&end_date=%@&location=%@",now_str,now_str,code];
     }
     [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress)
     {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
         [hud removeFromSuperview];
-        NSLog(@"广告的JSON:%@",responseObject);
+        //NSLog(@"广告的JSON:%@",responseObject);
         
         NSArray*array=responseObject[@"results"];
         NSMutableArray*dataArray=[[NSMutableArray alloc]init];
@@ -106,8 +109,10 @@
 //花集公告
 +(void)getNotifition:(void(^)(NSArray*dataArray))complete
 {
+    NSString*code=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
+    
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
-    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/article/"];
+    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/article/?ordering=-date_created&article_type=1&location=%@",code];
     
     [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         

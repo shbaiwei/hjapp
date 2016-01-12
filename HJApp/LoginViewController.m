@@ -213,8 +213,9 @@
                  [HttpEngine getConsumerData:^(NSArray *dataArray) {
                      
                  }];
-                 FlashViewController*falshVC=[[FlashViewController alloc]init];
-                 [self.navigationController pushViewController:falshVC animated:YES];
+                 //FlashViewController*flashVC=[[FlashViewController alloc]init];
+                 //[self.navigationController pushViewController:flashVC animated:YES];
+                 [self dismissViewControllerAnimated:YES completion:nil];
              }
          }
          ];
@@ -224,8 +225,9 @@
     else
     {
         RegisterViewController*registerVC=[[RegisterViewController alloc]init];
-        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:registerVC];
-        [self presentViewController:navigationController animated:YES completion:nil];
+        //UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:registerVC];
+        [self.navigationController pushViewController:registerVC animated:YES];
+        //[self presentViewController:navigationController animated:YES completion:nil];
         
     }
 }

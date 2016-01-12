@@ -56,7 +56,7 @@
         //field.borderStyle=UITextBorderStyleLine;
         field.layer.cornerRadius=5;
         field.layer.borderWidth=1;
-        field.layer.borderColor=[UIColor grayColor].CGColor;
+        field.layer.borderColor=[UIColor colorWithRed:200/255.0f green:200/255.0f blue:200/255.0f alpha:1].CGColor;
         field.clipsToBounds=YES;
         field.placeholder=fieldArray[i];
         field.font=[UIFont systemFontOfSize:14];
@@ -78,7 +78,7 @@
     [scrollView addSubview:label];
     
     UITextView*tView=[[UITextView alloc]initWithFrame:CGRectMake(20, 170+3*100, LBVIEW_WIDTH1-40, LBVIEW_HEIGHT1/5)];
-    tView.layer.borderColor =[UIColor grayColor].CGColor;
+    tView.layer.borderColor =[UIColor colorWithRed:200/255.0f green:200/255.0f blue:200/255.0f alpha:1].CGColor;
     tView.layer.borderWidth =1.0;
     tView.layer.cornerRadius =5.0;
     tView.tag=5;

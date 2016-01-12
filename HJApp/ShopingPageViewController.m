@@ -46,11 +46,10 @@
     self.navigationController.navigationBarHidden=NO;
     self.navigationController.navigationBar.translucent =NO;
     
-    HJViewController*hj=[[HJViewController alloc]init];
     if (!_isBool)
     {
         _isBool=YES;
-        if ([hj isLogin:self withTitle:@"登录后，可查看自己的购物车列表"  with:2])
+        if ([self isLogin:self withTitle:@"登录后，可查看自己的购物车列表"  with:2])
         {
             return;
         }

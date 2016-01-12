@@ -3,6 +3,8 @@
 # Uncomment this line if you're using Swift
 # use_frameworks!
 
+platform :ios,'7.0' 
+
 target 'HJApp' do
 pod 'AFNetworking','~>3.0.4'
 pod 'MBProgressHUD','~>0.9.2'

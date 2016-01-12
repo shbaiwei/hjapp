@@ -13,7 +13,9 @@
 #import "BWCommon.h"
 
 @interface HomePageViewController : HJViewController
-<CLLocationManagerDelegate>
+<CLLocationManagerDelegate,
+UIAlertViewDelegate
+>
 
 @property (nonatomic, strong) UILabel *cityLabel;
 

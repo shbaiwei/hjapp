@@ -90,19 +90,12 @@ NSString *locatioanStr;
          //左Uitableview
          _floerNameArray=dataArray;
          [self judgeIsTag];
+         
+         if(!_leftTableV){
+             [self showLeftTableView];
+         }
      }];
 
-    if(!_leftTableV)
-    {
-        //获取所有的花
-        [HttpEngine getAllFlower:^(NSArray *dataArray)
-         {
-             //左Uitableview
-             _floerNameArray=dataArray;
-             [self showLeftTableView];
-            // [self getRightData];
-         }];
-    }
     if(!_rightTableV)
     {
       [self performSelector:@selector(getRightData) withObject:nil afterDelay:0.5];
@@ -122,9 +115,23 @@ NSString *locatioanStr;
         cid = isTagStr;
         //_isTag=[isTagStr intValue];
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"TWOTAG"];
-        //NSLog(@"_isTag===%d",_isTag);
+        //NSLog(@"_isTag===%@",cid);
         page = 1;
-        [self loadDetailData];
+        
+        NSInteger tag = [isTagStr integerValue];
+        
+        //临时用于对应table数组
+        if(tag == 1){
+            tag = 0;
+        }else{
+            tag -= 4;
+        }
+        
+        NSIndexPath *index1 = [NSIndexPath indexPathForItem:tag inSection:0];
+        
+        [self.leftTableV selectRowAtIndexPath:index1 animated:NO scrollPosition:UITableViewScrollPositionNone];
+        [self didSelectLeftTableView:tag];
+        //[self loadDetailData];
     }
 }
 - (void)viewDidLoad
@@ -331,6 +338,8 @@ NSString *locatioanStr;
     self.rightTableV.delegate=self;
     self.rightTableV.dataSource=self;
     [self.view addSubview:self.rightTableV];
+    UIView *v = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.rightTableV setTableFooterView:v];
     
     
     __weak AssortPageViewController *weakSelf = self;
@@ -353,6 +362,7 @@ NSString *locatioanStr;
          //右uitableview
          if(page == 1){
              _floerDetailArray = [dataArray mutableCopy];
+             
          }else{
              [_floerDetailArray addObjectsFromArray:[dataArray mutableCopy]];
          }
@@ -363,11 +373,13 @@ NSString *locatioanStr;
 
 - (void)insertRowAtBottom
 {
+    __weak AssortPageViewController *weakSelf = self;
     if (_floerDetailArray.count==0)
     {
+        [weakSelf.rightTableV.infiniteScrollingView stopAnimating];
         return;
     }
-    __weak AssortPageViewController *weakSelf = self;
+    
     [weakSelf.rightTableV beginUpdates];
     page++;
     [self loadDetailData];
@@ -816,46 +828,53 @@ NSString *locatioanStr;
     
 }
 
+-(void) didSelectLeftTableView:(NSInteger) tag{
+    //判断有没有选择城市
+    NSString*code=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
+    if (!code)
+    {
+        [self alert];
+    }
+    
+    //隐藏分类栏
+    [_catalogueStrArray removeAllObjects];
+    _chooseBtn.isOpen=YES;
+    [self shouSuo];
+    
+    _isTag=(int)tag;
+    
+    //重置row状态
+    for (int i=0; i<_floerDetailArray.count; i++)
+    {
+        _isOpen[i]=NO;
+    }
+    
+    if([_floerNameArray count]>tag){
+        AllFlower*flower=_floerNameArray[tag];
+        cid = flower.flowerId;
+    }
+    
+    page = 1;
+    [self loadDetailData];
+    
+    //获取产品分类
+    [HttpEngine getProduct:cid completion:^(NSArray *dataArray)
+     {
+         _catalogueArray=dataArray;
+         [self setCatalogue];
+         
+         
+     }];
+    
+
+}
+
 //选中cell调用
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([tableView isEqual:self.leftTableV])
     {
-       //判断有没有选择城市
-        NSString*code=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
-        if (!code)
-        {
-             [self alert];
-        }
-        
-        //隐藏分类栏
-        [_catalogueStrArray removeAllObjects];
-        _chooseBtn.isOpen=YES;
-        [self shouSuo];
-        
-        _isTag=(int)indexPath.row;
-        
-        AllFlower*flower=_floerNameArray[indexPath.row];
-        
-        //重置row状态
-        for (int i=0; i<_floerDetailArray.count; i++)
-        {
-            _isOpen[i]=NO;
-        }
-        
-        cid = flower.flowerId;
-       
-        page = 1;
-        [self loadDetailData];
-        
-        //获取产品分类
-        [HttpEngine getProduct:flower.flowerId completion:^(NSArray *dataArray)
-         {
-             _catalogueArray=dataArray;
-             [self setCatalogue];
-             
-             
-         }];
+        [self didSelectLeftTableView:indexPath.row];
 
     }
     else if ([tableView isEqual:self.rightTableV])

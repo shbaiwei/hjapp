@@ -77,7 +77,7 @@
         UITextField*field=[[UITextField alloc]initWithFrame:CGRectMake(20, 60+i*120, LBVIEW_WIDTH1-40, 50)];
         field.layer.cornerRadius=5;
         field.clipsToBounds=YES;
-        field.layer.borderColor=[UIColor grayColor].CGColor;
+        field.layer.borderColor=[UIColor colorWithRed:200/255.0f green:200/255.0f blue:200/255.0f alpha:1].CGColor;
         
         UIView * leftView = [[UIView alloc] initWithFrame:CGRectMake(10,0,10,LBVIEW_HEIGHT1/14)];
         leftView.backgroundColor = [UIColor clearColor];
@@ -107,7 +107,7 @@
     [scrollView addSubview:label];
     
     _tView=[[UITextView alloc]initWithFrame:CGRectMake(20, 320, LBVIEW_WIDTH1-40, LBVIEW_HEIGHT1/5)];
-    _tView.layer.borderColor =[UIColor grayColor].CGColor;
+    _tView.layer.borderColor =[UIColor colorWithRed:200/255.0f green:200/255.0f blue:200/255.0f alpha:1].CGColor;
     _tView.layer.borderWidth =1.0;
     _tView.layer.cornerRadius =5.0;
     _tView.tag=3;

@@ -194,6 +194,8 @@
 		325AC5EF1BE7707500408525 /* IdeaBackViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 325AC5ED1BE7707500408525 /* IdeaBackViewController.xib */; };
 		325AC5F31BE772F900408525 /* CooperateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 325AC5F11BE772F900408525 /* CooperateViewController.m */; };
 		325AC5F41BE772F900408525 /* CooperateViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 325AC5F21BE772F900408525 /* CooperateViewController.xib */; };
+		327C93421C3A468300AB54BF /* loading_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 327C93401C3A468300AB54BF /* loading_logo@2x.png */; };
+		327C93431C3A468300AB54BF /* ico_item0_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 327C93411C3A468300AB54BF /* ico_item0_active@2x.png */; };
 		3289AFB51BFADDE70037A728 /* TodayShopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3289AFB31BFADDE70037A728 /* TodayShopViewController.m */; };
 		3289AFB61BFADDE70037A728 /* TodayShopViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3289AFB41BFADDE70037A728 /* TodayShopViewController.xib */; };
 		32A377671C0C558C00DE7D8C /* buy_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 32A377661C0C558C00DE7D8C /* buy_btn.png */; };
@@ -515,6 +517,8 @@
 		325AC5F01BE772F900408525 /* CooperateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CooperateViewController.h; sourceTree = "<group>"; };
 		325AC5F11BE772F900408525 /* CooperateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CooperateViewController.m; sourceTree = "<group>"; };
 		325AC5F21BE772F900408525 /* CooperateViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CooperateViewController.xib; sourceTree = "<group>"; };
+		327C93401C3A468300AB54BF /* loading_logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "loading_logo@2x.png"; sourceTree = "<group>"; };
+		327C93411C3A468300AB54BF /* ico_item0_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ico_item0_active@2x.png"; sourceTree = "<group>"; };
 		3289AFB21BFADDE70037A728 /* TodayShopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodayShopViewController.h; sourceTree = "<group>"; };
 		3289AFB31BFADDE70037A728 /* TodayShopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodayShopViewController.m; sourceTree = "<group>"; };
 		3289AFB41BFADDE70037A728 /* TodayShopViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TodayShopViewController.xib; sourceTree = "<group>"; };
@@ -800,6 +804,8 @@
 		320BBE461BF9D4DD004DE70A /* images */ = {
 			isa = PBXGroup;
 			children = (
+				327C93401C3A468300AB54BF /* loading_logo@2x.png */,
+				327C93411C3A468300AB54BF /* ico_item0_active@2x.png */,
 				323531211C0FFA9400E16144 /* ico_item0@2x.png */,
 				323531221C0FFA9400E16144 /* ico_item1_active@2x.png */,
 				323531231C0FFA9400E16144 /* ico_item1@2x.png */,
@@ -1566,6 +1572,7 @@
 				32B49BA31BE30EF100AB6D55 /* ShopingPageViewController.xib in Resources */,
 				322776241BFEDC9C00C249FD /* loader_icon_03.png in Resources */,
 				32EF5CEB1C0EB7760015FCC7 /* shang.png in Resources */,
+				327C93421C3A468300AB54BF /* loading_logo@2x.png in Resources */,
 				320BBF031BF9D4DD004DE70A /* swiper-market-btn-t.png in Resources */,
 				320BBF121BF9D8AC004DE70A /* assort2.png in Resources */,
 				320BBF361BF9DF95004DE70A /* navi.png in Resources */,
@@ -1682,6 +1689,7 @@
 				320BBEB81BF9D4DD004DE70A /* h-search.png in Resources */,
 				320BBECD1BF9D4DD004DE70A /* ico_wtms.png in Resources */,
 				320BBEC91BF9D4DD004DE70A /* ico_item4.png in Resources */,
+				327C93431C3A468300AB54BF /* ico_item0_active@2x.png in Resources */,
 				320BBF001BF9D4DD004DE70A /* spqd_1.png in Resources */,
 				320BBECA1BF9D4DD004DE70A /* ico_item4_active.png in Resources */,
 				32E5121C1C05673100D08F02 /* agreeR.png in Resources */,
