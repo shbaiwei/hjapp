@@ -258,6 +258,7 @@
                 _trueNameTFV.text=[NSString stringWithFormat:@"%@",consumer.realName];
                 _trueNameTFV.textColor=[UIColor blackColor];
                 _trueNameTFV.delegate=self;
+                _trueNameTFV.returnKeyType = UIReturnKeyDone;
                 _trueNameTFV.font=[UIFont systemFontOfSize:14];
                 [cell addSubview:_trueNameTFV];
 
@@ -357,7 +358,7 @@
     
     
     _shadowView=[[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
-    _shadowView.backgroundColor=[UIColor grayColor];
+    _shadowView.backgroundColor=[UIColor lightGrayColor];
     _shadowView.alpha=1;
     
     //找window
@@ -378,7 +379,6 @@
     _timeLabel.text=timeStr;
 }
 
-
 -(void)chooseTime
 {
     [_shadowView removeFromSuperview];
@@ -395,7 +395,6 @@
     ChangeSexViewController*changeSex=[[ChangeSexViewController alloc]init];
     changeSex.aboutMeVC=self;
     [self.navigationController pushViewController:changeSex animated:NO];
-
 }
 
 - (IBAction)saveBtn:(UIButton *)sender

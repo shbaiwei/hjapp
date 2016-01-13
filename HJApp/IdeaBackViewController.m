@@ -77,6 +77,8 @@
         UITextField*field=[[UITextField alloc]initWithFrame:CGRectMake(20, 60+i*120, LBVIEW_WIDTH1-40, 50)];
         field.layer.cornerRadius=5;
         field.clipsToBounds=YES;
+        field.clearButtonMode = UITextFieldViewModeAlways;
+        field.returnKeyType = UIReturnKeyDone;
         field.layer.borderColor=[UIColor colorWithRed:200/255.0f green:200/255.0f blue:200/255.0f alpha:1].CGColor;
         
         UIView * leftView = [[UIView alloc] initWithFrame:CGRectMake(10,0,10,LBVIEW_HEIGHT1/14)];
@@ -129,40 +131,34 @@
 
 -(void)comit
 {
-    //NSLog(@"=======%@%@%@",_nameTF,_mobileTF,_contentTF);
     UITextField*field1=(UITextField*)[self.view viewWithTag:1];
     UITextField*field2=(UITextField*)[self.view viewWithTag:2];
     UITextView*tfView=(UITextView*)[self.view viewWithTag:3];
     
-    [HttpEngine ideaFeedBackName:field1.text withMoblie:field2.text withContent:tfView.text];
-    
-    UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"反馈成功" preferredStyle: UIAlertControllerStyleAlert];
-    UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
-                          {
-                              
-                          }];
+    if ([field1.text isEqualToString:@""]||[field2.text isEqualToString:@""]||[tfView.text isEqualToString:@""]) {
+        [self alert:@"请完善信息"];
+        return;
+    }
+    [HttpEngine ideaFeedBackName:field1.text withMoblie:field2.text withContent:tfView.text complete:^(NSString *error) {
+        if (error) {
+            [self alert:error];
+        } else {
+            [self alert:@"反馈成功"];
+        }
+    }];
+}
+- (void)alert:(NSString *)str {
+    UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:str preferredStyle: UIAlertControllerStyleAlert];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    }];
     UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
                                  {
-                          [self.navigationController popViewControllerAnimated:YES];
+                                     [self.navigationController popViewControllerAnimated:YES];
                                  }];
-    [alert addAction:cancel];
     [alert addAction:defaultAction];
+    [alert addAction:cancel];
     [self presentViewController:alert animated:YES completion:nil];
-
-    
 }
-//-(BOOL)textView:(UITextView
-//                 *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-//    if([text
-//        isEqualToString:@"\n"])
-//        
-//    {
-//        [_tView
-//         resignFirstResponder];
-//        return NO;
-//    }
-//    return YES;
-//}
 -(void)keyDown
 {
     [self.view endEditing:YES];

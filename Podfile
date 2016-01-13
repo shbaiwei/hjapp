@@ -11,7 +11,7 @@ pod 'MBProgressHUD','~>0.9.2'
 pod 'SVPullToRefresh','~>0.4.1'
 pod 'SDWebImage','~>3.7.3'
 pod 'FMDB','~>2.5'
-
+pod 'WSProgressHUD','~> 1.0.9'
 
 end
 

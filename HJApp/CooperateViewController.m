@@ -61,6 +61,8 @@
         field.placeholder=fieldArray[i];
         field.font=[UIFont systemFontOfSize:14];
         field.tag=i+1;
+        field.returnKeyType = UIReturnKeyDone;
+        field.clearButtonMode = UITextFieldViewModeAlways;
         
         UIView * leftView = [[UIView alloc] initWithFrame:CGRectMake(10,0,10,50)];
         leftView.backgroundColor = [UIColor clearColor];
@@ -111,7 +113,9 @@
         return;
     }
     
-    [HttpEngine cooperateName:field1.text withMoblie:field2.text withEmail:field3.text withDanWei:field4.text withOther:field5.text withIp:@"192.168.33.249"];
+    [HttpEngine cooperateName:field1.text withMoblie:field2.text withEmail:field3.text withDanWei:field4.text withOther:field5.text withIp:@"192.168.33.249" complete:^(NSString *error) {
+        
+    }];
     
     [self alert:@"反馈成功" with:2];
     

@@ -156,57 +156,20 @@
         //判断是否为空
         if ([tfName.text isEqualToString:@""])
         {
-            UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"帐号不能为空" preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-                
-            }];
-            
-            UIAlertAction *otherAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                
-            }];
-            
-            [alert addAction:cancelAction];
-            [alert addAction:otherAction];
-            
-            [self presentViewController:alert animated:YES completion:nil];
-            
+            [self alert:@"帐号不能为空"];
             return;
         }
         if ([tfPas.text isEqualToString:@""])
         {
-            UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"密码不能为空" preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-                
-            }];
-            
-            UIAlertAction *otherAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                
-            }];
-            
-            [alert addAction:cancelAction];
-            [alert addAction:otherAction];
-            
-            [self presentViewController:alert animated:YES completion:nil];
-            
+            [self alert:@"密码不能为空"];
             return;
         }
 
         //发送登陆请求
         [HttpEngine loginRequest:tfName.text with:tfPas.text complete:^(NSString *fail)
          {
-             NSString*str=fail;
-             if ([str isEqualToString:@"fail"])
-             {
-                 UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"用户名或密码不正确" preferredStyle:UIAlertControllerStyleAlert];
-                 UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-                     
-                 }];
-                 UIAlertAction *otherAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                     
-                 }];
-                 [alert addAction:cancelAction];
-                 [alert addAction:otherAction];
-                 [self presentViewController:alert animated:YES completion:nil];
+             if (fail) {
+                 [self alert:fail];
              }
              else
              {
@@ -219,7 +182,6 @@
              }
          }
          ];
-        NSLog(@"denglu");
     }
     //注册
     else
@@ -231,5 +193,12 @@
         
     }
 }
-
+- (void)alert:(NSString *)alertStr {
+    UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:alertStr preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *otherAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        
+    }];
+    [alert addAction:otherAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
 @end

@@ -57,25 +57,28 @@
     
     if ([HJViewController needShowPage])
         return;
-    NSString*code=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
+
+    [HttpEngine getSimpleCart:^(NSArray *array) {
+        _dataArray=array;
+        [self refreshCartCount:array];
+        [self update];
+        [_tableView removeFromSuperview];
+        [self showTableView];
+        [_tableView reloadData];
+    }];
     
+    NSString*code=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
     if(!code)
     {
         [self alert];
         return;
     }
-    
-    [HttpEngine getSimpleCart:^(NSArray *array) {
-        _dataArray=array;
-        [self refreshCartCount:array];
-        [self update];
-        [_tableView reloadData];
-    }];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+     self.view.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     [self showTableView];
 }
 
@@ -88,7 +91,6 @@
     [self.view addSubview:_tableView];
     _tableView.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     
-    
     UIView*priceView=[[UIView alloc]initWithFrame:CGRectMake(0, LBVIEW_HEIGHT1-165, VIEW_WIDTH , LBVIEW_HEIGHT1 / 13)];
     priceView.backgroundColor=[UIColor blackColor];
     [self.view addSubview:priceView];
@@ -98,7 +100,6 @@
     self.okaneL.backgroundColor=[UIColor blackColor];
     [priceView addSubview:self.okaneL];
     
-   
     _shippingFeeLabel=[[UILabel alloc]init];
     _shippingFeeLabel.textColor=[UIColor whiteColor];
     [priceView addSubview:_shippingFeeLabel];
@@ -268,7 +269,11 @@
     NSString*numer=spCa.number;
     numer=[NSString stringWithFormat:@"%lu",[numer integerValue]+1];
     NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
-    [HttpEngine addGoodsLocation:str withSku:spCa.skuId withSupplier:spCa.supplierId withNumber:numer];
+    [HttpEngine addGoodsLocation:str withSku:spCa.skuId withSupplier:spCa.supplierId withNumber:numer complete:^(NSString *error, NSString *errorStr) {
+        if (error) {
+            [self showError:errorStr];
+        }
+    }];
     [self performSelector:@selector(shuaiXin) withObject:numer afterDelay:0.1];
 }
 
@@ -314,10 +319,21 @@
     //添加
     //NSLog(@"===%@,===%@",spCa.skuId,spCa.supplierId);
     NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
-    [HttpEngine addGoodsLocation:str withSku:spCa.skuId withSupplier:spCa.supplierId withNumber:numer];
+    [HttpEngine addGoodsLocation:str withSku:spCa.skuId withSupplier:spCa.supplierId withNumber:numer complete:^(NSString *error, NSString *errorStr) {
+        if (error){
+            [self showError:errorStr];
+        }
+    }];
     [self performSelector:@selector(shuaiXin) withObject:numer afterDelay:0.1];
 }
-
+#pragma mark -----------------------showError
+- (void)showError:(NSString *)errorStr {
+    [WSProgressHUD showImage:nil status:errorStr];
+    [self performSelector:@selector(dismisshud) withObject:nil afterDelay:3];
+}
+- (void)dismisshud {
+    [WSProgressHUD dismiss];
+}
 //刷新表
 -(void)shuaiXin
 {
@@ -376,17 +392,17 @@
 -(void)alert
 {
     UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"您还未选择城市" preferredStyle: UIAlertControllerStyleAlert];
-    UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
-                          {
-                              
-                          }];
+//    UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
+//                          {
+//                              
+//                          }];
     UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"前往" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
                                  {
                                      ChangCityViewController*changVC=[[ChangCityViewController alloc]init];
                                      changVC.hidesBottomBarWhenPushed=YES;
                                      [self.navigationController pushViewController:changVC animated:YES];
                                  }];
-    [alert addAction:cancel];
+//  [alert addAction:cancel];
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
 }

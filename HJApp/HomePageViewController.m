@@ -103,14 +103,10 @@ NSString *trackViewURL;
     //滑动轮播图部分
     [HttpEngine getPictureWithTime:@"YES" with:^(NSArray *dataArray)
      {
-         
          _picDataArray=dataArray;
          
          [self refreshAdData];
-         
-         
      }];
-    
 }
 
 -(void)checkVersion:(NSString* )appurl
@@ -133,27 +129,36 @@ NSString *trackViewURL;
             {
                 trackViewURL = [[NSString alloc] initWithString:[releaseInfo objectForKey:@"trackViewUrl"]];
                 NSString* msg =[releaseInfo objectForKey:@"releaseNotes"];
-                UIAlertView* alertview =[[UIAlertView alloc] initWithTitle:@"版本升级" message:[NSString stringWithFormat:@"%@%@%@", @"新版本特性:",msg, @"\n是否升级？"] delegate:self cancelButtonTitle:@"稍后升级" otherButtonTitles:@"马上升级", nil];
-                [alertview show];
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"版本升级" message:[NSString stringWithFormat:@"%@%@%@", @"新版本特性:",msg, @"\n是否升级？"] preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"稍后升级" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                    
+                }];
+                UIAlertAction *defaul = [UIAlertAction actionWithTitle:@"马上升级" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    
+                    UIApplication *application = [UIApplication sharedApplication];
+                    [application openURL:[NSURL URLWithString:trackViewURL]];
+                }];
+                [alert addAction:cancel];
+                [alert addAction:defaul];
+                [self presentViewController:alert animated:YES completion:nil];
+                
+//                UIAlertView* alertview =[[UIAlertView alloc] initWithTitle:@"版本升级" message:[NSString stringWithFormat:@"%@%@%@", @"新版本特性:",msg, @"\n是否升级？"] delegate:self cancelButtonTitle:@"稍后升级" otherButtonTitles:@"马上升级", nil];
+//                [alertview show];
             }
             
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
-
-    
-    
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex==1)
-    {
-        UIApplication *application = [UIApplication sharedApplication];
-        [application openURL:[NSURL URLWithString:trackViewURL]];
-    }
-}
+//- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+//{
+//    if (buttonIndex==1)
+//    {
+//        
+//    }
+//}
 
 - (void)viewDidLoad
 {
@@ -369,7 +374,7 @@ NSString *trackViewURL;
     //self.scrollPic.contentSize = CGSizeMake(LBVIEW_WIDTH1 * (homePicNumber-1),LBVIEW_HEIGHT1/4.5);
     self.scrollPic.pagingEnabled = YES;
     self.scrollPic.delegate = self;
-    self.scrollPic.bounces=NO;
+    self.scrollPic.bounces = NO;
     self.scrollPic.showsVerticalScrollIndicator = FALSE;
     self.scrollPic.showsHorizontalScrollIndicator = FALSE;
     [self.mainScroll addSubview:self.scrollPic];

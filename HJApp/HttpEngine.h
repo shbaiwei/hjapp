@@ -21,6 +21,8 @@
 #import "ComplainServe.h"
 #import "MBProgressHUD.h"
 #import "BWCommon.h"
+#import "WSProgressHUD.h"
+
 
 
 @interface HttpEngine : NSObject
@@ -37,10 +39,10 @@
 +(void)getNotifition:(void(^)(NSArray*dataArray))complete;
 
 //意见反馈
-+(void)ideaFeedBackName:(NSString*)name withMoblie:(NSString*)moblie withContent:(NSString*)content;
++(void)ideaFeedBackName:(NSString*)name withMoblie:(NSString*)moblie withContent:(NSString*)content complete:(void(^)(NSString *error))complete;
 
 //商务合作
-+(void)cooperateName:(NSString*)name withMoblie:(NSString*)moblie withEmail:(NSString*)email withDanWei:(NSString*)danWei withOther:(NSString*)other withIp:(NSString*)ip;
++(void)cooperateName:(NSString*)name withMoblie:(NSString*)moblie withEmail:(NSString*)email withDanWei:(NSString*)danWei withOther:(NSString*)other withIp:(NSString*)ip complete:(void(^)(NSString *error))complete;
 
 //发送短信
 +(void)sendMessageMoblie:(NSString*)mobliePhone withKind:(int)tag;
@@ -78,8 +80,7 @@
 +(void)getSimpleCart:(void(^)(NSArray*array))complete;
 
 //增加商品
-+(void)addGoodsLocation:(NSString*)location withSku:(NSString*)sku withSupplier:(NSString*)supplier withNumber:(NSString*)number;
-
++(void)addGoodsLocation:(NSString*)location withSku:(NSString*)sku withSupplier:(NSString*)supplier withNumber:(NSString*)number complete:(void(^)(NSString *error,NSString *errorStr))complete;
 
 
 //获取用户详细信息
@@ -147,5 +148,5 @@
 +(void)messageCentercompletion:(void(^)(NSArray*dataArray))complete;
 
 //错误数据
-+(NSString*)errorData:(NSDictionary*)userInfo;
+//+(NSString*)errorData:(NSDictionary*)userInfo;
 @end

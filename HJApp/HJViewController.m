@@ -36,7 +36,6 @@
 -(BOOL) isLogin:(UIViewController*)VC withTitle:(NSString*)tilestr with:(int)height
 {
     NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
-    
     if (!str)
     {
         UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(20, LBVIEW_HEIGHT1/3-64, LBVIEW_WIDTH1-20, 20)];
@@ -121,12 +120,9 @@
     MBProgressHUD *HUD = [BWCommon getHUD];
     if([WXApi isWXAppInstalled]) // 判断 用户是否安装微信
     {
-        
-        
         //HUD.delegate = self;
         //HUD.labelText = @"正在为您支付...";
         //[HUD show:YES];
-        
         
         [HttpEngine wxPayRequest:out_trade_no completion:^(NSDictionary *dict) {
             

@@ -275,7 +275,11 @@ NSInteger pay_type;
         _self_pickup = allDic[@"self_pickup"];
         NSArray*array=_styleDic[@"deadline"];
         _distributionTimeStr=array[0];
+        float tprice = [totalPrice floatValue];
+        totalPrice = [NSString stringWithFormat:@"%.2f",tprice];
         _totalPrice=totalPrice;
+        float fprice = [paymentPrice floatValue];
+        paymentPrice = [NSString stringWithFormat:@"%.2f",fprice];
         _paymentPrice=paymentPrice;
         _defaultPayPrice=paymentPrice;
         _shippingFee=shippingFee;
@@ -353,7 +357,7 @@ NSInteger pay_type;
    // label.backgroundColor=[UIColor blackColor];
     _ttLabel.textColor=[UIColor whiteColor];
     _ttLabel.textAlignment=NSTextAlignmentCenter;
-    _ttLabel.text=[NSString stringWithFormat:@"实付款:  ¥%@.00",_paymentPrice];
+    _ttLabel.text=[NSString stringWithFormat:@"实付款:  ¥%@",_paymentPrice];
     [payView addSubview:_ttLabel];
     
     UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-LBVIEW_WIDTH1/2.95, 0, LBVIEW_WIDTH1/2.95,payView.frame.size.height)];
@@ -368,7 +372,6 @@ NSInteger pay_type;
 //去支付
 -(void)gotopayAction
 {
-    
     if(pay_type == 0)
     {
         [self inputPassword];
@@ -641,7 +644,7 @@ NSInteger pay_type;
             picLabel.font=[UIFont systemFontOfSize:14];
             [cell addSubview:picLabel];
             
-            UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.8-28, 0, 20, 30)];
+            UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.8-38, 0, 30, 30)];
             numLabel.text=[NSString stringWithFormat:@"x%@",spCa.number];
             numLabel.textAlignment=NSTextAlignmentRight;
             numLabel.font=[UIFont systemFontOfSize:14];
@@ -786,7 +789,7 @@ NSInteger pay_type;
     CGSize size=[label.text boundingRectWithSize:CGSizeMake(100, 30) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
     
     UILabel*labelp=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-120+size.width, 5, 65, 30)];
-    labelp.text=[NSString stringWithFormat:@"¥%@.00",_paymentPrice];
+    labelp.text=[NSString stringWithFormat:@"¥%@",_paymentPrice];
     labelp.textColor=[UIColor redColor];
     labelp.font=[UIFont systemFontOfSize:14];
     [view addSubview:labelp];

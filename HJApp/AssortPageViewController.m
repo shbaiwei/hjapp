@@ -19,7 +19,6 @@
 #import "ChangCityViewController.h"
 
 
-
 @interface AssortPageViewController ()<UITableViewDataSource, UITableViewDelegate, UICollectionViewDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, strong) UITableView *leftTableV;
@@ -60,7 +59,6 @@
 @property(nonatomic,strong)NSArray*btnCarArray;
 
 @property(nonatomic,strong)NSMutableArray *cartList;
-
 
 @end
 
@@ -695,7 +693,13 @@ NSString *locatioanStr;
     
     if (_cartList.count==0)
     {
-        [HttpEngine addGoodsLocation:locatioanStr withSku:dic[@"sku"] withSupplier:dic[@"supplier"] withNumber:@"1"];
+        [HttpEngine addGoodsLocation:locatioanStr withSku:dic[@"sku"] withSupplier:dic[@"supplier"] withNumber:@"1" complete:^(NSString *error, NSString *errorStr) {
+            if (error) {
+                [self showError:errorStr];
+            }else {
+                [self showAnimationB:sender withF:dFlower];
+            }
+        }];
     }
     else
     {
@@ -713,7 +717,13 @@ NSString *locatioanStr;
                     {
                         _addNum[sender.row]=[shopCar.number intValue]+1;
                         NSString*addStr=[NSString stringWithFormat:@"%d",_addNum[sender.row]];
-                        [HttpEngine addGoodsLocation:locatioanStr withSku:dic[@"sku"] withSupplier:dic[@"supplier"] withNumber:addStr];
+                        [HttpEngine addGoodsLocation:locatioanStr withSku:dic[@"sku"] withSupplier:dic[@"supplier"] withNumber:addStr complete:^(NSString *error, NSString *errorStr) {
+                            if (error) {
+                                [self showError:errorStr];
+                            }else {
+                                [self showAnimationB:sender withF:dFlower];
+                            }
+                        }];
                         break;
                     }
                     else
@@ -728,13 +738,25 @@ NSString *locatioanStr;
                             {
                                 _addNum[sender.row]=[shopCar1.number intValue]+1;
                                 NSString*addStr=[NSString stringWithFormat:@"%d",_addNum[sender.row]];
-                                [HttpEngine addGoodsLocation:locatioanStr withSku:dic[@"sku"] withSupplier:dic[@"supplier"] withNumber:addStr];
+                                [HttpEngine addGoodsLocation:locatioanStr withSku:dic[@"sku"] withSupplier:dic[@"supplier"] withNumber:addStr complete:^(NSString *error, NSString *errorStr) {
+                                    if (error) {
+                                     [self showError:errorStr];
+                                    }else {
+                                     [self showAnimationB:sender withF:dFlower];
+                                    }
+                                }];
                                 break;
                             }
                             else
                                 if(j==_cartList.count-1)
                             {
-                            [HttpEngine addGoodsLocation:locatioanStr withSku:dic[@"sku"] withSupplier:dic[@"supplier"] withNumber:@"1"];
+                                [HttpEngine addGoodsLocation:locatioanStr withSku:dic[@"sku"] withSupplier:dic[@"supplier"] withNumber:@"1" complete:^(NSString *error, NSString *errorStr) {
+                                    if (error) {
+                                      [self showError:errorStr];
+                                    }else {
+                                      [self showAnimationB:sender withF:dFlower];
+                                    }
+                                }];
                             }
                         }
                     }
@@ -744,35 +766,19 @@ NSString *locatioanStr;
             {
                 if (i==_cartList.count-1)
                 {
-                    [HttpEngine addGoodsLocation:locatioanStr withSku:dic[@"sku"] withSupplier:dic[@"supplier"] withNumber:@"1"];
+                    [HttpEngine addGoodsLocation:locatioanStr withSku:dic[@"sku"] withSupplier:dic[@"supplier"] withNumber:@"1" complete:^(NSString *error, NSString *errorStr) {
+                        if (error) {
+                           [self showError:errorStr];
+                        }else {
+                           [self showAnimationB:sender withF:dFlower];
+                        }
+                    }];
                 }
             }
         }
     }
     
-    //找到当前点击的位置
-    CGRect rect=[sender convertRect: sender.bounds toView:self.view];
-    UIImageView*anImage=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-50, rect.origin.y, 20, 20)];
-    [anImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@@!l60",dFlower.image]]];
-    //anImage.backgroundColor=[UIColor redColor];
-    anImage.layer.cornerRadius=10;
-    anImage.clipsToBounds=YES;
-    [self.view addSubview:anImage];
-    
-    //动画
-    [UIView animateKeyframesWithDuration:1 delay:0 options:UIViewKeyframeAnimationOptionCalculationModeCubicPaced animations:^
-     {
-         //anImage.frame=CGRectMake(4*LBVIEW_WIDTH1/5, 6*rect.origin.y/5, 10, 10);
-         anImage.frame=CGRectMake(3.5*LBVIEW_WIDTH1/5, LBVIEW_HEIGHT1-54, 20, 20);
-         anImage.transform=CGAffineTransformMakeRotation((90.0f*M_PI) / 180.0f);
-     } completion:^(BOOL finished)
-     {
-         
-         [anImage removeFromSuperview];
-         
-     }];
-
-    [self performSelector:@selector(refreshData) withObject:nil afterDelay:0.5];
+        [self performSelector:@selector(refreshData) withObject:nil afterDelay:0.5];
 }
 
 //减少按钮
@@ -796,13 +802,49 @@ NSString *locatioanStr;
             {
             _addNum[sender.row]=[shopCar.number intValue]-1;
             NSString*addStr=[NSString stringWithFormat:@"%d",_addNum[sender.row]];
-            [HttpEngine addGoodsLocation:locatioanStr withSku:dic[@"sku"] withSupplier:dic[@"supplier"] withNumber:addStr];
+                [HttpEngine addGoodsLocation:locatioanStr withSku:dic[@"sku"] withSupplier:dic[@"supplier"] withNumber:addStr complete:^(NSString *error, NSString *errorStr) {
+                    if (error) {
+                        [self showError:errorStr];
+                    }
+                }];
             }
         }
     }
-
     //更新数量
     [self performSelector:@selector(refreshData) withObject:nil afterDelay:0.5];
+}
+#pragma mark -----------------------showError
+- (void)showError:(NSString *)errorStr {
+    [WSProgressHUD showImage:nil status:errorStr];
+    [self performSelector:@selector(dismisshud) withObject:nil afterDelay:3];
+
+}
+- (void)dismisshud {
+    [WSProgressHUD dismiss];
+}
+
+#pragma mark ----------------------showAnimation
+- (void)showAnimationB:(UIButton *)sender withF:(FlowerDetail *)dFlower {
+    //找到当前点击的位置
+    CGRect rect=[sender convertRect: sender.bounds toView:self.view];
+    UIImageView*anImage=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-50, rect.origin.y, 20, 20)];
+    [anImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@@!l60",dFlower.image]]];
+    //anImage.backgroundColor=[UIColor redColor];
+    anImage.layer.cornerRadius=10;
+    anImage.clipsToBounds=YES;
+    [self.view addSubview:anImage];
+    
+    //动画
+    [UIView animateKeyframesWithDuration:1 delay:0 options:UIViewKeyframeAnimationOptionCalculationModeCubicPaced animations:^
+     {
+         //anImage.frame=CGRectMake(4*LBVIEW_WIDTH1/5, 6*rect.origin.y/5, 10, 10);
+         anImage.frame=CGRectMake(3.5*LBVIEW_WIDTH1/5, LBVIEW_HEIGHT1-54, 20, 20);
+         anImage.transform=CGAffineTransformMakeRotation((90.0f*M_PI) / 180.0f);
+     } completion:^(BOOL finished)
+     {
+         [anImage removeFromSuperview];
+         
+     }];
 }
 
 //刷新表

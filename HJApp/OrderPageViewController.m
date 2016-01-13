@@ -40,6 +40,7 @@
 @property(nonatomic,strong)UITableView *paymentTableView;
 
 @property(nonatomic,unsafe_unretained)BOOL isBool;
+@property (nonatomic,copy)NSString *kindOrder;
 @end
 
 
@@ -67,23 +68,27 @@
         }
     }
     
+    if ([HJViewController needShowPage])
+        return;
+    
     //获取上个页面所选取的种类
     _chooseValue=[[NSUserDefaults standardUserDefaults]objectForKey:@"THREETAG"];
-    if (_chooseValue!=NULL)
+    if (_chooseValue)
     {
         NSLog(@"_chooseValue===%@",_chooseValue);
+        _kindOrder = _chooseValue;
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"THREETAG"];
         [HttpEngine myOrder:@"1" with:@"1" with:@"10" with:_chooseValue completion:^(NSArray *dataArray)
          {
              _dataArray=dataArray;
              
              [self showMyOrder];
-             
          }];
     }
     else
     {
-    [HttpEngine myOrder:@"1" with:@"1" with:@"10" with:@"" completion:^(NSArray *dataArray)
+        _kindOrder = @"";
+       [HttpEngine myOrder:@"1" with:@"1" with:@"10" with:@"" completion:^(NSArray *dataArray)
          {
              _dataArray=dataArray;
              [self showMyOrder];
@@ -96,6 +101,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.view.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     _pay_type = 0;
     UIView*headView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1,64)];
     headView.backgroundColor=[UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1];
@@ -126,33 +132,22 @@
 }
 - (void)insertRowAtTop
 {
-    if (_dataArray.count==0)
-    {
-        return;
-    }
     __weak OrderPageViewController *weakSelf = self;
-    [HttpEngine myOrder:@"1" with:@"1" with:@"10" with:@"" completion:^(NSArray *dataArray)
+    [HttpEngine myOrder:@"1" with:@"1" with:@"10" with:_kindOrder completion:^(NSArray *dataArray)
      {
          _dataArray=dataArray;
          
          [_tableView reloadData];
      }];
-    
     [weakSelf.tableView.pullToRefreshView stopAnimating];
-
 }
 - (void)insertRowAtBottom
 {
-    if (_dataArray.count==0)
-    {
-        return;
-    }
     __weak OrderPageViewController *weakSelf = self;
     [weakSelf.tableView beginUpdates];
-    
     _pageNum+=10;
     NSString*pageNumStr=[NSString stringWithFormat:@"%d",_pageNum];
-    [HttpEngine myOrder:@"1" with:@"1" with:pageNumStr with:@"" completion:^(NSArray *dataArray)
+    [HttpEngine myOrder:@"1" with:@"1" with:pageNumStr with:_kindOrder completion:^(NSArray *dataArray)
      {
          _dataArray=dataArray;
          
@@ -175,7 +170,6 @@
         [self presentViewController:navigationController animated:YES completion:nil];
         return;
     }
-    
     _stausBtn.selected=!_stausBtn.selected;
     if (_myOrderBtn.isOpen==NO)
     {
@@ -212,13 +206,12 @@
 //选择按钮
 -(void)chooseBtn:(UIButton*)sender
 {
-    
     _myOrderBtn.isOpen=!_myOrderBtn.isOpen;
-  
     [_chooseView removeFromSuperview];
     //订单布局
     if (sender.tag==1)
     {
+        _kindOrder = @"";
         [HttpEngine myOrder:@"1" with:@"1" with:@"10" with:@"" completion:^(NSArray *dataArray)
          {
              _dataArray=dataArray;
@@ -230,6 +223,7 @@
     {
         if (sender.tag==2)
         {
+            _kindOrder = @"0";
             [HttpEngine myOrder:@"true" with:@"1" with:@"10" with:@"0" completion:^(NSArray *dataArray)
              {
                  _dataArray=dataArray;
@@ -240,6 +234,7 @@
         else
         {
             NSString*str=[NSString stringWithFormat:@"%ld",sender.tag-1];
+            _kindOrder = str;
             [HttpEngine myOrder:@"true" with:@"1" with:@"10" with:str completion:^(NSArray *dataArray)
              {
                  _dataArray=dataArray;
@@ -259,6 +254,10 @@
     [self.view addSubview:self.tableView];
     
     self.tableView.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
+    
+    if (_dataArray.count==0) {
+        return;
+    }
     
     //下拉刷新 上拉加载更多
     __weak OrderPageViewController *weakSelf = self;

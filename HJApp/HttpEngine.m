@@ -136,7 +136,7 @@
 }
 
 //意见反馈
-+(void)ideaFeedBackName:(NSString*)name withMoblie:(NSString*)moblie withContent:(NSString*)content
++(void)ideaFeedBackName:(NSString*)name withMoblie:(NSString*)moblie withContent:(NSString*)content complete:(void(^)(NSString *error))complete
 {
 
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
@@ -154,29 +154,36 @@
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSLog(@"JSON:%@",responseObject);
+        complete(nil);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"Error:%@",error);
+        NSDictionary *dic = error.userInfo;
+        NSString *str = [self errorArrayData:dic withKey:@"mobile"];
+        complete(str);
     }];
 
 }
 
 //商务合作
-+(void)cooperateName:(NSString*)name withMoblie:(NSString*)moblie withEmail:(NSString*)email withDanWei:(NSString*)danWei withOther:(NSString*)other withIp:(NSString *)ip
++(void)cooperateName:(NSString*)name withMoblie:(NSString*)moblie withEmail:(NSString*)email withDanWei:(NSString*)danWei withOther:(NSString*)other withIp:(NSString *)ip complete:(void(^)(NSString *error))complete
 {
     
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/feedback/"];
-    
-  NSDictionary*parameters=@{@"name":name,@"mobile":moblie,@"email":email,@"company":danWei,@"content":other,@"feedback_type":@"2",@"ip":ip};
+    NSDictionary*parameters=@{@"name":name,@"mobile":moblie,@"email":email,@"company":danWei,@"content":other,@"feedback_type":@"2",@"ip":ip};
     
     [session POST:str parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-         NSLog(@"JSON:%@",responseObject);
+        NSLog(@"JSON:%@",responseObject);
+        complete(nil);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error:%@",error);
+        NSDictionary *dic = error.userInfo;
+        NSString *str = [self errorArrayData:dic withKey:@"mobile"];
+        complete(str);
     }];
 
 }
@@ -309,7 +316,7 @@
     [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        //NSLog(@"123==JSON:%@",responseObject);
+        NSLog(@"123==JSON:%@",responseObject);
         NSArray*array=responseObject[@"cart_list"];
         NSMutableArray*dataArray=[[NSMutableArray alloc]init];
         for (int i=0; i<array.count; i++)
@@ -321,9 +328,10 @@
         complete(responseObject,dataArray,responseObject[@"total_price"],responseObject[@"shipping_fee"],responseObject[@"payment_price"],@"");
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"checkout== Error:%@",error);
-        NSDictionary*userInfo=error.userInfo;
-        NSString*errorStr=[self errorData:userInfo];
-        complete(nil,nil,@"",@"",@"",errorStr);
+        
+//        NSDictionary*userInfo=error.userInfo;
+//        NSString*errorStr=[self errorData:userInfo];
+//        complete(nil,nil,@"",@"",@"",errorStr);
     }];
 
     
@@ -365,11 +373,9 @@
 
 }
 //增加商品
-+(void)addGoodsLocation:(NSString*)location withSku:(NSString*)sku withSupplier:(NSString*)supplier withNumber:(NSString*)number
++(void)addGoodsLocation:(NSString*)location withSku:(NSString*)sku withSupplier:(NSString*)supplier withNumber:(NSString*)number complete:(void(^)(NSString *error,NSString *errorStr))complete
 {
-    
     MBProgressHUD *hud = [BWCommon getHUD];
-    
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/cart/"];
     
@@ -386,11 +392,17 @@
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        //NSLog(@"JSON:%@",responseObject);
+        NSLog(@"JSON:%@",responseObject);
         [hud removeFromSuperview];
+        complete(nil,nil);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [hud removeFromSuperview];
-        NSLog(@"Error:%@",error);
+        NSDictionary *dic = error.userInfo;
+        NSString *str=[HttpEngine errorData:dic withKey:@"sku"];
+        complete(@"error",str);
+        NSLog(@"Error:%@",str);
+//        NSLog(@"dic====%@",dic);
+//        NSLog(@"Error:%@",error);
     }];
 }
 
@@ -398,7 +410,6 @@
 +(void)sendMessageMoblie:(NSString*)mobliePhone  withKind:(int)tag
 {
     AFHTTPSessionManager*manager=[AFHTTPSessionManager manager];
-    
     NSLog(@"mobliePhone==%@",mobliePhone);
     NSString *str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/sms/send/"];
     NSString*srt=@"";
@@ -408,7 +419,6 @@
         srt=[NSString stringWithFormat:@"%@%d",srt,num];
         //NSLog(@"srtsrtsrt====%@",srt);
     }
-    
     NSString*message;
     if (tag==1)
     {
@@ -538,10 +548,12 @@
         NSString*str=responseObject[@"token"];
         [[NSUserDefaults standardUserDefaults]setObject:str forKey:@"TOKEN_KEY"];
         [[NSUserDefaults standardUserDefaults]setObject:name forKey:@"NAME"];
-        complete(@"succese");
+        complete(nil);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        complete(@"fail");
-        NSLog(@"Error: %@", error);
+        //NSLog(@"Error: %@", error);
+        NSDictionary *dic = error.userInfo;
+        NSString *str = [self errorArrayData:dic withKey:@"non_field_errors"];
+        complete(str);
     }];
 }
 
@@ -1148,14 +1160,25 @@
 
 }
 
-
 //错误数据
-+(NSString*)errorData:(NSDictionary*)userInfo
++(NSString*)errorData:(NSDictionary*)userInfo withKey:(NSString *)key
 {
     NSData*data=userInfo[@"com.alamofire.serialization.response.error.data"];
+    //  NSString *errorStr = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
     NSDictionary*dic=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-    NSString*errorStr=dic[@"msg"];
+    NSLog(@"Errordic====%@",dic);
+    NSString*errorStr=[dic objectForKey:key];
+    if (!errorStr) {
+        errorStr = dic[@"msg"];
+    }
     return errorStr;
 }
-
++(NSString *)errorArrayData:(NSDictionary*)userInfo withKey:(NSString *)key {
+    
+    NSData*data=userInfo[@"com.alamofire.serialization.response.error.data"];
+    NSDictionary*dataDic=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+    NSArray*errorArray=dataDic[key];
+    NSString *str = errorArray[0];
+    return str;
+}
 @end
