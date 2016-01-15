@@ -356,18 +356,29 @@
     }
     else
     {
-        [HttpEngine addAdressConsignee:_userNameTF.text withPhoneMob:_phoneTF.text withProvince:province withCity:city withTown:town withAddress:_adreTF.text];
-        [self alartView:@"新增成功"];
+        [HttpEngine addAdressConsignee:_userNameTF.text withPhoneMob:_phoneTF.text withProvince:province withCity:city withTown:town withAddress:_adreTF.text completion:^(NSString *str) {
+            if ([str isEqualToString:@"succe"]) {
+                [self showMessge:@"新增成功"];
+            } else {
+                [self showMessge:@"新增失败"];
+            }
+        }];
     }
-  
+}
+- (void)showMessge:(NSString *)MessgeStr {
+    [WSProgressHUD showImage:nil status:MessgeStr];
+    [self performSelector:@selector(dismisshud) withObject:nil afterDelay:1.5];
+}
+- (void)dismisshud {
+    [WSProgressHUD dismiss];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 -(void)alartView:(NSString*)str
 {
-
     UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:str preferredStyle: UIAlertControllerStyleAlert];
     UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action)
                                  {
-                                     [self.navigationController popViewControllerAnimated:YES];
+        [self.navigationController popViewControllerAnimated:YES];
                                  }];
     UIAlertAction*cancal=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action)
                           {

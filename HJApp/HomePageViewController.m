@@ -167,7 +167,7 @@ NSString *trackViewURL;
     
     CGRect rect = [[UIScreen mainScreen] bounds];
     main_size = rect.size;
-    
+    _count = 1;
     
     self.title=@"首页";
     self.view.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
@@ -590,7 +590,7 @@ NSString *trackViewURL;
         
     }
     //定时器
-    [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(animotion) userInfo:nil repeats:YES];
+    [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(animotion) userInfo:nil repeats:YES];
 }
 
 -(void)gotoNotifition:(UIButton*)sender
@@ -605,12 +605,13 @@ NSString *trackViewURL;
 -(void)animotion
 {
     //上面
-    _count++;
-    if (_count>=homePicNumber)
+    int num = _scrollPic.contentOffset.x/main_size.width;
+    if (num>=homePicNumber-1)
     {
-        _count=0;
+        num=-1;
     }
-    [self.scrollPic setContentOffset:CGPointMake(_count*main_size.width, 0)  animated:YES];
+    num = num + _count;
+    [self.scrollPic setContentOffset:CGPointMake(num*main_size.width, 0)  animated:YES];
     
     //下面
     _countT++;

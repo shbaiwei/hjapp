@@ -417,7 +417,7 @@
     {
         int num=arc4random()%10;
         srt=[NSString stringWithFormat:@"%@%d",srt,num];
-        //NSLog(@"srtsrtsrt====%@",srt);
+        NSLog(@"srtsrtsrt====%@",srt);
     }
     NSString*message;
     if (tag==1)
@@ -599,16 +599,16 @@
     NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
     NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
     
-    AFHTTPSessionManager*magager=[AFHTTPSessionManager manager];
+    AFHTTPSessionManager *magager=[AFHTTPSessionManager manager];
     NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/users/userinfo/"];
     [magager.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
-    
     [magager GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSLog(@"个人信息＝＝JSON:%@",responseObject);
-        NSString*idStr=responseObject[@"id"];
+        NSString* idStr =responseObject[@"id"];
         [[NSUserDefaults standardUserDefaults]setObject:idStr forKey:@"ID"];
+        complete(responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"Error:%@",error);
     }];
@@ -807,7 +807,7 @@
 }
 
 //编辑个人资料
-+(void)updataConsumerDetailData:(NSString*)realNameStr with:(NSString*)genderStr with:(NSString*)birthdayStr
++(void)updataConsumerDetailData:(NSString*)realNameStr with:(NSString*)genderStr with:(NSString*)birthdayStr completion:(void (^)(NSString *))completion
 {
         NSLog(@"realNameStr=%@,genderStr=%@,birthdayStr=%@",realNameStr,genderStr,birthdayStr);
     
@@ -827,10 +827,12 @@
     [manager PUT:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
          NSLog(@"JSON:%@",responseObject);
+         completion(@"succe");
          
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
      {
          NSLog(@"Error:%@",error);
+         completion(@"error");
      }];
     
 }
@@ -920,16 +922,16 @@
     
     [manager PUT:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
-         NSLog(@"JSON:%@",responseObject);
+         NSLog(@"bijiJSON:%@",responseObject);
          
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
      {
-         NSLog(@"Error:%@",error);
+         NSLog(@"bijiError:%@",error);
      }];
     
 }
 //增加地址
-+(void)addAdressConsignee:(NSString*)consignee withPhoneMob:(NSString*)phoneMob withProvince:(NSString*)province withCity:(NSString*)city withTown:(NSString*)town withAddress:(NSString*)address
++(void)addAdressConsignee:(NSString*)consignee withPhoneMob:(NSString*)phoneMob withProvince:(NSString*)province withCity:(NSString*)city withTown:(NSString*)town withAddress:(NSString*)address completion:(void(^)(NSString *str))completion
 {
     
     AFHTTPSessionManager*manager=[AFHTTPSessionManager manager];
@@ -948,9 +950,12 @@
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"JSON:%@",responseObject);
+        NSLog(@"新增JSON:%@",responseObject);
+        completion(@"succe");
+        
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"Error:%@",error);
+        completion(@"error");
     }];
 }
 //地址删除

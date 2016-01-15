@@ -175,10 +175,12 @@
              {
                  [HttpEngine getConsumerData:^(NSArray *dataArray) {
                      
+                 [self dismissViewControllerAnimated:YES completion:nil];
+                     
                  }];
                  //FlashViewController*flashVC=[[FlashViewController alloc]init];
                  //[self.navigationController pushViewController:flashVC animated:YES];
-                 [self dismissViewControllerAnimated:YES completion:nil];
+                 
              }
          }
          ];

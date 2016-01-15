@@ -407,7 +407,13 @@
     UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:@"确定更新吗" preferredStyle: UIAlertControllerStyleAlert];
     UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
                                  {
-          [HttpEngine updataConsumerDetailData:_trueNameTFV.text with:str with:_birthdayLabel.text];
+          [HttpEngine updataConsumerDetailData:_trueNameTFV.text with:str with:_birthdayLabel.text completion:^(NSString *str) {
+              if ([str isEqualToString:@"succe"]) {
+                  [self showMessge:@"更新成功"];
+              } else {
+                  [self showMessge:@"更新失败"];
+              }
+          }];
                                  }];
     UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
                           {
@@ -418,7 +424,13 @@
     [self presentViewController:alert animated:YES completion:nil];
     
 }
-
+- (void)showMessge:(NSString *)MessgeStr {
+    [WSProgressHUD showImage:nil status:MessgeStr];
+    [self performSelector:@selector(dismisshud) withObject:nil afterDelay:3];
+}
+- (void)dismisshud {
+    [WSProgressHUD dismiss];
+}
 //让view上去做动画 table上去
 -(void)textViewDidBeginEditing:(UITextView *)textView
 {
