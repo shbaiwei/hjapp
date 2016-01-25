@@ -251,7 +251,7 @@
 //                [cell addSubview:_trueNameTF];
                 
                 _trueNameTFV=[[UITextView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3, 15,LBVIEW_WIDTH1/2, 40)];
-                _trueNameTFV.layer.borderColor=[UIColor grayColor].CGColor;
+                _trueNameTFV.layer.borderColor=[UIColor colorWithRed:200/255.0f green:200/255.0f blue:200/255.0f alpha:1].CGColor;
                 _trueNameTFV.layer.borderWidth=1;
                 _trueNameTFV.layer.cornerRadius=10;
                 _trueNameTFV.clipsToBounds=YES;
@@ -277,7 +277,7 @@
                 _sexBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
                 _sexBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
                 _sexBtn.layer.borderWidth=1;
-                _sexBtn.layer.borderColor=[UIColor grayColor].CGColor;
+                _sexBtn.layer.borderColor=[UIColor colorWithRed:200/255.0f green:200/255.0f blue:200/255.0f alpha:1].CGColor;
                 _sexBtn.layer.cornerRadius=10;
                 _sexBtn.clipsToBounds=YES;
                 [_sexBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];

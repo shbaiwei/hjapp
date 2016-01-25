@@ -522,6 +522,8 @@
 		3289AFB21BFADDE70037A728 /* TodayShopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodayShopViewController.h; sourceTree = "<group>"; };
 		3289AFB31BFADDE70037A728 /* TodayShopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodayShopViewController.m; sourceTree = "<group>"; };
 		3289AFB41BFADDE70037A728 /* TodayShopViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TodayShopViewController.xib; sourceTree = "<group>"; };
+		32A338201C50FAB900DAD3EC /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
+		32A338211C50FAB900DAD3EC /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		32A377661C0C558C00DE7D8C /* buy_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buy_btn.png; sourceTree = "<group>"; };
 		32B49B511BE30CE400AB6D55 /* HJApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HJApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32B49B551BE30CE400AB6D55 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -1915,6 +1917,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				32B49B5E1BE30CE400AB6D55 /* Base */,
+				32A338201C50FAB900DAD3EC /* zh-Hans */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -1923,6 +1926,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				32B49B631BE30CE400AB6D55 /* Base */,
+				32A338211C50FAB900DAD3EC /* zh-Hans */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -1966,7 +1970,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -2004,7 +2008,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PROVISIONING_PROFILE = "8134e129-c8cc-4078-8539-94313d793694";
 				SDKROOT = iphoneos;
@@ -2030,7 +2034,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = HJApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2063,7 +2067,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = HJApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
