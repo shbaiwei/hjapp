@@ -16,6 +16,9 @@ pod 'WSProgressHUD','~> 1.0.9'
 end
 
 target 'HJAppTests' do
+end
+
+target 'HJAppTests' do
 
 end
 

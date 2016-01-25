@@ -114,20 +114,17 @@
     }
     
     [HttpEngine cooperateName:field1.text withMoblie:field2.text withEmail:field3.text withDanWei:field4.text withOther:field5.text withIp:@"192.168.33.249" complete:^(NSString *error) {
-        
+        if (error) {
+            [self alert:error with:2];
+        } else {
+        [self alert:@"反馈成功" with:2];
+        }
     }];
-    
-    [self alert:@"反馈成功" with:2];
-    
     
 }
 -(void)alert:(NSString*)str with:(int)tag
 {
     UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:str preferredStyle: UIAlertControllerStyleAlert];
-    UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
-                          {
-                              
-                          }];
     UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
                                  {
                                      if (tag==2)
@@ -135,7 +132,6 @@
                                       [self.navigationController popViewControllerAnimated:YES];
                                      }
                                  }];
-    [alert addAction:cancel];
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
 }

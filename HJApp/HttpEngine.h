@@ -90,7 +90,7 @@
 +(void)getConsumerDetailData:(NSString*)idStr completion:(void(^)(NSArray*dataArray))complete;
 
 //编辑个人资料
-+(void)updataConsumerDetailData:(NSString*)realNameStr with:(NSString*)genderStr with:(NSString*)birthdayStr;
++(void)updataConsumerDetailData:(NSString*)realNameStr with:(NSString*)genderStr with:(NSString*)birthdayStr completion:(void(^)(NSString *str))completion;
 
 //上传图片
 +(void)uploadPicData:(UIImage*)image;
@@ -117,7 +117,7 @@
 //地址编辑
 +(void)changeAddress:(NSString*)addressId Consignee:(NSString*)consignee withPhoneMob:(NSString*)phoneMob withProvince:(NSString*)province withCity:(NSString*)city withTown:(NSString*)town withAddress:(NSString*)address;
 //增加地址
-+(void)addAdressConsignee:(NSString*)consignee withPhoneMob:(NSString*)phoneMob withProvince:(NSString*)province withCity:(NSString*)city withTown:(NSString*)town withAddress:(NSString*)address;
++(void)addAdressConsignee:(NSString*)consignee withPhoneMob:(NSString*)phoneMob withProvince:(NSString*)province withCity:(NSString*)city withTown:(NSString*)town withAddress:(NSString*)address completion:(void(^)(NSString *str))completion;
 //地址删除
 +(void)deleteAddress:(NSString*)addrId;
 //设置默认收货地址

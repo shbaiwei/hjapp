@@ -307,7 +307,7 @@
                     
                     [self.timeLimitLabel setText:[NSString stringWithFormat:@"%@秒后重新获取验证码",time]];
                 }];
-                
+            
                 //TODO 发送验证码
                 [HttpEngine sendMessageMoblie:_phoneTF.text withKind:1];
             }

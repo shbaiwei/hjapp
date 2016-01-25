@@ -834,6 +834,22 @@ NSString *locatioanStr;
     anImage.clipsToBounds=YES;
     [self.view addSubview:anImage];
     
+    //关键帧动画
+//    CALayer *chLayer = [[CALayer alloc] init];
+//    chLayer.frame = CGRectMake(rect.origin.x, rect.origin.y, 20, 20);
+//    chLayer.backgroundColor = [UIColor colorWithPatternImage:anImage.image].CGColor;
+//    chLayer.cornerRadius = 10;
+//    [self.view.layer addSublayer:chLayer];
+//    
+//    CAKeyframeAnimation *CHAnimation=[CAKeyframeAnimation animationWithKeyPath:@"position"];
+//    CGMutablePathRef path = CGPathCreateMutable();
+//    CGPathMoveToPoint(path, NULL, LBVIEW_WIDTH1-50, rect.origin.y);
+//    CGPathAddQuadCurveToPoint(path, NULL, 3.5*LBVIEW_WIDTH1/5, rect.origin.y, 3.5*LBVIEW_WIDTH1/5, LBVIEW_HEIGHT1-54);
+//    CHAnimation.path = path;
+//    CHAnimation.removedOnCompletion = YES;
+//    CHAnimation.duration = 2;
+//    [chLayer addAnimation:CHAnimation forKey:nil];
+    
     //动画
     [UIView animateKeyframesWithDuration:1 delay:0 options:UIViewKeyframeAnimationOptionCalculationModeCubicPaced animations:^
      {
@@ -843,7 +859,6 @@ NSString *locatioanStr;
      } completion:^(BOOL finished)
      {
          [anImage removeFromSuperview];
-         
      }];
 }
 
