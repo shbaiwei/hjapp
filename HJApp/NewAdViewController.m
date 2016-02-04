@@ -329,7 +329,7 @@
         }
         else
         {
-            town=area1.parentId;
+            town=@"0";
         }
 
     }

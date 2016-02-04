@@ -13,6 +13,7 @@
 @property(nonatomic,unsafe_unretained)BOOL isOpen;
 @property(nonatomic,unsafe_unretained)NSInteger section;
 @property(nonatomic,unsafe_unretained)NSInteger row;
+@property (nonatomic,copy) NSString *titleStr;
 
 
 @end

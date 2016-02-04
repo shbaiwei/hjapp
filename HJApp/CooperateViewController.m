@@ -21,6 +21,7 @@
 {
     [super viewDidLoad];
     self.navigationController.navigationBarHidden=NO;
+    self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0 green:0.675 blue:0.933 alpha:1];
     [self.navigationController.navigationBar setTitleTextAttributes:
      @{NSFontAttributeName:[UIFont systemFontOfSize:19],
        NSForegroundColorAttributeName:[UIColor whiteColor]}];

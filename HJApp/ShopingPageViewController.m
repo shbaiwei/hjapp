@@ -14,7 +14,7 @@
 #import "RegisterViewController.h"
 #import "ChangCityViewController.h"
 
-@interface ShopingPageViewController ()<UITableViewDataSource,UITableViewDelegate>
+@interface ShopingPageViewController ()<UITableViewDataSource,UITableViewDelegate,UIGestureRecognizerDelegate>
 
 @property(nonatomic,strong)UITableView*tableView;
 @property(nonatomic,strong)NSArray*dataArray;
@@ -29,6 +29,9 @@
 @property(nonatomic,strong)UILabel*shippingFeeLabel;
 
 @property(nonatomic,unsafe_unretained)BOOL isBool;
+@property (nonatomic,unsafe_unretained)CGRect btnRect;
+@property (nonatomic,unsafe_unretained)NSInteger btnRow;
+
 @end
 
 
@@ -80,11 +83,17 @@
     [super viewDidLoad];
      self.view.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     [self showTableView];
+    
+    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(doubleTapClick)];
+    [doubleTap setNumberOfTapsRequired:2];
+    doubleTap.delegate = self;
+    [self.view addGestureRecognizer:doubleTap];
+
 }
 
 -(void)showTableView
 {
-    _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-54)];
+    _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-54-LBVIEW_HEIGHT1 / 13-64)];
     _tableView.dataSource=self;
     _tableView.delegate=self;
     _tableView.tableFooterView=[[UIView alloc]initWithFrame:CGRectZero];
@@ -173,17 +182,19 @@
         return;
     }
     
-    if (_dataArray.count==0)
-    {
-        self.tbBarVC.selectedIndex=1;
-    }
-    else
-    {
+    [HttpEngine getSimpleCart:^(NSArray *array) {
+       
+        if (array.count==0)
+        {
+            self.tbBarVC.selectedIndex=1;
+        }
+        else
+        {
         PayViewController*payVC=[[PayViewController alloc]init];
         payVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:payVC animated:YES];
-    }
-    
+        }
+    }];
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -234,7 +245,7 @@
         [picLabel setFont:font];
         [cell addSubview:picLabel];
         
-        UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-60, 25, 20, 20)];
+        UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-70, 25, 30, 20)];
         numLabel.text=[NSString stringWithFormat:@"%@",spCa.number];
         numLabel.textAlignment=NSTextAlignmentCenter;
         numLabel.font=NJTitleFont;
@@ -247,7 +258,7 @@
         [cell addSubview:addBtn];
         
         
-        UIButton*subBtn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-90, 20, 30, 30)];
+        UIButton*subBtn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-100, 20, 30, 30)];
         [subBtn setImage:[UIImage imageNamed:@"jian.png"] forState:UIControlStateNormal];
         subBtn.tag=indexPath.row+1000;
         [subBtn addTarget:self action:@selector(subBtn:) forControlEvents:UIControlEventTouchUpInside];
@@ -265,6 +276,13 @@
 //增加按钮
 -(void)addBtn:(UIButton*)sender
 {
+//    btnRow = sender.tag;
+//    btnSection = sender.row;
+    
+    //CGRect rect=[sender convertRect: sender.bounds toView:self.view];
+    _btnRect = [sender convertRect:sender.bounds toView:self.view];
+    _btnRow = sender.tag;
+
     ShopingCar*spCa=_dataArray[sender.tag];
     NSString*numer=spCa.number;
     numer=[NSString stringWithFormat:@"%lu",[numer integerValue]+1];
@@ -275,6 +293,20 @@
         }
     }];
     [self performSelector:@selector(shuaiXin) withObject:numer afterDelay:0.1];
+}
+- (void)doubleTapClick {
+    
+    [self alertMoreGoods];
+    
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    
+    CGPoint location = [touch locationInView:self.view];
+    if (CGRectContainsPoint(_btnRect, location)) {
+        return YES;
+    }
+    return NO;
 }
 
 -(void) refreshCartCount:(NSArray *)array
@@ -405,5 +437,37 @@
 //  [alert addAction:cancel];
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
+}
+- (void)alertMoreGoods {
+    
+    
+    ShopingCar*spCa=_dataArray[_btnRow];
+    NSString*strCode=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
+    
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"快速抢购" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.keyboardType = UIKeyboardTypeNumberPad;
+    }];
+    UIAlertAction *defaul = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+        NSString *str = alert.textFields[0].text;
+        [HttpEngine addGoodsLocation:strCode withSku:spCa.skuId withSupplier:spCa.supplierId withNumber:str complete:^(NSString *error, NSString *errorStr) {
+            if (error) {
+                [self showError:errorStr];
+            }
+            [self shuaiXin];
+        }];
+
+        
+    }];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [alert addAction:defaul];
+    [alert addAction:cancel];
+    [self presentViewController:alert animated:YES completion:nil];
+    
 }
 @end

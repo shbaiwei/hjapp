@@ -38,6 +38,8 @@
 //花集公告
 +(void)getNotifition:(void(^)(NSArray*dataArray))complete;
 
+//猜你喜欢 page_limit
++ (void)goodsFeaturedWithLocation:(NSString *)location withPageLimit:(NSString *)pageLimit with:(void(^)(NSArray*dataArray))complete;
 //意见反馈
 +(void)ideaFeedBackName:(NSString*)name withMoblie:(NSString*)moblie withContent:(NSString*)content complete:(void(^)(NSString *error))complete;
 
@@ -84,7 +86,7 @@
 
 
 //获取用户详细信息
-+(void)getConsumerData:(void(^)(NSArray*dataArray))complete;
++(void)getConsumerData:(void(^)(NSDictionary*dataDic))complete;
 
 //获取用户资料
 +(void)getConsumerDetailData:(NSString*)idStr completion:(void(^)(NSArray*dataArray))complete;
@@ -103,7 +105,7 @@
 +(void)anginBuy:(NSString*)order;
 
 //订单提交
-+(void)submitOrderAddressId:(NSString*)addressId withMethod:(NSString*)method withSpaypassword:(NSString*)spaypassword withCouponNo:(NSString*)couponNo completion:(void(^)(NSDictionary*dict))complete;
++(void)submitOrderMethod:(NSString*)method withSpaypassword:(NSString*)spaypassword withDeadline:(NSString *)deadline withCouponNo:(NSString*)couponNo withCustMessage:(NSString *)CustMessage withSelfPickup:(NSString *)selfPickup withAddressId:(NSString*)addressId withConsignee:(NSString *)consignee withProvince:(NSString *)province withCity:(NSString *)city withTown:(NSString *)town withPhoneMob:(NSString *)phoneMob withAddress:(NSString *)address completion:(void(^)(NSDictionary*dict))complete;
 
 //获取订单号
 //+(void)getOutOrderNoNum:(NSString*)num Completion:(void(^)(NSString*orderNo))complete;
@@ -149,4 +151,7 @@
 
 //错误数据
 //+(NSString*)errorData:(NSDictionary*)userInfo;
+
+//产地来源
++ (void)getAreaDataLocation:(NSString *)location completion:(void(^)(NSArray*dataArray))complete;
 @end

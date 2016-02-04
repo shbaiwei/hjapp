@@ -233,4 +233,26 @@
     }
     
 }
+- (void)saveData {
+    NSString *sendAera = [[NSUserDefaults standardUserDefaults]objectForKey:@"AREA"];
+    if (sendAera) {
+        AFHTTPSessionManager*manager=[AFHTTPSessionManager manager];
+        NSString*idStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"ID"];
+        NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/users/%@/",idStr];
+        NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+        NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
+        [manager.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
+        NSDictionary*parameters;
+        if ([sendAera isEqualToString:@"本地"]) {
+            parameters=@{@"default_delivery":@"local"};
+        } else {
+            parameters=@{@"default_delivery":@"origin"};
+        }
+        [manager PATCH:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            //NSLog(@"我的信息JSON:%@",responseObject);
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            //NSLog(@"我的信息Error:%@",error);
+        }];
+    }
+}
 @end

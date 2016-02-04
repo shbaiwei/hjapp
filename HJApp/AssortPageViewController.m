@@ -19,7 +19,7 @@
 #import "ChangCityViewController.h"
 
 
-@interface AssortPageViewController ()<UITableViewDataSource, UITableViewDelegate, UICollectionViewDelegate, UIScrollViewDelegate>
+@interface AssortPageViewController ()<UITableViewDataSource, UITableViewDelegate, UICollectionViewDelegate, UIScrollViewDelegate,UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UITableView *leftTableV;
 @property (nonatomic, strong) UITableView *rightTableV;
@@ -54,12 +54,16 @@
 @property(nonatomic,strong)UIScrollView*titleBtnScrollView;
 @property(nonatomic,strong)NSArray*carArray;
 @property(nonatomic,strong)NSMutableArray*catalogueStrArray;
+@property (nonatomic,unsafe_unretained)CGRect btnRect;
 
 //添加减少按钮对应的购物车数组
 @property(nonatomic,strong)NSArray*btnCarArray;
 
 @property(nonatomic,strong)NSMutableArray *cartList;
 
+@property(nonatomic,copy)NSString *sendArea;
+@property(nonatomic,unsafe_unretained)NSInteger areaRow;
+@property(nonatomic,unsafe_unretained)NSInteger areaSection;
 @end
 
 #define VIEW_WIDTH self.view.bounds.size.width
@@ -74,7 +78,8 @@
 NSInteger page;
 NSString *cid;
 NSString *locatioanStr;
-
+NSInteger btnRow;
+NSInteger btnSection;
 
 //视图将要出现  刷新数据
 -(void)viewWillAppear:(BOOL)animated
@@ -82,7 +87,36 @@ NSString *locatioanStr;
     self.navigationController.navigationBarHidden=NO;
     self.navigationController.navigationBar.translucent =NO;
     self.navigationItem.hidesBackButton=YES;
-    self.title=@"选择品类";
+
+    //判断发货地
+    NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+    NSString*code=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
+    if (str&&code)
+    {
+        self.sendArea = [[NSUserDefaults standardUserDefaults]objectForKey:@"AREA"];
+        if (!self.sendArea) {
+            [HttpEngine getConsumerData:^(NSDictionary*dataDic) {
+                if (dataDic) {
+                       NSString *defaultDelivery = dataDic[@"default_delivery"];
+                if ([defaultDelivery isEqualToString:@"none"]) {
+                    [HttpEngine getAreaDataLocation:code completion:^(NSArray *dataArray) {
+                        [self choosePlaceAlert:dataArray];
+                    }];
+                } else {
+                    if ([defaultDelivery isEqualToString:@"local"]) {
+                        self.sendArea = @"本地";
+                    } else {
+                        self.sendArea = @"昆明";
+                    }
+                    [[NSUserDefaults standardUserDefaults]setObject:self.sendArea forKey:@"AREA"];
+                }
+            }
+            }];
+            
+        }
+    }
+
+    //self.title=@"选择品类";
     [HttpEngine getAllFlower:^(NSArray *dataArray)
      {
          //左Uitableview
@@ -102,13 +136,15 @@ NSString *locatioanStr;
      {
         _cartList = [array mutableCopy];
      }];
+    
 }
+
 -(void)judgeIsTag
 {
     [self delayGetProduct];
     //获取上个页面所选取的种类
     NSString*isTagStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"TWOTAG"];
-    if (isTagStr!=NULL)
+    if (isTagStr)
     {
         cid = isTagStr;
         //_isTag=[isTagStr intValue];
@@ -130,6 +166,13 @@ NSString *locatioanStr;
         [self.leftTableV selectRowAtIndexPath:index1 animated:NO scrollPosition:UITableViewScrollPositionNone];
         [self didSelectLeftTableView:tag];
         //[self loadDetailData];
+    } else {
+        AllFlower*flower=_floerNameArray[0];
+        [HttpEngine getProduct:flower.flowerId completion:^(NSArray *dataArray)
+         {
+             _catalogueArray=dataArray;
+             [self updataCatalogueStrArray];
+         }];
     }
 }
 - (void)viewDidLoad
@@ -142,7 +185,12 @@ NSString *locatioanStr;
     page=1;
     cid = @"1";
     _cartList = [[NSMutableArray alloc] init];
-   
+    
+    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(doubleTapClick)];
+    [doubleTap setNumberOfTapsRequired:2];
+    doubleTap.delegate = self;
+    [self.view addGestureRecognizer:doubleTap];
+    
 }
 
 //获取右边tableview数据
@@ -164,12 +212,13 @@ NSString *locatioanStr;
      }];
 }
 
-//分类栏设置
+#pragma  mark-------分类栏设置
 -(void)setCatalogue
 {
+    [_assortTopView removeFromSuperview];
     FlowerCatalogue*flower=_catalogueArray[0];
     
-    _assortTopView=[[UIView alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1/3.5, 0, LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5, 70+10)];
+    _assortTopView=[[UIView alloc] initWithFrame:CGRectMake(90, 0, LBVIEW_WIDTH1-90, 70+10)];
     _assortTopView.backgroundColor=[UIColor whiteColor];
     [self.view addSubview:_assortTopView];
     
@@ -197,22 +246,29 @@ NSString *locatioanStr;
         btn.section=0;
         btn.row=i;
         btn.tag=1000+i;
-        
         [btn.titleLabel setTextColor:NJFontColor];
+        [btn setTitleColor:[UIColor colorWithRed:84/255.0 green:159/255.0 blue:255/255.0 alpha:1] forState:UIControlStateSelected];
         [btn.titleLabel setFont:NJNameFont];
+        btn.titleStr = dic[@"aliasname"];
         btn.selected=NO;
         
         
         NSString*propStr=[NSString stringWithFormat:@"%@:%@",dic[@"props"],dic[@"id"]];
-        NSLog(@"propStr===%@",propStr);
         btn.accessibilityLabel=propStr;
         
+        if ([dic[@"aliasname"]isEqualToString:_sendArea]) {
+            btn.selected = YES;
+            [btn changeStyle];
+            self.areaSection = 100;
+            self.areaRow = i+1000;
+        }
+
         [btn addTarget:self action:@selector(selectBtnClick:) forControlEvents:UIControlEventTouchUpInside];
         [_titleBtnScrollView addSubview:btn];
     }
     
     
-    _chooseBtn=[[MyBtn alloc]initWithFrame:CGRectMake((LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-100)/2, 35, 100, 70-20)];
+    _chooseBtn=[[MyBtn alloc]initWithFrame:CGRectMake((LBVIEW_WIDTH1-90-100)/2, 35, 100, 70-20)];
     [_chooseBtn setTitle:@"更多筛选" forState:UIControlStateNormal];
     _chooseBtn.titleLabel.font=[UIFont systemFontOfSize:14];
     [_chooseBtn setTitleColor:[UIColor colorWithRed:37/255.0 green:119/255.0 blue:188/255.0 alpha:1] forState:UIControlStateNormal];
@@ -223,7 +279,7 @@ NSString *locatioanStr;
 
     for (int i=0; i<2; i++)
     {
-        UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(5+((LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5)/2+45)*i, 60, (LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-110)/2, 2)];
+        UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(5+((LBVIEW_WIDTH1-90)/2+45)*i, 60, (LBVIEW_WIDTH1-90-110)/2, 2)];
         label.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
         [_assortTopView addSubview:label];
     }
@@ -234,8 +290,9 @@ NSString *locatioanStr;
 {
     if (_chooseBtn.isOpen==NO)
     {
+        [_headView removeFromSuperview];
         [_chooseBtn setTitle:@"收起筛选" forState:UIControlStateNormal];
-        _headView=[[UIView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/3.5, 70, LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5, 30*_catalogueArray.count)];
+        _headView=[[UIView alloc]initWithFrame:CGRectMake(90, 70, LBVIEW_WIDTH1-90, 30*_catalogueArray.count)];
         _headView.backgroundColor=[UIColor whiteColor];
         
         for (int i=1; i<_catalogueArray.count; i++)
@@ -248,7 +305,7 @@ NSString *locatioanStr;
             label.text=flower.name;
             
             
-            UIScrollView*btnScrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(70, 5+30*(i-1), LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-60, 30)];
+            UIScrollView*btnScrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(70, 5+30*(i-1), LBVIEW_WIDTH1-90-60, 30)];
             btnScrollView.contentSize=CGSizeMake(65*flower.catalogueArray.count+40, 20);
             btnScrollView.showsHorizontalScrollIndicator=NO;
             btnScrollView.bounces=NO;
@@ -261,39 +318,38 @@ NSString *locatioanStr;
                 
                 MyPropBtn *btn=[[MyPropBtn alloc] initWithFrame:CGRectMake(65*j+5, 5, 60, 20)];
                 [btn setTitle:dic[@"aliasname"] forState:UIControlStateNormal];
+                btn.titleStr = dic[@"aliasname"];
                 [btn.layer setBorderColor:[UIColor colorWithRed:0.6 green:0.6 blue:0.6 alpha:1].CGColor];
                 btn.section=i;
                 btn.row=j;
                 
                 [btn.titleLabel setTextColor:NJFontColor];
+                [btn  setTitleColor:[UIColor colorWithRed:84/255.0 green:159/255.0 blue:255/255.0 alpha:1] forState:UIControlStateSelected];
                 [btn.titleLabel setFont:NJNameFont];
                 
                 btn.tag=1000+j;
-                
                 btn.selected=NO;
+               
                 NSString*propStr=[NSString stringWithFormat:@"%@:%@",dic[@"props"],dic[@"id"]];
-                NSLog(@"propStr===%@",propStr);
-                
                 btn.accessibilityLabel=propStr;
-                
+                if ([dic[@"aliasname"]isEqualToString:_sendArea]) {
+                    btn.selected = YES;
+                    [btn changeStyle];
+                    self.areaSection = i+100;
+                    self.areaRow = j+1000;
+                }
                 [btn addTarget:self action:@selector(selectBtnClick:) forControlEvents:UIControlEventTouchUpInside];
                 [btnScrollView addSubview:btn];
-                
-                
-                
             }
-            
         }
-        
         [self.view addSubview:_headView];
         
-        
-        _rightTableV.frame=CGRectMake(LBVIEW_WIDTH1/3.5, 70+30*_catalogueArray.count, 5*LBVIEW_WIDTH1/6,LBVIEW_HEIGHT1-60-113-30*_catalogueArray.count);
+        _rightTableV.frame=CGRectMake(90, 70+30*_catalogueArray.count, 5*LBVIEW_WIDTH1/6,LBVIEW_HEIGHT1-60-113-30*_catalogueArray.count);
     }
     else
     {
         [_chooseBtn setTitle:@"更多筛选" forState:UIControlStateNormal];
-        _rightTableV.frame=CGRectMake(LBVIEW_WIDTH1/3.5, 80, 5*LBVIEW_WIDTH1/6, LBVIEW_HEIGHT1-80-113);
+        _rightTableV.frame=CGRectMake(90, 80, 5*LBVIEW_WIDTH1/6, LBVIEW_HEIGHT1-80-113);
         [_headView removeFromSuperview];
     }
     _chooseBtn.isOpen=!_chooseBtn.isOpen;
@@ -311,34 +367,35 @@ NSString *locatioanStr;
     [layer addSublayer:bottomBorder];
 }
 
-//左视图
+#pragma  mark ----- leftTableView
 -(void)showLeftTableView
 {
     //NSLog(@"_floerNameArray==%@",_floerNameArray);
-    self.leftTableV=[[UITableView alloc] initWithFrame:CGRectMake(0,0, self.view.frame.size.width/3.5,  self.view.bounds.size.height * 0.75) style:UITableViewStylePlain];
+    self.leftTableV=[[UITableView alloc] initWithFrame:CGRectMake(0,0, 90,  self.view.bounds.size.height * 0.70) style:UITableViewStylePlain];
     self.leftTableV.delegate=self;
     self.leftTableV.dataSource=self;
+    self.leftTableV.showsVerticalScrollIndicator = NO;
     //self.leftTableV.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    self.leftTableV.tableFooterView = [[UIView alloc]initWithFrame:CGRectZero];
     [self.view addSubview:self.leftTableV];
     
-    UIImageView*downImage=[[UIImageView alloc]initWithFrame:CGRectMake(30, self.view.bounds.size.height * 0.75 + 20, LBVIEW_WIDTH1/6-20, 20)];
+    UIImageView*downImage=[[UIImageView alloc]initWithFrame:CGRectMake(25, self.view.bounds.size.height * 0.70 + 15, 40, 20)];
     downImage.image=[UIImage imageNamed:@"swiper-market-btn-b.png"];
     [self.view addSubview:downImage];
     
   
 }
 
-
+#pragma  mark ----- rightTableView
 //右视图
 -(void)showRightTableView
 {
-    self.rightTableV=[[UITableView alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1/3.5, 10+70, 5*LBVIEW_WIDTH1/6, LBVIEW_HEIGHT1-80-113) style:UITableViewStylePlain];
+    self.rightTableV=[[UITableView alloc] initWithFrame:CGRectMake(90, 10+70, 5*LBVIEW_WIDTH1/6, LBVIEW_HEIGHT1-80-113) style:UITableViewStylePlain];
     self.rightTableV.delegate=self;
     self.rightTableV.dataSource=self;
     [self.view addSubview:self.rightTableV];
     UIView *v = [[UIView alloc] initWithFrame:CGRectZero];
     [self.rightTableV setTableFooterView:v];
-    
     
     __weak AssortPageViewController *weakSelf = self;
     [self.rightTableV addInfiniteScrollingWithActionHandler:^{
@@ -354,7 +411,8 @@ NSString *locatioanStr;
 
     if (!locatioanStr)
         return;
-   
+    
+    //NSLog(@"_catalogueStrArray===%@",_catalogueStrArray);
     [HttpEngine getProductDetail:cid withLocation:locatioanStr withProps:_catalogueStrArray withPage:[NSString stringWithFormat:@"%ld",page] withPageSize:@"10" completion:^(NSArray *dataArray)
      {
          //右uitableview
@@ -390,12 +448,30 @@ NSString *locatioanStr;
 //条件按钮
 -(void)selectBtnClick:(MyPropBtn *)sender
 {
+    
     //判断有没有选择城市
     NSString*code=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
     if (!code)
     {
         [self alert];
     }
+    
+    //移除内定的
+    UIView *superView =self.areaSection==100 ?_assortTopView:_headView;
+        if (sender.section==self.areaSection||sender.tag!=self.areaRow) {
+            UIScrollView*scrollView=[superView viewWithTag:self.areaSection];
+            MyPropBtn*mbtn=[scrollView viewWithTag:self.areaRow];
+            mbtn.selected=NO;
+            [mbtn removeSelectedStyle];
+        }
+    
+    if ([sender.titleStr isEqualToString:@"本地"]) {
+        self.sendArea = @"本地";
+    }
+    if ([sender.titleStr isEqualToString:@"昆明"]) {
+        self.sendArea = @"昆明";
+    }
+    [[NSUserDefaults standardUserDefaults]setObject:self.sendArea forKey:@"AREA"];
     
     AllFlower*flower=_floerNameArray[_isTag];
     
@@ -567,7 +643,8 @@ NSString *locatioanStr;
     return 0;
 }
 
-//cell的详细
+#pragma mark ------cellDetail
+
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
@@ -577,11 +654,12 @@ NSString *locatioanStr;
         
         AssortTableViewCell *cell= [tableView cellForRowAtIndexPath:indexPath];
         if (cell==nil) {
-            cell=[[AssortTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"cell"];
+            cell=[[AssortTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+            
         }
         cell.textLabel.text=flower.name;
-        cell.textLabel.textAlignment=NSTextAlignmentCenter;
-        cell.textLabel.adjustsFontSizeToFitWidth=YES;
+        cell.textLabel.textAlignment = NSTextAlignmentCenter;
+        //cell.textLabel.adjustsFontSizeToFitWidth=YES;
         cell.textLabel.textColor=NJFontColor;
         cell.textLabel.font=NJNameFont;
         
@@ -614,7 +692,7 @@ NSString *locatioanStr;
             [cell addSubview:detailLabel];
             
             //添加按钮
-            MyBtn*btn=[[MyBtn alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-40, 5, 44, 44)];
+            MyBtn*btn=[[MyBtn alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-90-45, 5, 44, 44)];
             [btn setImage:[UIImage imageNamed:@"plus.png"] forState:UIControlStateNormal];
             [btn setContentEdgeInsets:UIEdgeInsetsMake(10, 10, 10, 10)];
             [btn addTarget:self action:@selector(addBtnClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -639,7 +717,7 @@ NSString *locatioanStr;
                          if ([str11 isEqualToString:str22])
                         {
                             //减少按钮
-                            MyBtn*btn=[[MyBtn alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-90, 5, 44, 44)];
+                            MyBtn*btn=[[MyBtn alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-90-95, 5, 44, 44)];
                             [btn setImage:[UIImage imageNamed:@"jian.png"] forState:UIControlStateNormal];
                             [btn setContentEdgeInsets:UIEdgeInsetsMake(10, 10, 10, 10)];
                             
@@ -648,7 +726,7 @@ NSString *locatioanStr;
                             btn.row=indexPath.row;
                             [cell addSubview:btn];
                             
-                            UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-60, 15, 30, 20)];
+                            UILabel*numLabel=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-90-65, 15, 30, 20)];
                             numLabel.text=[NSString stringWithFormat:@"%@",shopCar.number];
                             numLabel.textColor=[UIColor blackColor];
                             numLabel.font=[UIFont systemFontOfSize:15];
@@ -669,6 +747,14 @@ NSString *locatioanStr;
 //添加按钮
 -(void)addBtnClick:(MyBtn*)sender
 {
+    btnRow = sender.tag;
+    btnSection = sender.row;
+    
+    //CGRect rect=[sender convertRect: sender.bounds toView:self.view];
+    _btnRect = [sender convertRect:sender.bounds toView:self.view];
+    
+   
+    
     for (int i=0; i<20; i++)
     {
         _addNum[i]=0;
@@ -681,6 +767,20 @@ NSString *locatioanStr;
     }];
 }
 
+- (void)doubleTapClick {
+    
+    [self alertMoreGoods];
+    
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+
+    CGPoint location = [touch locationInView:self.view];
+    if (CGRectContainsPoint(_btnRect, location)) {
+        return YES;
+    }
+    return NO;
+}
 
 #pragma mark  ------添加flower按钮
 -(void)addFlower:(MyBtn*)sender
@@ -728,7 +828,7 @@ NSString *locatioanStr;
                     }
                     else
                     {
-                        //再次帅选
+                        //再次筛选
                         for (int j=0; j<_cartList.count; j++)
                         {
                             ShopingCar*shopCar1=_cartList[j];
@@ -912,34 +1012,43 @@ NSString *locatioanStr;
     }
     
     page = 1;
-    [self loadDetailData];
+   
     
     //获取产品分类
     [HttpEngine getProduct:cid completion:^(NSArray *dataArray)
      {
          _catalogueArray=dataArray;
+         [self updataCatalogueStrArray];
          [self setCatalogue];
-         
+         [self loadDetailData];
          
      }];
     
 
 }
-
+- (void)updataCatalogueStrArray {
+    for (int i=0; i<_catalogueArray.count; i++) {
+        FlowerCatalogue *flower = _catalogueArray[i];
+        for (int j=0; j<flower.catalogueArray.count; j++) {
+            NSDictionary *dic = flower.catalogueArray[j];
+            if ([dic[@"aliasname"] isEqualToString:_sendArea]) {
+                NSString*propStr=[NSString stringWithFormat:@"%@:%@",dic[@"props"],dic[@"id"]];
+                [self.catalogueStrArray addObject:propStr];
+            }
+        }
+    }
+}
 //选中cell调用
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([tableView isEqual:self.leftTableV])
     {
         [self didSelectLeftTableView:indexPath.row];
-
     }
     else if ([tableView isEqual:self.rightTableV])
     {
         
-        
     }
-    
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
@@ -1070,7 +1179,7 @@ NSString *locatioanStr;
             [view addSubview:picLabel];
         }
         //展开按钮
-        UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-LBVIEW_WIDTH1/3.5-90,40, 94, 34)];
+        UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-90-95,40, 94, 34)];
         //[btn setBackgroundImage:[UIImage imageNamed:@"category-arrow2.png"] forState:UIControlStateNormal];
         [btn setImage:[UIImage imageNamed:@"category-arrow2.png"] forState:UIControlStateNormal];
 //      [btn setImage:[UIImage imageNamed:@"category-arrow1.png"] forState:UIControlStateSelected];
@@ -1097,7 +1206,6 @@ NSString *locatioanStr;
         UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginVC];
         [self presentViewController:navigationController animated:YES completion:nil];
     }
-   // sender.selected=!sender.selected;
     _isOpen[sender.tag]=!_isOpen[sender.tag];
     [_rightTableV reloadData];
 }
@@ -1117,6 +1225,75 @@ NSString *locatioanStr;
                                  }];
     [alert addAction:cancel];
     [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+- (void)alertMoreGoods {
+
+    
+    FlowerDetail*dFlower=_floerDetailArray[btnRow-100];
+    NSDictionary*dic=dFlower.dataArray[btnSection];
+    
+    NSString*locatioanStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
+  
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"快速抢购" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.keyboardType = UIKeyboardTypeNumberPad;
+    }];
+    UIAlertAction *defaul = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+        NSString *str = alert.textFields[0].text;
+        [HttpEngine addGoodsLocation:locatioanStr withSku:dic[@"sku"] withSupplier:dic[@"supplier"] withNumber:str complete:^(NSString *error, NSString *errorStr) {
+            if (error) {
+                [self showError:errorStr];
+            }
+            [self refreshData];
+        }];
+      
+    }];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [alert addAction:defaul];
+    [alert addAction:cancel];
+    [self presentViewController:alert animated:YES completion:nil];
+
+}
+- (void)choosePlaceAlert:(NSArray *)array {
+    NSString *bStr = @"";
+    NSString *kStr = @"";
+    for (int i=0;i<array.count; i++) {
+        NSDictionary *dic = array[i];
+        NSInteger bol = [dic[@"is_origin"] integerValue];
+        if (bol==0) {
+            if ([bStr isEqualToString:@""]) {
+                bStr = dic[@"name"];
+            }else
+            bStr = [NSString stringWithFormat:@"%@、%@",bStr,dic[@"name"]];
+        }else {
+            if ([kStr isEqualToString:@""]) {
+                kStr = dic[@"name"];
+            }else
+            kStr = [NSString stringWithFormat:@"%@、%@",kStr,dic[@"name"]];
+        }
+    }
+    NSString *str = [NSString stringWithFormat:@"本地供应商:\n%@\n昆明供应商:\n%@",bStr,kStr];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"选择发货地" message:str preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *defaul = [UIAlertAction actionWithTitle:@"本地" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        self.sendArea = @"本地";
+        [[NSUserDefaults standardUserDefaults]setObject:@"本地" forKey:@"AREA"];
+        [self setCatalogue];
+        [self saveData];
+    }];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"昆明" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        //修改信息接口
+        self.sendArea = @"昆明";
+        [[NSUserDefaults standardUserDefaults]setObject:@"昆明" forKey:@"AREA"];
+        [self setCatalogue];
+        [self saveData];
+    }];
+    [alert addAction:defaul];
+    [alert addAction:cancel];
     [self presentViewController:alert animated:YES completion:nil];
 }
 @end

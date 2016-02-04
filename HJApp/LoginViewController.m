@@ -15,14 +15,12 @@
 
 
 //宏定义宽高
-#define VIEW_WIDTH self.view.bounds.size.width
-#define VIEW_HEIGHT self.view.bounds.size.height
-
 #define LBVIEW_WIDTH1 [UIScreen mainScreen].bounds.size.width
 #define LBVIEW_HEIGHT1 [UIScreen mainScreen].bounds.size.height
 
 @interface LoginViewController ()
 
+@property (nonatomic,strong) UIScrollView*scrollView;
 @end
 
 @implementation LoginViewController
@@ -49,22 +47,17 @@
     self.view=[[UIView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1)];
     self.view.backgroundColor=[UIColor whiteColor];
     
-//    UIView*titleView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1/10)];
-//    titleView.backgroundColor=[UIColor colorWithRed:0.23 green:0.5 blue:0.84 alpha:0.9];
-//    [self.view addSubview:titleView];
-//    UILabel*titleLabel=[[UILabel alloc]initWithFrame:CGRectMake((LBVIEW_WIDTH1-100)/2.0, 25, 100, 30)];
-//    titleLabel.text=@"登录";
-//    titleLabel.font=[UIFont systemFontOfSize:19];
-//    titleLabel.textAlignment=NSTextAlignmentCenter;
-//    titleLabel.textColor=[UIColor whiteColor];
-//    [self.view addSubview:titleLabel];
+    [self createUI];
     
-    //取消按钮
-//    UIButton*backBtn=[[UIButton alloc]initWithFrame:CGRectMake(10, 20, 40, 40)];
-//    //[backBtn setBackgroundColor:[UIColor redColor]];
-//    [backBtn setTitle:@"取消" forState:UIControlStateNormal];
-//    [backBtn addTarget:self action:@selector(backBtn:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:backBtn];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapKeyDown)];
+    [self.view addGestureRecognizer:tap];
+}
+
+- (void)createUI {
+
+    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1)];
+    _scrollView.contentSize = CGSizeMake(LBVIEW_WIDTH1, LBVIEW_HEIGHT1+60);
+    [self.view addSubview:_scrollView];
     
     //输入框和登陆注册按钮
     NSArray*labelNameArray=[[NSArray alloc]initWithObjects:@"账户名",@"登录密码", nil];
@@ -76,7 +69,7 @@
         UIView*view=[[UIView alloc]initWithFrame:CGRectMake(20, 40+i*(LBVIEW_HEIGHT1/15.0), LBVIEW_WIDTH1-40, LBVIEW_HEIGHT1/15.0)];
         view.layer.borderColor=[UIColor colorWithRed:0.90 green:0.90 blue:0.90 alpha:1].CGColor;
         view.layer.borderWidth=1;
-        [self.view addSubview:view];
+        [_scrollView addSubview:view];
         
         
         UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(15, 0, LBVIEW_WIDTH1/4.5, LBVIEW_HEIGHT1/15.0)];
@@ -102,7 +95,9 @@
         {
             field.clearButtonMode=UITextFieldViewModeAlways;
         }
+        field.returnKeyType = UIReturnKeyDone;
         field.tag=i+10;
+        [field addTarget:self action:@selector(keyDown:) forControlEvents:UIControlEventEditingDidEndOnExit];
         [view addSubview:field];
         //登陆注册按钮
         UIButton*lgBtn=[[UIButton alloc]initWithFrame:CGRectMake(20, 40+2*label.frame.size.height+10+30+i*(LBVIEW_HEIGHT1/15.0+10), LBVIEW_WIDTH1-40, LBVIEW_HEIGHT1/15.0)];
@@ -120,7 +115,7 @@
         lgBtn.titleLabel.font=[UIFont systemFontOfSize:16];
         [lgBtn setTitle:btnNameArray[i] forState:UIControlStateNormal];
         [lgBtn addTarget:self action:@selector(lgBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-        [self.view addSubview:lgBtn];
+        [_scrollView addSubview:lgBtn];
         
     }
     //忘记密码按钮
@@ -129,10 +124,20 @@
     [disBtn addTarget:self action:@selector(disPassword) forControlEvents:UIControlEventTouchUpInside];
     [disBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     [disBtn.titleLabel setFont:[UIFont systemFontOfSize:12]];
-    [self.view addSubview:disBtn];
-    
+    [_scrollView addSubview:disBtn];
+
 }
 
+- (void)keyDown:(UITextField *)TF {
+
+    [TF resignFirstResponder];
+}
+- (void)tapKeyDown {
+    UITextField *tf1 = [self.view viewWithTag:10];
+    UITextField *tf2 = [self.view viewWithTag:11];
+    [tf1 resignFirstResponder];
+    [tf2 resignFirstResponder];
+}
 //忘记密码
 -(void)disPassword
 {
@@ -173,14 +178,13 @@
              }
              else
              {
-                 [HttpEngine getConsumerData:^(NSArray *dataArray) {
+                 //原因：这个请求会把用户ID存到本地，由于异步执行可能还没将ID存到本地，就已经模态消失到新的页面，在新的页面会因为没有ID得不到数据而崩溃
+                 //方案：等执行结束后模态消失
+                 [HttpEngine getConsumerData:^(NSDictionary*dataDic) {
                      
                  [self dismissViewControllerAnimated:YES completion:nil];
                      
                  }];
-                 //FlashViewController*flashVC=[[FlashViewController alloc]init];
-                 //[self.navigationController pushViewController:flashVC animated:YES];
-                 
              }
          }
          ];
@@ -189,10 +193,7 @@
     else
     {
         RegisterViewController*registerVC=[[RegisterViewController alloc]init];
-        //UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:registerVC];
         [self.navigationController pushViewController:registerVC animated:YES];
-        //[self presentViewController:navigationController animated:YES completion:nil];
-        
     }
 }
 - (void)alert:(NSString *)alertStr {

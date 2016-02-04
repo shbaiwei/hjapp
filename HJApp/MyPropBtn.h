@@ -18,4 +18,5 @@
 
 -(void) addSelectedStyle;
 
+//- (MyPropBtn *)withSection:(NSInteger)section withRow:(NSInteger)row;
 @end

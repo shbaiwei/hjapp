@@ -60,7 +60,8 @@
     AssortImage = [AssortImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     
     assortVC.tabBarItem.image = AssortImage;
-    assortVC.title = @"分类";
+    assortVC.title = @"选择品类";
+    assortVC.tabBarItem.title = @"分类";
     assortVC.tabBarItem.selectedImage = AssortImage;
     
     UIImage *assortImage2 = [UIImage imageNamed:@"ico_item1_active"];
@@ -121,12 +122,10 @@
     _tabBar.viewControllers = @[naviHome, naviAssprt, naviOder, naviShop, naviMyHuaJi];
     
     //设置导航栏背景色
-    naviHome.navigationBar.barTintColor = [UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1];
-    naviMyHuaJi.navigationBar.barTintColor = [UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1];
-    naviOder.navigationBar.barTintColor = [UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1];
-    naviShop.navigationBar.barTintColor = [UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1];
-    naviAssprt.navigationBar.barTintColor = [UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1];
-    
+    myHuaJiVC.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0 green:0.675 blue:0.933 alpha:1];
+    oderVC.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0 green:0.675 blue:0.933 alpha:1];
+    shopVC.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0 green:0.675 blue:0.933 alpha:1];
+    assortVC.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0 green:0.675 blue:0.933 alpha:1];
     
     [naviHome setNavigationBarHidden:YES animated:YES];
     
@@ -153,7 +152,7 @@
 //    naviShop.tabBarItem.tag = 4;
 //    naviMyHuaJi.tabBarItem.tag = 5;
    
-    
 }
+
 
 @end

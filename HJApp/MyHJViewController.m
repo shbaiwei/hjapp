@@ -548,14 +548,38 @@
         }];
     UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
         {
+            [self saveData];
             [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"TOKEN_KEY"];
             [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"CITYNAME"];
             [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"CODE"];
+            [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"AREA"];
             FlashViewController*flashVC=[[FlashViewController alloc]init];
             [self.navigationController pushViewController:flashVC animated:YES];
         }];
     [alert addAction:cancel];
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
+}
+- (void)saveData {
+     NSString *sendAera = [[NSUserDefaults standardUserDefaults]objectForKey:@"AREA"];
+    if (sendAera) {
+        AFHTTPSessionManager*manager=[AFHTTPSessionManager manager];
+        NSString*idStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"ID"];
+        NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/users/%@/",idStr];
+        NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+        NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
+        [manager.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
+        NSDictionary*parameters;
+        if ([sendAera isEqualToString:@"本地"]) {
+           parameters=@{@"default_delivery":@"local"};
+        } else {
+           parameters=@{@"default_delivery":@"origin"};
+        }
+        [manager PATCH:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+             //NSLog(@"保存我的信息==JSON:%@",responseObject);
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            //NSLog(@"保存我的信息==Error:%@",error);
+        }];
+    }
 }
 @end

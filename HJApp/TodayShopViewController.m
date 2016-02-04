@@ -28,6 +28,7 @@ CGSize size;
     size = rect.size;
     
     self.navigationController.navigationBarHidden=NO;
+    self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0 green:0.675 blue:0.933 alpha:1];
     self.navigationController.navigationBar.translucent =NO;
     
     [self.navigationController.navigationBar setTitleTextAttributes:
@@ -51,8 +52,6 @@ CGSize size;
          _dataArray=dataArray;
          [self showPage];
     }];*/
-    
-    
 }
 
 -(void) webViewDidStartLoad:(UIWebView *)webView{
@@ -92,8 +91,6 @@ CGSize size;
     contentLabel.numberOfLines=0;
     [self.view addSubview:contentLabel];
     
-    
-
 }
 
 @end

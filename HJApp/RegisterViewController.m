@@ -8,20 +8,14 @@
 
 #import "RegisterViewController.h"
 #import "HttpEngine.h"
-#import "BWCommon.h"
-
 
 @interface RegisterViewController ()
-
-@property (nonatomic, strong) UILabel *phoneLabel;
-@property (nonatomic, strong) UILabel *yzmLabel;
-@property (nonatomic, strong) UILabel *pswLabel;
-@property (nonatomic, strong) UILabel *psw2Label;
 
 @property (nonatomic, strong) UIButton *yzmBtn;
 @property (nonatomic, strong) UIButton *zcBtn;
 @property (nonatomic,strong) UILabel *timeLimitLabel;
 
+//注册参数
 @property (nonatomic, strong) UITextField *phoneTF;
 @property (nonatomic, strong) UITextField *yzmTF;
 @property (nonatomic, strong) UITextField *pswTF;
@@ -44,40 +38,39 @@
 @property(nonatomic,strong)UIView*hJView;
 @property(nonatomic,strong)UIView*shadowView;
 
+@property (nonatomic,strong) UIScrollView *scrollView;
 @end
-
-#define VIEW_WIDTH self.view.bounds.size.width
-#define VIEW_HEIGHT self.view.bounds.size.height
 
 #define LBVIEW_WIDTH1 [UIScreen mainScreen].bounds.size.width
 #define LBVIEW_HEIGHT1 [UIScreen mainScreen].bounds.size.height
 
+#define KEYDOWN returnKeyType = UIReturnKeyDone;
+#define KEYVOID addTarget:self action:@selector(keyDown) forControlEvents:UIControlEventEditingDidEndOnExit
 
 @implementation RegisterViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationController.navigationBar.translucent=NO;
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     self.navigationController.navigationBarHidden=NO;
-    
     self.navigationController.navigationBar.barStyle = UIStatusBarStyleDefault;
     [self.navigationController.navigationBar setTintColor:[UIColor whiteColor ]];
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1]];
     
     NSDictionary * dict=[NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
     [self.navigationController.navigationBar setTitleTextAttributes:dict];
-    
     UIBarButtonItem *closeItem = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(closeTouched:)];
     self.navigationItem.leftBarButtonItem = closeItem;
     
-    
     self.title = @"注册";
     self.view.backgroundColor = [UIColor whiteColor];
-    
     [self registerPage];
     
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(keybordHide:)];
+    [self.view addGestureRecognizer:tap];
 }
 
+#pragma mark---------模态消失
 - (void) closeTouched:(UIBarButtonItem *) sender{
     
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
@@ -92,16 +85,15 @@
     
 }
 
+#pragma mark---------加载页面
 - (void)registerPage
 {
-//    UIView *phoneV = [[UIView alloc] initWithFrame:CGRectMake(0, 58, LBVIEW_WIDTH1 , LBVIEW_HEIGHT1-58)];
-//    phoneV.layer.borderColor = [[UIColor grayColor] CGColor];
-//    phoneV.layer.borderWidth = 0.5;
-//    [self.view addSubview:phoneV];
+    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1)];
+    _scrollView.contentSize = CGSizeMake(LBVIEW_WIDTH1, LBVIEW_HEIGHT1+120);
+    [self.view addSubview:_scrollView];
     
     self.phoneTF = [[UITextField alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.05, LBVIEW_HEIGHT1 * 0.02+10, LBVIEW_WIDTH1*0.9, LBVIEW_HEIGHT1*0.06)];
     self.phoneTF.backgroundColor = [UIColor clearColor];
-    
     [self.phoneTF setBorderStyle:UITextBorderStyleLine];
     [self.phoneTF.layer setBorderWidth:1];
     [self.phoneTF.layer setBorderColor:[UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1].CGColor];
@@ -111,9 +103,9 @@
     leftView.backgroundColor = [UIColor clearColor];
     _phoneTF.leftView = leftView;
     _phoneTF.leftViewMode = UITextFieldViewModeAlways;
-    [self.view addSubview:self.phoneTF];
-    
-
+    _phoneTF.KEYDOWN
+    [_phoneTF KEYVOID];
+    [_scrollView addSubview:self.phoneTF];
     
     self.yzmBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     self.yzmBtn.frame = CGRectMake(LBVIEW_WIDTH1 * 0.05, LBVIEW_HEIGHT1 *0.09+15, LBVIEW_WIDTH1*0.9, LBVIEW_HEIGHT1*0.06);
@@ -122,32 +114,31 @@
     self.hqStatus = YES;
     [self.yzmBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.yzmBtn addTarget:self action:@selector(click2:) forControlEvents:UIControlEventTouchUpInside];
-    //[self.yzmBtn setBackgroundImage:self.hqOn forState:UIControlStateNormal];
     [self.yzmBtn setBackgroundColor:[UIColor redColor]];
     [self.yzmBtn setTitle:@"获取手机验证码" forState:UIControlStateNormal];
     self.yzmBtn.layer.cornerRadius=5;
     self.yzmBtn.clipsToBounds=YES;
-    [self.view addSubview:self.yzmBtn];
+    [_scrollView addSubview:self.yzmBtn];
     
-    self.timeLimitLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, self.yzmBtn.bounds.size.width, 20)];
+    self.timeLimitLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.yzmBtn.bounds.size.width, LBVIEW_HEIGHT1*0.06)];
     [self.timeLimitLabel setTextColor:[UIColor whiteColor]];
     [self.timeLimitLabel setTextAlignment:NSTextAlignmentCenter];
     [self.yzmBtn addSubview:self.timeLimitLabel];
     
-    
     self.yzmTF = [[UITextField alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1* 0.05, LBVIEW_HEIGHT1 * 0.15+25, LBVIEW_WIDTH1*0.9, LBVIEW_HEIGHT1*0.06)];
     self.yzmTF.backgroundColor = [UIColor clearColor];
-    
     self.yzmTF.textColor = [UIColor blackColor];
     [self.yzmTF setBorderStyle:UITextBorderStyleLine];
     [self.yzmTF.layer setBorderWidth:1];
     [self.yzmTF.layer setBorderColor:[UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1].CGColor];
     self.yzmTF.placeholder=@"验证码";
+    self.yzmTF.KEYDOWN
+    [_yzmTF KEYVOID];
     UIView * leftView1 = [[UIView alloc] initWithFrame:CGRectMake(10,0,10,LBVIEW_HEIGHT1*0.06)];
     leftView1.backgroundColor = [UIColor clearColor];
     _yzmTF.leftView = leftView1;
     _yzmTF.leftViewMode = UITextFieldViewModeAlways;
-    [self.view addSubview:self.yzmTF];
+    [_scrollView addSubview:self.yzmTF];
     
     
     self.pswTF = [[UITextField alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.05, LBVIEW_HEIGHT1 * 0.23+25, LBVIEW_WIDTH1*0.9, LBVIEW_HEIGHT1*0.06)];
@@ -158,11 +149,13 @@
     self.pswTF.textColor = [UIColor blackColor];
     self.pswTF.placeholder=@"密码";
     self.pswTF.secureTextEntry=YES;
+    self.pswTF.KEYDOWN
+    [self.pswTF KEYVOID];
     UIView * leftView2 = [[UIView alloc] initWithFrame:CGRectMake(10,0,10,LBVIEW_HEIGHT1*0.06)];
     leftView2.backgroundColor = [UIColor clearColor];
     _pswTF.leftView = leftView2;
     _pswTF.leftViewMode = UITextFieldViewModeAlways;
-    [self.view addSubview:self.pswTF];
+    [_scrollView addSubview:self.pswTF];
     
     self.psw2TF = [[UITextField alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.05, LBVIEW_HEIGHT1 * 0.31+25, LBVIEW_WIDTH1*0.9, LBVIEW_HEIGHT1*0.06)];
     self.psw2TF.backgroundColor = [UIColor clearColor];
@@ -172,11 +165,13 @@
     self.psw2TF.textColor = [UIColor blackColor];
     self.psw2TF.placeholder=@"确认密码";
     self.psw2TF.secureTextEntry=YES;
+    self.psw2TF.KEYDOWN
+    [self.psw2TF KEYVOID];
     UIView * leftView3 = [[UIView alloc] initWithFrame:CGRectMake(10,0,10,LBVIEW_HEIGHT1*0.06)];
     leftView3.backgroundColor = [UIColor clearColor];
     _psw2TF.leftView = leftView3;
     _psw2TF.leftViewMode = UITextFieldViewModeAlways;
-    [self.view addSubview:self.psw2TF];
+    [_scrollView addSubview:self.psw2TF];
     
     self.getBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     self.getBtn.frame = CGRectMake(LBVIEW_WIDTH1 * 0.05, LBVIEW_HEIGHT1*0.39+25, 24,24);
@@ -185,7 +180,7 @@
     self.getStatus = NO;
     [self.getBtn addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
     [self.getBtn setBackgroundImage:self.getOff  forState:UIControlStateNormal];
-    [self.view addSubview:self.getBtn];
+    [_scrollView addSubview:self.getBtn];
     
     self.agreeL = [[UILabel alloc] init];
     self.agreeL.text = @"我已阅读并同意";
@@ -193,7 +188,7 @@
     self.agreeL.textColor = [UIColor grayColor];
     self.agreeL.font = [UIFont systemFontOfSize:16];
     self.agreeL.frame = CGRectMake(LBVIEW_WIDTH1 * 0.10, LBVIEW_HEIGHT1*0.38+25, LBVIEW_WIDTH1*0.4, LBVIEW_HEIGHT1*0.05);
-    [self.view addSubview:self.agreeL];
+    [_scrollView addSubview:self.agreeL];
     
     
     UILabel*userProtocolLabel = [[UILabel alloc] init];
@@ -201,11 +196,11 @@
     userProtocolLabel.textColor = [UIColor colorWithRed:37/255.0f green:119/255.0f blue:188/255.0f alpha:1];
     userProtocolLabel.font = [UIFont systemFontOfSize:16];
     userProtocolLabel.frame = CGRectMake(LBVIEW_WIDTH1*0.51, LBVIEW_HEIGHT1*0.38+25, LBVIEW_WIDTH1*0.4, LBVIEW_HEIGHT1*0.05);
-    [self.view addSubview:userProtocolLabel];
+    [_scrollView addSubview:userProtocolLabel];
     
     UIButton *userProtocol=[[UIButton alloc] initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.52, LBVIEW_HEIGHT1*0.39+25, LBVIEW_WIDTH1*0.4, LBVIEW_HEIGHT1*0.05)];
     //[userProtocol addTarget:self action:@selector(userProtocolBtn) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:userProtocol];
+    [_scrollView addSubview:userProtocol];
     
     self.hozonBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     //UIImage *hozonI = [UIImage imageNamed:@"zhuce.png"];
@@ -218,54 +213,60 @@
     [self.hozonBtn addTarget:self action:@selector(goRegiseter) forControlEvents:UIControlEventTouchUpInside];
     self.hozonBtn.layer.cornerRadius=5;
     self.hozonBtn.clipsToBounds=YES;
-    [self.view addSubview:self.hozonBtn];
+    [_scrollView addSubview:self.hozonBtn];
     
     
 }
+- (void)keyDown {
 
--(void)userProtocolBtn
-{
-    
-    //协议阅读界面
-    _hJView=[[UIView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.1, LBVIEW_HEIGHT1*0.2, LBVIEW_WIDTH1*0.8, LBVIEW_HEIGHT1*0.6)];
-    _hJView.backgroundColor=[UIColor whiteColor];
-    _hJView.layer.cornerRadius=10;
-    _hJView.clipsToBounds=YES;
-    
-    
-    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, 10, _hJView.frame.size.width-20,50)];
-    label.text=@"请自觉遵守花集用户协议";
-    label.textAlignment=NSTextAlignmentCenter;
-    label.font=[UIFont systemFontOfSize:20];
-    label.textColor=[UIColor redColor];
-    [_hJView addSubview:label];
-    
-    
-    UIButton*timeBtn=[[UIButton alloc]initWithFrame:CGRectMake(0, LBVIEW_HEIGHT1*0.55+1, LBVIEW_WIDTH1*0.8, LBVIEW_HEIGHT1*0.05-1)];
-    [timeBtn setTitle:@"确定" forState:UIControlStateNormal];
-    [timeBtn setTintColor:[UIColor blackColor]];
-    [timeBtn setBackgroundColor:[UIColor redColor]];
-    [timeBtn addTarget:self action:@selector(accomplishReadBtn) forControlEvents:UIControlEventTouchUpInside];
-    [_hJView addSubview:timeBtn];
-    
-    
-       
-    _shadowView=[[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
-    _shadowView.backgroundColor=[UIColor darkGrayColor];
-    _shadowView.alpha=0.9;
-    
-    //找window
-    UIWindow *window=[[UIApplication sharedApplication]keyWindow];
-    [window addSubview:_shadowView];
-    [_shadowView addSubview:_hJView];
-    
+    [self.phoneTF resignFirstResponder];
+    [self.yzmTF resignFirstResponder];
+    [self.pswTF resignFirstResponder];
+    [self.psw2TF resignFirstResponder];
+
 }
-//
--(void)accomplishReadBtn
-{
-    [_shadowView removeFromSuperview];
-    
-}
+#pragma mark--------协议内容
+//-(void)userProtocolBtn
+//{
+//    //协议阅读界面
+//    _hJView=[[UIView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.1, LBVIEW_HEIGHT1*0.2, LBVIEW_WIDTH1*0.8, LBVIEW_HEIGHT1*0.6)];
+//    _hJView.backgroundColor=[UIColor whiteColor];
+//    _hJView.layer.cornerRadius=10;
+//    _hJView.clipsToBounds=YES;
+//    
+//    
+//    UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, 10, _hJView.frame.size.width-20,50)];
+//    label.text=@"请自觉遵守花集用户协议";
+//    label.textAlignment=NSTextAlignmentCenter;
+//    label.font=[UIFont systemFontOfSize:20];
+//    label.textColor=[UIColor redColor];
+//    [_hJView addSubview:label];
+//    
+//    
+//    UIButton*timeBtn=[[UIButton alloc]initWithFrame:CGRectMake(0, LBVIEW_HEIGHT1*0.55+1, LBVIEW_WIDTH1*0.8, LBVIEW_HEIGHT1*0.05-1)];
+//    [timeBtn setTitle:@"确定" forState:UIControlStateNormal];
+//    [timeBtn setTintColor:[UIColor blackColor]];
+//    [timeBtn setBackgroundColor:[UIColor redColor]];
+//    [timeBtn addTarget:self action:@selector(accomplishReadBtn) forControlEvents:UIControlEventTouchUpInside];
+//    [_hJView addSubview:timeBtn];
+//    
+//    
+//       
+//    _shadowView=[[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
+//    _shadowView.backgroundColor=[UIColor darkGrayColor];
+//    _shadowView.alpha=0.9;
+//    
+//    //找window
+//    UIWindow *window=[[UIApplication sharedApplication]keyWindow];
+//    [window addSubview:_shadowView];
+//    [_shadowView addSubview:_hJView];
+//    
+//}
+//-(void)accomplishReadBtn
+//{
+//    [_shadowView removeFromSuperview];
+//    
+//}
 
 
 - (void)click:(id)sender
@@ -280,6 +281,11 @@
 
 - (void)click2:(id)sender
 {
+    if (_phoneTF.text.length!=11) {
+        [self alert:@"手机号码格式错误" with:1];
+        return;
+    }
+
     if (self.hqStatus == NO) {
         
         return;
@@ -326,8 +332,7 @@
 //去注册
 -(void)goRegiseter
 {
-    
-    
+
         if ([_pswTF.text isEqualToString:@""]||[_phoneTF.text isEqualToString:@""]||[_yzmTF.text isEqualToString:@""])
         {
             [self alert:@"请完善信息" with:1];
@@ -366,7 +371,7 @@
         }
         else
         {
-            [self alert:@"用户已注册" with:1];
+            [self alert:@"注册失败" with:1];
         }
         
     }];
@@ -375,10 +380,6 @@
 -(void)alert:(NSString*)str with:(int)tag;
 {
     UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:str preferredStyle: UIAlertControllerStyleAlert];
-    UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction*action)
-                          {
-                              
-                          }];
     UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
                                  {
                                      if (tag==2)
@@ -387,7 +388,6 @@
                                      }
                
                                  }];
-    [alert addAction:cancel];
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
 }

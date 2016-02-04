@@ -51,10 +51,12 @@
 @property(nonatomic,strong)UILabel*styleLabel;
 @property(nonatomic,strong)NSDictionary*styleDic;
 @property(nonatomic,copy)NSString*styleStr;
+@property (nonatomic,copy)NSString *selfPickup;
 
 //配送地址
 @property(nonatomic,strong)UILabel*distributionAddrsNameLabel;
 @property(nonatomic,strong)UILabel*distributionAddrsDetailLabel;
+@property (nonatomic,copy) NSString *addressDetail;
 
 //配送时间
 @property(nonatomic,strong)UILabel*distributionLabel;
@@ -76,6 +78,8 @@
 @property(nonatomic,unsafe_unretained)int ttPrice;
 @property(nonatomic,strong)UILabel*ttLabel;
 
+//订单备注
+@property(nonatomic,strong)UITextView *CustMessageTextV;
 @end
 
 @implementation PayViewController
@@ -104,13 +108,14 @@ NSInteger pay_type;
     }
     
     //返回配送方式
-    if (_isTag==10)
-    {
-        _styleStr=@"送货上门";
-    }
     if (_isTag==11)
     {
         _styleStr=@"上门自提";
+        _selfPickup = @"1";
+
+    } else {
+        _styleStr=@"送货上门";
+        _selfPickup = @"0";
     }
     //返回配送时间
     if (_styleDic.count!=0)
@@ -161,7 +166,7 @@ NSInteger pay_type;
      {
          _defaultAddressDic=dataDic;
          _addrId = [NSString stringWithFormat:@"%@",_defaultAddressDic[@"addr_id"]];
-         //NSLog(@"_defaultAddressArray==%@",_defaultAddressDic);
+         NSLog(@"_defaultAddressArray==%@",_defaultAddressDic);
          [self judgeCity];
          [_tableView reloadData];
      }];
@@ -241,12 +246,12 @@ NSInteger pay_type;
     
     pay_type = 0;
     _isTagRedPacket = @"";
-    _password = @"";
     
     if (!_priceRed)
     {
         _priceRed=@"0";
     }
+    _selfPickup = @"0";
     
     MBProgressHUD *hud = [BWCommon getHUD];
     //获取错误信息  防止时间段不供应
@@ -273,8 +278,10 @@ NSInteger pay_type;
         _styleDic=allDic;
         _show_deadline = allDic[@"show_deadline"];
         _self_pickup = allDic[@"self_pickup"];
-        NSArray*array=_styleDic[@"deadline"];
-        _distributionTimeStr=array[0];
+        if (_show_deadline) {
+            NSArray*array=_styleDic[@"deadline"];
+            _distributionTimeStr=array[0];
+        }
         float tprice = [totalPrice floatValue];
         totalPrice = [NSString stringWithFormat:@"%.2f",tprice];
         _totalPrice=totalPrice;
@@ -382,12 +389,34 @@ NSInteger pay_type;
     }
 
 }
+#pragma mark----------创建订单
 -(void)createOrder
 {
+    NSString *province = _defaultAddressDic[@"province"];
+    NSString *city = _defaultAddressDic[@"city"];
+    NSString *town = _defaultAddressDic[@"town"];
+    NSString *phoneMob = _defaultAddressDic[@"phone_mob"];
+    NSString *consignee = _defaultAddressDic[@"consignee"];
+    if (_isTag!=11) {
+        NSString *address = _defaultAddressDic[@"address"];
+        _addressDetail = address;
+    }
+    if (!_preferNo) {
+        _preferNo = @"0";
+    }
+    if (!_CustMessageTextV.text) {
+        _CustMessageTextV.text = @" ";
+    }
+    if (!_distributionLabel.text) {
+        _distributionLabel.text = @" ";
+    }
+    if (!_password) {
+        _password = @" ";
+    }
     NSArray *pay_method = [[NSArray alloc] initWithObjects:@"huaji",@"alipay",@"weixin", nil];
     
-    [HttpEngine submitOrderAddressId:_addrId withMethod:[pay_method objectAtIndex:pay_type] withSpaypassword:_password withCouponNo:_preferNo completion:^(NSDictionary *dict)
-     {
+    [HttpEngine submitOrderMethod:[pay_method objectAtIndex:pay_type] withSpaypassword:_password withDeadline:_distributionLabel.text withCouponNo:_preferNo withCustMessage:_CustMessageTextV.text withSelfPickup:_selfPickup withAddressId:_addrId withConsignee:consignee withProvince:province withCity:city withTown:town withPhoneMob:phoneMob withAddress:_addressDetail completion:^(NSDictionary *dict) {
+        
          UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"温馨提醒" message:dict[@"msg"] preferredStyle:UIAlertControllerStyleAlert];
          
          NSString *actionTitle = pay_type == 0 ? @"查看我的订单" : @"去支付";
@@ -520,16 +549,28 @@ NSInteger pay_type;
             break;
         case 1:
         {
+           
         _distributionAddrsNameLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 5, 200, 25)];
         _distributionAddrsNameLabel.text=[NSString stringWithFormat:@"%@  %@",_defaultAddressDic[@"consignee"],_defaultAddressDic[@"phone_mob"]];
         _distributionAddrsNameLabel.font=[UIFont systemFontOfSize:14];
         [cell addSubview:_distributionAddrsNameLabel];
             
-        _distributionAddrsDetailLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 30, 200, 25)];
+        _distributionAddrsDetailLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 30, 280, 25)];
         _distributionAddrsDetailLabel.text=[NSString stringWithFormat:@"%@ %@ %@",_defaultAddressDic[@"chinese_province"],_defaultAddressDic[@"chinese_city"],_defaultAddressDic[@"chinese_town"]];
         _distributionAddrsDetailLabel.font=[UIFont systemFontOfSize:14];
         [cell addSubview:_distributionAddrsDetailLabel];
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+            
+        if (_isTag==11)
+        {
+            NSArray *pickupAddressArray = _styleDic[@"pickup_address"];
+            NSDictionary *pickupAddressDic = pickupAddressArray[0];
+            _distributionAddrsNameLabel.text=[NSString stringWithFormat:@"%@  %@",pickupAddressDic[@"consignee"],pickupAddressDic[@"phone_mob"]];
+            NSString *str = pickupAddressDic[@"address"];
+            NSString *pickAddrss = [str substringToIndex:(str.length-6)];
+            _distributionAddrsDetailLabel.text=pickAddrss;
+            _addressDetail = pickAddrss;
+        }
             
         }
             break;
@@ -541,7 +582,7 @@ NSInteger pay_type;
             _distributionLabel.textColor=[UIColor blackColor];
             _distributionLabel.font=[UIFont systemFontOfSize:14];
             [cell addSubview:_distributionLabel];
-            cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
             break;
             
@@ -585,13 +626,13 @@ NSInteger pay_type;
             
         case 5:
         {
-            UITextView*tView=[[UITextView alloc]initWithFrame:CGRectMake(10, 5, LBVIEW_WIDTH1-20,60)];
-            tView.layer.borderColor =[UIColor grayColor].CGColor;
-            tView.layer.borderWidth =1.0;
-            tView.layer.cornerRadius =5.0;
-            tView.tag=3;
-            self.cust_message = tView;
-            [cell addSubview:tView];
+            _CustMessageTextV=[[UITextView alloc]initWithFrame:CGRectMake(10, 5, LBVIEW_WIDTH1-20,60)];
+            _CustMessageTextV.layer.borderColor =[UIColor grayColor].CGColor;
+            _CustMessageTextV.layer.borderWidth =1.0;
+            _CustMessageTextV.layer.cornerRadius =5.0;
+            _CustMessageTextV.tag=3;
+            self.cust_message = _CustMessageTextV;
+            [cell addSubview:_CustMessageTextV];
         }
             break;
             
@@ -660,14 +701,22 @@ NSInteger pay_type;
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.section==0)
     {
-        [self cutAddress];
+        int selfPickup = [_styleDic[@"self_pickup"] intValue];
+        if (selfPickup==1) {
+            [self cutAddress];
+        }
     }else
-        if(indexPath.section == 1){
-            [self changeAddress];
+        if(indexPath.section ==1){
+            if (_isTag!=11) {
+              [self changeAddress];
+            }
         }else
             if(indexPath.section == 2)
             {
-                [self distributionTime];
+                int showDeadline = [_styleDic[@"show_deadline"] intValue];
+                if (showDeadline) {
+                    [self distributionTime];
+                }
             }
             else
                 if (indexPath.section==3)
@@ -808,4 +857,5 @@ NSInteger pay_type;
     }
     return 0.001;
 }
+
 @end;

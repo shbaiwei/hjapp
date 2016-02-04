@@ -26,4 +26,5 @@
 - (void)alert:(NSString *)title msg:(NSString *)msg;
 -(BOOL) isLogin:(UIViewController*)VC withTitle:(NSString*)tilestr with:(int)height;
 +(BOOL)needShowPage;
+- (void)saveData;
 @end

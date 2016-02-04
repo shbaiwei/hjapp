@@ -18,8 +18,5 @@ UIAlertViewDelegate
 >
 
 @property (nonatomic, strong) UILabel *cityLabel;
-
-//@property(nonatomic,strong)AssortPageViewController*assortPageVC;
-//@property(nonatomic,strong)UITabBarController*tabBarVC;
 @property (nonatomic,strong) CLLocationManager *manager;
 @end
