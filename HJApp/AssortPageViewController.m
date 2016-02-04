@@ -130,7 +130,7 @@ NSInteger btnSection;
 
     if(!_rightTableV)
     {
-      [self performSelector:@selector(getRightData) withObject:nil afterDelay:0.5];
+      [self performSelector:@selector(getRightData) withObject:nil afterDelay:1];
     }
     [HttpEngine getSimpleCart:^(NSArray *array)
      {
