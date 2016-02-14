@@ -87,6 +87,8 @@ NSInteger btnSection;
     self.navigationController.navigationBarHidden=NO;
     self.navigationController.navigationBar.translucent =NO;
     self.navigationItem.hidesBackButton=YES;
+    
+    self.sendArea = @"";
 
     //判断发货地
     NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
@@ -468,7 +470,7 @@ NSInteger btnSection;
     if ([sender.titleStr isEqualToString:@"本地"]) {
         self.sendArea = @"本地";
     }
-    if ([sender.titleStr isEqualToString:@"昆明"]) {
+    else if ([sender.titleStr isEqualToString:@"昆明"]) {
         self.sendArea = @"昆明";
     }
     [[NSUserDefaults standardUserDefaults]setObject:self.sendArea forKey:@"AREA"];
