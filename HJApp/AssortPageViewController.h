@@ -18,5 +18,5 @@
     int _addNum[20];
 }
 @property(nonatomic,unsafe_unretained)int isTag;
-//@property(nonatomic,strong)UITabBarController*tabBarVC;
+
 @end

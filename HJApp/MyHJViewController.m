@@ -108,7 +108,7 @@
              {
                  _Fnum=dataArray.count;
              }
-             else if (i==2)
+             else if (i==1)
              {
                  _Snum=dataArray.count;
              }

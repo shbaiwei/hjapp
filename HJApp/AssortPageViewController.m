@@ -23,29 +23,23 @@
 
 @property (nonatomic, strong) UITableView *leftTableV;
 @property (nonatomic, strong) UITableView *rightTableV;
-
 @property (nonatomic, strong) UICollectionView *myCollecV;
 @property (nonatomic, strong) NSMutableArray *imageArr;
 @property (nonatomic, strong) NSMutableArray *beginArr;
 @property (nonatomic, assign) NSInteger num;
 @property (nonatomic, assign) NSInteger count;
 @property (nonatomic, strong) NSMutableDictionary *sendDic;
-
 @property (nonatomic, strong) UILabel *hdViewLabel;
 @property (nonatomic, strong) UIScrollView *myScrollV;
 @property (nonatomic, strong) NSMutableArray *BtnArr;
 @property(nonatomic,strong)UILabel*numLabel;
-
 @property (nonatomic, strong) UIView *shopView;
 @property (nonatomic, strong) UILabel *tomoniL;
 @property (nonatomic, strong) UIButton *kessanBtn;
 @property (nonatomic, strong) UILabel *okaneLabel;
 @property (nonatomic, strong) UIImageView *shopCarIV;
-
-////////
 @property(nonatomic,strong)NSArray*floerNameArray;
 @property(nonatomic,strong)NSMutableArray*floerDetailArray;
-//@property(nonatomic,strong)UILabel*numLabel;
 @property(nonatomic,strong)UIView*headView;
 @property(nonatomic,strong)NSArray*catalogueArray;
 @property(nonatomic,strong)UILabel*colorLable;
@@ -55,12 +49,9 @@
 @property(nonatomic,strong)NSArray*carArray;
 @property(nonatomic,strong)NSMutableArray*catalogueStrArray;
 @property (nonatomic,unsafe_unretained)CGRect btnRect;
-
 //添加减少按钮对应的购物车数组
 @property(nonatomic,strong)NSArray*btnCarArray;
-
 @property(nonatomic,strong)NSMutableArray *cartList;
-
 @property(nonatomic,copy)NSString *sendArea;
 @property(nonatomic,unsafe_unretained)NSInteger areaRow;
 @property(nonatomic,unsafe_unretained)NSInteger areaSection;
@@ -124,10 +115,7 @@ NSInteger btnSection;
          //左Uitableview
          _floerNameArray=dataArray;
          [self judgeIsTag];
-         
-         if(!_leftTableV){
-             [self showLeftTableView];
-         }
+         [self showLeftTableView];
      }];
 
     if(!_rightTableV)
@@ -143,9 +131,12 @@ NSInteger btnSection;
 
 -(void)judgeIsTag
 {
-    [self delayGetProduct];
+    if (!_assortTopView) {
+        [self delayGetProduct];
+    }
     //获取上个页面所选取的种类
     NSString*isTagStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"TWOTAG"];
+    NSLog(@"isTagStr====%@",isTagStr);
     if (isTagStr)
     {
         cid = isTagStr;
@@ -159,8 +150,13 @@ NSInteger btnSection;
         //临时用于对应table数组
         if(tag == 1){
             tag = 0;
-        }else{
-            tag -= 4;
+        }else {
+            if(tag>13) {
+                tag -=13;
+            }
+                else{
+                    tag -= 4;
+                }
         }
         
         NSIndexPath *index1 = [NSIndexPath indexPathForItem:tag inSection:0];
@@ -169,7 +165,7 @@ NSInteger btnSection;
         [self didSelectLeftTableView:tag];
         //[self loadDetailData];
     } else {
-        AllFlower*flower=_floerNameArray[0];
+        AllFlower*flower=_floerNameArray[_isTag];
         [HttpEngine getProduct:flower.flowerId completion:^(NSArray *dataArray)
          {
              _catalogueArray=dataArray;
@@ -206,7 +202,7 @@ NSInteger btnSection;
 //获取分类栏属性
 -(void)delayGetProduct
 {
-    AllFlower*flower=_floerNameArray[0];
+    AllFlower*flower=_floerNameArray[_isTag];
     [HttpEngine getProduct:flower.flowerId completion:^(NSArray *dataArray)
      {
          _catalogueArray=dataArray;
@@ -384,7 +380,6 @@ NSInteger btnSection;
     UIImageView*downImage=[[UIImageView alloc]initWithFrame:CGRectMake(25, self.view.bounds.size.height * 0.70 + 15, 40, 20)];
     downImage.image=[UIImage imageNamed:@"swiper-market-btn-b.png"];
     [self.view addSubview:downImage];
-    
   
 }
 
@@ -1045,7 +1040,7 @@ NSInteger btnSection;
         }
     }
 }
-//选中cell调用
+#pragma mark ------选中调用
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([tableView isEqual:self.leftTableV])
@@ -1057,7 +1052,7 @@ NSInteger btnSection;
         
     }
 }
-
+#pragma mark ------区尾
 -(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     
     if([tableView isEqual:self.rightTableV])
@@ -1075,8 +1070,7 @@ NSInteger btnSection;
     //[self setBottomBorder:footerBorder color:[UIColor grayColor]];
     return footerBorder;
 }
-
-//自定义区头
+#pragma mark ------区头
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     if ([tableView isEqual:self.leftTableV])
@@ -1085,8 +1079,6 @@ NSInteger btnSection;
     }
     return 80;
 }
-
-
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if([tableView isEqual:self.leftTableV])
