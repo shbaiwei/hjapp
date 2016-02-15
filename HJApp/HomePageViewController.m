@@ -51,6 +51,7 @@
 @property (nonatomic, strong) UILabel *jkhLabel;
 @property (nonatomic, strong) UIView *oneMoneyView;
 @property (nonatomic, strong) UIImageView *todayMoneyImageView;
+@property (nonatomic, strong) UIView *promotionView;
 @property (nonatomic, strong) UILabel *textLabel;   //上下信息滚动处  待定修改
 @property (nonatomic, strong) UIImageView *oneMoneyImageView;
 @property (nonatomic, strong) UIScrollView *mainScroll;
@@ -80,6 +81,7 @@
 NSInteger topViewHeight = 64;
 NSInteger homePicNumber=0;
 NSInteger timeGap;
+BOOL showPromotion=YES;
 NSTimer *promotionTimer;
 UIButton *promotionBtn;
 UILabel *hourLabel;
@@ -295,7 +297,7 @@ NSString *trackViewURL;
     
     self.topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, main_size.width, topViewHeight)];
     
-    self.topView.backgroundColor = [UIColor colorWithRed:0 green:0.675 blue:0.933 alpha:1];
+    self.topView.backgroundColor = [UIColor colorWithRed:0 green:171/255.0f blue:238/255.0f alpha:1];
     [self.view addSubview:self.topView];
     
     self.mapImageView = [[UIImageView alloc] init];
@@ -427,6 +429,10 @@ NSString *trackViewURL;
             deadline=[getpic.deadline stringByReplacingOccurrencesOfString:@"T" withString:@" "];
             break;
         }
+    }
+    
+    if([deadline isEqualToString:@""]){
+        showPromotion=NO;
     }
 
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
@@ -611,8 +617,8 @@ NSString *trackViewURL;
 //限时秒杀部分
 -(void)theOneMoney
 {
-    UIView *oneMoneyView = [[UIView alloc] initWithFrame:CGRectMake(0,scrollPicHeight+ flowerViewHeight+todayShopHeight+4, main_size.width, main_size.height / 6)];
-    self.oneMoneyImageView = [[UIImageView alloc] initWithFrame:oneMoneyView.bounds];
+    UIView *promotionView = [[UIView alloc] initWithFrame:CGRectMake(0,scrollPicHeight+ flowerViewHeight+todayShopHeight+4, main_size.width, main_size.height / 6)];
+    self.oneMoneyImageView = [[UIImageView alloc] initWithFrame:promotionView.bounds];
     /*NSString *deadline = @"";
     for(int i=0;i<_picDataArray.count;i++){
         GetPic*getpic=_picDataArray[i];
@@ -623,7 +629,9 @@ NSString *trackViewURL;
             break;
         }
     }*/
-    [oneMoneyView addSubview:self.oneMoneyImageView];
+    [promotionView addSubview:self.oneMoneyImageView];
+    
+    self.promotionView = promotionView;
     
     /*NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateStyle:NSDateFormatterMediumStyle];
@@ -636,12 +644,12 @@ NSString *trackViewURL;
     //timeGap = 9999;
     
     CGFloat hourX = main_size.width * 0.6;
-    CGFloat hourY = oneMoneyView.bounds.size.height / 2 - 20;
+    CGFloat hourY = promotionView.bounds.size.height / 2 - 20;
     CGFloat hourW = main_size.width * 0.1;
     
     UIImageView *hourView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"number-bg"]];
     hourView.frame = CGRectMake(hourX, hourY, hourW, hourW);
-    [oneMoneyView addSubview:hourView];
+    [promotionView addSubview:hourView];
     hourLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, hourW, hourW)];
     [hourLabel setTextAlignment:NSTextAlignmentCenter];
     [hourLabel setFont:[UIFont systemFontOfSize:14]];
@@ -652,13 +660,13 @@ NSString *trackViewURL;
     CGFloat minuteW = hourW;
     
     UILabel *dotLabel = [[UILabel alloc] initWithFrame:CGRectMake(hourX+hourW, hourY+2, 15, 30)];
-    [oneMoneyView addSubview:dotLabel];
+    [promotionView addSubview:dotLabel];
     [dotLabel setTextAlignment:NSTextAlignmentCenter];
     [dotLabel setText:@":"];
     
     UIImageView *minuteView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"number-bg"]];
     minuteView.frame = CGRectMake(minuteX, minuteY, minuteW, minuteW);
-    [oneMoneyView addSubview:minuteView];
+    [promotionView addSubview:minuteView];
     minuteLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, minuteW, minuteW)];
     [minuteLabel setTextAlignment:NSTextAlignmentCenter];
     [minuteLabel setFont:[UIFont systemFontOfSize:14]];
@@ -669,13 +677,13 @@ NSString *trackViewURL;
     CGFloat secondW = hourW;
     
     UILabel *dot2Label = [[UILabel alloc] initWithFrame:CGRectMake(minuteX+minuteW, minuteY+2, 15, 30)];
-    [oneMoneyView addSubview:dot2Label];
+    [promotionView addSubview:dot2Label];
     [dot2Label setTextAlignment:NSTextAlignmentCenter];
     [dot2Label setText:@":"];
     
     UIImageView *secondView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"number-bg"]];
     secondView.frame = CGRectMake(secondX, secondY, secondW, secondW);
-    [oneMoneyView addSubview:secondView];
+    [promotionView addSubview:secondView];
     secondLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, secondW, secondW)];
     [secondLabel setTextAlignment:NSTextAlignmentCenter];
     [secondLabel setFont:[UIFont systemFontOfSize:14]];
@@ -683,19 +691,29 @@ NSString *trackViewURL;
     
     CGFloat promotionW = main_size.width * 0.4;
     CGFloat promotionH = promotionW * 117/387;
-    promotionBtn = [[UIButton alloc] initWithFrame:CGRectMake(main_size.width - promotionW, (oneMoneyView.bounds.size.height-10 - promotionH)/2, promotionW, promotionH)];
+    promotionBtn = [[UIButton alloc] initWithFrame:CGRectMake(main_size.width - promotionW, (promotionView.bounds.size.height-10 - promotionH)/2, promotionW, promotionH)];
     [promotionBtn setImage:[UIImage imageNamed:@"buy_btn"] forState:UIControlStateNormal];
-    [oneMoneyView addSubview:promotionBtn];
+    [promotionView addSubview:promotionBtn];
     promotionBtn.tag = 19;
     [promotionBtn addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
     [promotionBtn setHidden:YES];
 
     //加入倒计时
     promotionTimer=[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(promotionAnimation) userInfo:nil repeats:YES];
-    [self.mainScroll addSubview:oneMoneyView];
+    [self.mainScroll addSubview:promotionView];
 }
 
 -(void)promotionAnimation{
+    
+    //若没有秒杀 则隐藏
+    if(!showPromotion){
+        [self.promotionView setHidden:YES];
+        //上移猜你喜欢等VIEW
+        [self guessYouLike];
+        [self theIkenAndBess];
+        promotionTimer = nil;
+        return;
+    }
     
     if(timeGap>0){
         int hour = (int)floor(timeGap / 3600);
@@ -727,7 +745,13 @@ NSString *trackViewURL;
 
     [_guessYouView removeFromSuperview];
     int guessV = ceilf(_guessLikeArray.count/2.0);
-    GuessV *gusv = [[GuessV alloc]initWithFrame:CGRectMake(0, scrollPicHeight+flowerViewHeight+todayShopHeight+LBVIEW_HEIGHT1/6+4, LBVIEW_WIDTH1, 40+82*guessV)];
+    CGFloat height =scrollPicHeight+flowerViewHeight+todayShopHeight+4;
+    
+    if(showPromotion){
+        height+=LBVIEW_HEIGHT1/6;
+    }
+    
+    GuessV *gusv = [[GuessV alloc]initWithFrame:CGRectMake(0, height, LBVIEW_WIDTH1, 40+82*guessV)];
     gusv.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     [gusv superWidth:LBVIEW_WIDTH1 withArray:_guessLikeArray withTabVC:self.tabBarVC];
     _guessYouView = gusv;
@@ -738,7 +762,14 @@ NSString *trackViewURL;
 {
     [self.ideaView removeFromSuperview];
     IkenV *ikenv = [[IkenV alloc]init];
-    ikenv.frame = CGRectMake(0, scrollPicHeight+flowerViewHeight+todayShopHeight+LBVIEW_HEIGHT1/6+guessViewHeight+6, LBVIEW_WIDTH1, 50);
+    
+    CGFloat height = scrollPicHeight+flowerViewHeight+todayShopHeight+guessViewHeight+6;
+    
+    if(showPromotion){
+        height+=LBVIEW_HEIGHT1/6;
+    }
+    
+    ikenv.frame = CGRectMake(0, height, LBVIEW_WIDTH1, 50);
     ikenv.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     [ikenv viewWithSuperWidth:main_size.width withVC:self];
     self.ideaView = ikenv;

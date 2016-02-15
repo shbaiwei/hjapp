@@ -104,7 +104,7 @@
     self.view.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     _pay_type = 0;
     UIView*headView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1,64)];
-    headView.backgroundColor=[UIColor colorWithRed:0.23 green:0.67 blue:0.89 alpha:1];
+    headView.backgroundColor=[UIColor colorWithRed:0 green:171/255.0f blue:238/255.0f alpha:1];
     [self.view addSubview:headView];
     
     //我的订单
