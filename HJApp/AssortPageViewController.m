@@ -456,11 +456,15 @@ NSInteger btnSection;
     if (!code)
     {
         [self alert];
+        return;
     }
     
     //移除内定的
+    NSString*tokenStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+    if (tokenStr) {
     UIView *superView =self.areaSection==100 ?_assortTopView:_headView;
-        if (sender.section==self.areaSection||sender.tag!=self.areaRow) {
+        
+        if (sender.section==(self.areaSection-100)&&sender.tag!=self.areaRow) {
             UIScrollView*scrollView=[superView viewWithTag:self.areaSection];
             MyPropBtn*mbtn=[scrollView viewWithTag:self.areaRow];
             mbtn.selected=NO;
@@ -474,6 +478,7 @@ NSInteger btnSection;
         self.sendArea = @"昆明";
     }
     [[NSUserDefaults standardUserDefaults]setObject:self.sendArea forKey:@"AREA"];
+    }
     
     AllFlower*flower=_floerNameArray[_isTag];
     
