@@ -100,7 +100,9 @@
 {
     self.moneyLabel = [[UILabel alloc] initWithFrame:CGRectMake((LBVIEW_WIDTH1-LBVIEW_WIDTH1/1.5)/2, 40, LBVIEW_WIDTH1 / 1.5, 60)];
     // self.moneyLabel.backgroundColor = [UIColor redColor];
-    self.moneyLabel.text = _dataDic[@"nmoney"];
+    if (_dataDic) {
+        self.moneyLabel.text = _dataDic[@"nmoney"];
+    }
     self.moneyLabel.textColor = [UIColor blackColor];
     self.moneyLabel.font = [UIFont systemFontOfSize:40];
     self.moneyLabel.textAlignment = NSTextAlignmentCenter;

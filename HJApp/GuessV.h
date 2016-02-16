@@ -11,5 +11,6 @@
 @interface GuessV : UIView
 
 @property (nonatomic,strong) UITabBarController *tabVC;
+@property (nonatomic,strong) NSArray *dataArray;
 - (void)superWidth:(float) width withArray:(NSArray *)array withTabVC:(UITabBarController *)tabVC;
 @end

@@ -126,7 +126,7 @@ NSInteger btnSection;
      {
         _cartList = [array mutableCopy];
      }];
-    
+
 }
 
 -(void)judgeIsTag
@@ -136,7 +136,6 @@ NSInteger btnSection;
     }
     //获取上个页面所选取的种类
     NSString*isTagStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"TWOTAG"];
-    NSLog(@"isTagStr====%@",isTagStr);
     if (isTagStr)
     {
         cid = isTagStr;
@@ -179,7 +178,6 @@ NSInteger btnSection;
      _catalogueStrArray=[[NSMutableArray alloc]init];
     self.view.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     
-    //_addNum=0;
     page=1;
     cid = @"1";
     _cartList = [[NSMutableArray alloc] init];
@@ -188,7 +186,7 @@ NSInteger btnSection;
     [doubleTap setNumberOfTapsRequired:2];
     doubleTap.delegate = self;
     [self.view addGestureRecognizer:doubleTap];
-    
+
 }
 
 //获取右边tableview数据
@@ -197,6 +195,7 @@ NSInteger btnSection;
     [self showRightTableView];
     page = 1;
     [self loadDetailData];
+ 
 }
 
 //获取分类栏属性
@@ -302,7 +301,6 @@ NSInteger btnSection;
             FlowerCatalogue*flower=_catalogueArray[i];
             label.text=flower.name;
             
-            
             UIScrollView*btnScrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(70, 5+30*(i-1), LBVIEW_WIDTH1-90-60, 30)];
             btnScrollView.contentSize=CGSizeMake(65*flower.catalogueArray.count+40, 20);
             btnScrollView.showsHorizontalScrollIndicator=NO;
@@ -341,7 +339,7 @@ NSInteger btnSection;
             }
         }
         [self.view addSubview:_headView];
-        
+    
         _rightTableV.frame=CGRectMake(90, 70+30*_catalogueArray.count, 5*LBVIEW_WIDTH1/6,LBVIEW_HEIGHT1-60-113-30*_catalogueArray.count);
     }
     else
@@ -409,7 +407,21 @@ NSInteger btnSection;
     if (!locatioanStr)
         return;
     
-    //NSLog(@"_catalogueStrArray===%@",_catalogueStrArray);
+    NSString *onlyOne = [[NSUserDefaults standardUserDefaults]objectForKey:@"ONLYONE"];
+    if (onlyOne) {
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"ONLYONE"];
+        NSString *path = NSHomeDirectory();
+        path = [path stringByAppendingString:@"/Documents/onlyDic"];
+        NSDictionary *dic = [[NSDictionary alloc]initWithContentsOfFile:path];
+        [[NSFileManager defaultManager]removeItemAtPath:path error:nil];
+        NSMutableArray *mutArray = [[NSMutableArray alloc]init];
+        FlowerDetail *flow=[FlowerDetail getAllFlowerDictionary:dic];
+        [mutArray addObject:flow];
+        _floerDetailArray = mutArray;
+        [_rightTableV reloadData];
+        return;
+    }
+    
     [HttpEngine getProductDetail:cid withLocation:locatioanStr withProps:_catalogueStrArray withPage:[NSString stringWithFormat:@"%ld",page] withPageSize:@"10" completion:^(NSArray *dataArray)
      {
          //右uitableview
@@ -512,7 +524,7 @@ NSInteger btnSection;
         {
             
             NSString*str1=[str substringToIndex:1];
-            NSLog(@"str1===%@",str1);
+            //NSLog(@"str1===%@",str1);
             NSString*str2=[_catalogueStrArray[i] substringToIndex:1];
  
             if ([str1 isEqualToString:str2])
@@ -677,7 +689,7 @@ NSInteger btnSection;
             UILabel*nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(10, 5, 150, 20)];
             NSDictionary*dic=dFlower.dataArray[indexPath.row];
             nameLabel.text=dic[@"supplier_name"];
-            NSLog(@"supplier_name===%@",dic[@"supplier_name"]);
+            //NSLog(@"supplier_name===%@",dic[@"supplier_name"]);
             nameLabel.font=[UIFont systemFontOfSize:14];
             [cell addSubview:nameLabel];
             
@@ -1023,10 +1035,7 @@ NSInteger btnSection;
          [self updataCatalogueStrArray];
          [self setCatalogue];
          [self loadDetailData];
-         
      }];
-    
-
 }
 - (void)updataCatalogueStrArray {
     for (int i=0; i<_catalogueArray.count; i++) {

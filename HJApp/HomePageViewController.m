@@ -728,6 +728,7 @@ NSString *trackViewURL;
     }
     [promotionBtn setHidden:NO];
      promotionTimer = nil;
+    
 }
 #pragma mark -----猜你喜欢
 - (void)guessYouLikeData:(NSString *)strLocation {
