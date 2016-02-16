@@ -274,7 +274,7 @@ NSInteger btnSection;
     _chooseBtn.isOpen=NO;
     [_assortTopView addSubview:_chooseBtn];
     
-
+    
     for (int i=0; i<2; i++)
     {
         UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(5+((LBVIEW_WIDTH1-90)/2+45)*i, 60, (LBVIEW_WIDTH1-90-110)/2, 2)];
