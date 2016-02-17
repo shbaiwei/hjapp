@@ -187,15 +187,41 @@ NSInteger btnSection;
     doubleTap.delegate = self;
     [self.view addGestureRecognizer:doubleTap];
 
+    //search
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"iconfont_sou"] style:UIBarButtonItemStylePlain target:self action:@selector(rightSearchBtn)];
 }
-
+- (void)rightSearchBtn {
+    
+    NSString*locatioanStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
+    if (!locatioanStr) {
+        [self alert];
+        return;
+    }
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"请输入关键词查询:" preferredStyle:UIAlertControllerStyleAlert];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+    }];
+    UIAlertAction *defaul = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+         NSString *str = alert.textFields[0].text;
+        if (![str isEqualToString:@""]) {
+            [HttpEngine goodsSearchWithLocation:locatioanStr withGoodsName:str with:^(NSArray *dataArray) {
+                _floerDetailArray = [dataArray mutableCopy];
+                [_rightTableV reloadData];
+            }];
+        }
+    }];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [alert addAction:cancel];
+    [alert addAction:defaul];
+    [self presentViewController:alert animated:YES completion:nil];
+}
 //获取右边tableview数据
 -(void)getRightData
 {
     [self showRightTableView];
     page = 1;
     [self loadDetailData];
- 
 }
 
 //获取分类栏属性

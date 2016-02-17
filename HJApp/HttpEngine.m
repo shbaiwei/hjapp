@@ -152,6 +152,40 @@
     }];
     
 }
+
+//搜索
++ (void)goodsSearchWithLocation:(NSString *)location withGoodsName:(NSString *)goodsName with:(void(^)(NSArray*dataArray))complete {
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+    if (token) {
+        NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
+        [manager.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
+    }
+    
+    NSString *strUrl = @"http://hjapi.baiwei.org/goods/search/";
+    NSDictionary *parameters = @{@"location":location,@"goods_name":goodsName};
+    [manager GET:strUrl parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        //NSLog(@"search=====%@",responseObject);
+        NSArray*array=responseObject[@"data"];
+        NSMutableArray *datArray = [[NSMutableArray alloc]init];
+        for (int i=0; i<array.count; i++)
+        {
+            NSDictionary*dic=array[i];
+            FlowerDetail*flow=[FlowerDetail getAllFlowerDictionary:dic];
+            [datArray addObject:flow];
+        }
+        complete(datArray);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"%@",error);
+        complete(nil);
+    }];
+
+
+}
+
 //意见反馈
 +(void)ideaFeedBackName:(NSString*)name withMoblie:(NSString*)moblie withContent:(NSString*)content complete:(void(^)(NSString *error))complete
 {

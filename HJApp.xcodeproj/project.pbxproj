@@ -141,6 +141,7 @@
 		320CB98C1BFC571B00E8E54F /* Dg.png in Resources */ = {isa = PBXBuildFile; fileRef = 320CB98B1BFC571B00E8E54F /* Dg.png */; };
 		320CB98E1BFC579600E8E54F /* maru.png in Resources */ = {isa = PBXBuildFile; fileRef = 320CB98D1BFC579600E8E54F /* maru.png */; };
 		320CB9901BFC591000E8E54F /* pay1-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 320CB98F1BFC591000E8E54F /* pay1-1.png */; };
+		321CBC9D1C740B7C00756182 /* iconfont_sou.png in Resources */ = {isa = PBXBuildFile; fileRef = 321CBC9C1C740B7C00756182 /* iconfont_sou.png */; };
 		322694E91BF426FF00955170 /* FlowerCatalogue.m in Sources */ = {isa = PBXBuildFile; fileRef = 322694E81BF426FF00955170 /* FlowerCatalogue.m */; };
 		322694EC1BF4288600955170 /* ZhiFuBaoOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = 322694EB1BF4288600955170 /* ZhiFuBaoOrder.m */; };
 		322694EF1BF42B8800955170 /* AlipaySDK.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 322694ED1BF42B8800955170 /* AlipaySDK.bundle */; };
@@ -446,6 +447,7 @@
 		320CB98B1BFC571B00E8E54F /* Dg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Dg.png; sourceTree = "<group>"; };
 		320CB98D1BFC579600E8E54F /* maru.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = maru.png; sourceTree = "<group>"; };
 		320CB98F1BFC591000E8E54F /* pay1-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pay1-1.png"; sourceTree = "<group>"; };
+		321CBC9C1C740B7C00756182 /* iconfont_sou.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iconfont_sou.png; sourceTree = "<group>"; };
 		322694E71BF426FF00955170 /* FlowerCatalogue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlowerCatalogue.h; sourceTree = "<group>"; };
 		322694E81BF426FF00955170 /* FlowerCatalogue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlowerCatalogue.m; sourceTree = "<group>"; };
 		322694EA1BF4288600955170 /* ZhiFuBaoOrder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZhiFuBaoOrder.h; sourceTree = "<group>"; };
@@ -814,6 +816,7 @@
 		320BBE461BF9D4DD004DE70A /* images */ = {
 			isa = PBXGroup;
 			children = (
+				321CBC9C1C740B7C00756182 /* iconfont_sou.png */,
 				320AEDDD1C59B3DC0052D724 /* xiao.png */,
 				327C93401C3A468300AB54BF /* loading_logo@2x.png */,
 				327C93411C3A468300AB54BF /* ico_item0_active@2x.png */,
@@ -1748,6 +1751,7 @@
 				32DDC1051BEC3A0200649AE5 /* NewAdViewController.xib in Resources */,
 				32D0317B1BE9B99A008CAC2B /* OderTableViewCell.xib in Resources */,
 				320BBEC41BF9D4DD004DE70A /* ico_item1_active.png in Resources */,
+				321CBC9D1C740B7C00756182 /* iconfont_sou.png in Resources */,
 				320BBF1E1BF9DC12004DE70A /* plus.png in Resources */,
 				32E512141C05670200D08F02 /* zhuce.png in Resources */,
 				320BBEBD1BF9D4DD004DE70A /* hongbao2.png in Resources */,

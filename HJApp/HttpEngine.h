@@ -40,6 +40,8 @@
 
 //猜你喜欢 page_limit
 + (void)goodsFeaturedWithLocation:(NSString *)location withPageLimit:(NSString *)pageLimit with:(void(^)(NSArray*dataArray))complete;
+//搜索
++ (void)goodsSearchWithLocation:(NSString *)location withGoodsName:(NSString *)goodsName with:(void(^)(NSArray*dataArray))complete;
 //意见反馈
 +(void)ideaFeedBackName:(NSString*)name withMoblie:(NSString*)moblie withContent:(NSString*)content complete:(void(^)(NSString *error))complete;
 
