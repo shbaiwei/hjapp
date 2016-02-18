@@ -202,7 +202,7 @@
     //[self goZhiFuBao];
     //return;
     NSString *amount = self.monenyNum.text;
-    amount = @"0.01";
+    //amount = @"0.01";
     if([amount isEqualToString:@""]){
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"系统提示" message:@"请输入充值的金额" preferredStyle:UIAlertControllerStyleAlert];
         
