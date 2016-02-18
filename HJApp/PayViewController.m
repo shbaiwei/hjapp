@@ -309,7 +309,14 @@ NSInteger pay_type;
     [_tableView addGestureRecognizer:gestureRecognizer];
 
     [self.view addSubview:_tableView];
-    _payStyleArray=[[NSArray alloc]initWithObjects:@"花集余额",@"支付宝",@"微信支付",nil];
+    
+    [HttpEngine getBalance:^(NSDictionary *dic)
+     {
+         if (dic) {
+             NSString *huaJiMeny = [NSString stringWithFormat:@"花集余额(%@)",dic[@"nmoney"]];
+             _payStyleArray=[[NSArray alloc]initWithObjects:huaJiMeny,@"支付宝",@"微信支付",nil];
+         }
+     }];
     _orderArray=[[NSArray alloc]initWithObjects:@"总价",@"配送费",@"花集红包", nil];
     _priceOrderArray=[[NSArray alloc]initWithObjects:_totalPrice,_shippingFee,_priceRed, nil];
     

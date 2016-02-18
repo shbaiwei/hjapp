@@ -8,6 +8,7 @@
 
 #import "GuessV.h"
 #import "UIImageView+WebCache.h"
+#import "MyButton.h"
 
 @implementation GuessV
 
@@ -26,6 +27,8 @@
 
 - (void)superWidth:(float) width withArray:(NSArray *)array withTabVC:(UITabBarController *)tabVC {
     _tabVC = tabVC;
+    _dataArray = array;
+    NSLog(@"%@",_dataArray);
     UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, 40)];
     titleView.backgroundColor = [UIColor whiteColor];
     [self addSubview:titleView];
@@ -52,8 +55,9 @@
         [self addSubview:view];
         
         //按钮
-        UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, width/2, 80)];
+        MyButton *btn = [[MyButton alloc]initWithFrame:CGRectMake(0, 0, width/2, 80)];
         btn.tag = [guessDic[@"category_id"] intValue];
+        btn.status = i+10;
         [btn addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:btn];
         
@@ -140,10 +144,18 @@
         }
     }
 }
--(void)btnClick:(UIButton*)sender
+-(void)btnClick:(MyButton*)sender
 {
     NSString*isTag=[NSString stringWithFormat:@"%lu",sender.tag];
     [[NSUserDefaults standardUserDefaults]setObject:isTag forKey:@"TWOTAG"];
+    [[NSUserDefaults standardUserDefaults]setObject:@"1" forKey:@"ONLYONE"];
+    NSDictionary *dic = _dataArray[sender.status-10];
+    
+    NSDictionary *dataDic = [[NSDictionary alloc]init];
+    dataDic = @{@"goods_name":dic[@"goods_name"],@"image":dic[@"image"],@"prop_value":dic[@"prop_value"],@"standard_number":dic[@"standard_number"],@"id":dic[@"id"],@"price_list":dic[@"price_list"]};
+    NSString *path = NSHomeDirectory();
+    path = [path stringByAppendingString:@"/Documents/onlyDic"];
+    [dataDic writeToFile:path atomically:YES];
     _tabVC.selectedIndex=1;
 }
 

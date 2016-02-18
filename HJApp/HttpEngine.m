@@ -23,7 +23,7 @@
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject)
      {
-         NSLog(@"JSON:%@",responseObject);
+         //NSLog(@"JSON:%@",responseObject);
          NSDictionary *dict=responseObject;
          complete(dict);
          
@@ -47,7 +47,7 @@
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject)
      {
          [hud removeFromSuperview];
-         NSLog(@"JSON:%@",responseObject);
+         //NSLog(@"JSON:%@",responseObject);
          NSArray*array=responseObject;
          complete(array);
          
@@ -89,7 +89,7 @@
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         [hud removeFromSuperview];
-        NSLog(@"广告的JSON:%@",responseObject);
+        //NSLog(@"广告的JSON:%@",responseObject);
         
         NSArray*array=responseObject[@"results"];
         NSMutableArray*dataArray=[[NSMutableArray alloc]init];
@@ -119,7 +119,7 @@
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject)
     {
-        NSLog(@"JSON===:%@",responseObject);
+        //NSLog(@"JSON===:%@",responseObject);
         NSArray*array=responseObject[@"results"];
         NSMutableArray*dataArray=[[NSMutableArray alloc]init];
         for (int i=0; i<array.count; i++)
@@ -143,7 +143,7 @@
     [manager GET:strUrl parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"cainixihuan===%@",responseObject);
+        //NSLog(@"cainixihuan===%@",responseObject);
         NSArray *dataArray = responseObject[@"data"];
         complete(dataArray);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -152,6 +152,40 @@
     }];
     
 }
+
+//搜索
++ (void)goodsSearchWithLocation:(NSString *)location withGoodsName:(NSString *)goodsName with:(void(^)(NSArray*dataArray))complete {
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+    if (token) {
+        NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
+        [manager.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
+    }
+    
+    NSString *strUrl = @"http://hjapi.baiwei.org/goods/search/";
+    NSDictionary *parameters = @{@"location":location,@"goods_name":goodsName};
+    [manager GET:strUrl parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        //NSLog(@"search=====%@",responseObject);
+        NSArray*array=responseObject[@"data"];
+        NSMutableArray *datArray = [[NSMutableArray alloc]init];
+        for (int i=0; i<array.count; i++)
+        {
+            NSDictionary*dic=array[i];
+            FlowerDetail*flow=[FlowerDetail getAllFlowerDictionary:dic];
+            [datArray addObject:flow];
+        }
+        complete(datArray);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"%@",error);
+        complete(nil);
+    }];
+
+
+}
+
 //意见反馈
 +(void)ideaFeedBackName:(NSString*)name withMoblie:(NSString*)moblie withContent:(NSString*)content complete:(void(^)(NSString *error))complete
 {
@@ -170,7 +204,7 @@
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"JSON:%@",responseObject);
+        //NSLog(@"JSON:%@",responseObject);
         complete(nil);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"Error:%@",error);
@@ -194,10 +228,10 @@
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"JSON:%@",responseObject);
+        //NSLog(@"JSON:%@",responseObject);
         complete(nil);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-         NSLog(@"Error:%@",error);
+        NSLog(@"Error:%@",error);
         NSDictionary *dic = error.userInfo;
         NSString *str = [self errorArrayData:dic withKey:@"mobile"];
         complete(str);
@@ -243,7 +277,7 @@
     [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"分类属性JSON:%@",responseObject);
+        //NSLog(@"分类属性JSON:%@",responseObject);
         NSArray*array=responseObject;
         NSMutableArray*dataArray=[[NSMutableArray alloc]init];
         for (int i=0; i<array.count; i++)
@@ -285,10 +319,8 @@
     else
     {
         parameters=@{@"category_id":idStr,@"location":location,@"page":page,@"page_size":pageSize,@"props":props};
-        
     }
-    
-    NSLog(@"parameters===%@",parameters);
+    //NSLog(@"parameters===%@",parameters);
     NSMutableArray*datArray=[[NSMutableArray alloc]init];
     
     MBProgressHUD *hud = [BWCommon getHUD];
@@ -297,7 +329,7 @@
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [hud removeFromSuperview];
-        NSLog(@"分类产品  JSON:%@",responseObject);
+        //NSLog(@"分类产品  JSON:%@",responseObject);
         NSArray*array=responseObject[@"data"];
         for (int i=0; i<array.count; i++)
         {
@@ -333,7 +365,7 @@
     [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"123==JSON:%@",responseObject);
+        //NSLog(@"123==JSON:%@",responseObject);
         NSArray*array=responseObject[@"cart_list"];
         NSMutableArray*dataArray=[[NSMutableArray alloc]init];
         for (int i=0; i<array.count; i++)
@@ -371,7 +403,7 @@
     [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"123购物车==JSON:%@",responseObject);
+        //NSLog(@"123购物车==JSON:%@",responseObject);
         //skuName,*price,*number
         
         NSArray*array=responseObject;
@@ -409,7 +441,7 @@
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"JSON:%@",responseObject);
+        //NSLog(@"JSON:%@",responseObject);
         [hud removeFromSuperview];
         complete(nil,nil);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -458,7 +490,7 @@
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"JSON: %@", responseObject);
+        //NSLog(@"JSON: %@", responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"12345Error: %@", error);
     }];
@@ -477,7 +509,7 @@
     [magager GET:str parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"JSON:%@",responseObject);
+        //NSLog(@"JSON:%@",responseObject);
         complete(@"true");
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"Error:%@",error);
@@ -499,7 +531,7 @@
     [magager GET:str parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"JSON:%@",responseObject);
+        //NSLog(@"JSON:%@",responseObject);
         complete(responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"Error:%@",error);
@@ -529,7 +561,7 @@
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"JSON:%@",responseObject);
+        //NSLog(@"JSON:%@",responseObject);
         complete(@"true");
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"Error:%@",error);
@@ -558,7 +590,7 @@
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"登录JSON: %@", responseObject);
+        //NSLog(@"登录JSON: %@", responseObject);
         NSString*str=responseObject[@"token"];
         [[NSUserDefaults standardUserDefaults]setObject:str forKey:@"TOKEN_KEY"];
         [[NSUserDefaults standardUserDefaults]setObject:name forKey:@"NAME"];
@@ -593,7 +625,7 @@
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"JSON:%@",responseObject);
+        //NSLog(@"JSON:%@",responseObject);
         complete(@"true");
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"Error:%@",error);
@@ -618,12 +650,12 @@
     [magager GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"个人信息＝＝JSON:%@",responseObject);
+        //NSLog(@"个人信息＝＝JSON:%@",responseObject);
         NSString* idStr =responseObject[@"id"];
         [[NSUserDefaults standardUserDefaults]setObject:idStr forKey:@"ID"];
         complete(responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"Error:%@",error);
+        //NSLog(@"Error:%@",error);
         complete(nil);
     }];
     
@@ -644,7 +676,7 @@
     [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"JSON:%@",responseObject);
+        //NSLog(@"JSON:%@",responseObject);
         ConsumerDetail*consumer=[[ConsumerDetail alloc]init];
         consumer.userid=responseObject[@"userid"];
         consumer.uniqueid=responseObject[@"uniqueid"];
@@ -696,7 +728,7 @@
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSArray*array=responseObject[@"data"];
-        NSLog(@"array====%@",array);
+        //NSLog(@"array====%@",array);
         
         [hud removeFromSuperview];
         complete(array);
@@ -724,7 +756,7 @@
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary*dic=responseObject;
-        NSLog(@"dic====%@",dic);
+        //NSLog(@"dic====%@",dic);
         complete(dic);
 
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -750,7 +782,7 @@
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject)
      {
-        NSLog(@"Agin==JSON:%@",responseObject);
+        //NSLog(@"Agin==JSON:%@",responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"Agin==Error:%@",error);
     }];
@@ -777,7 +809,7 @@
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"responseObject===%@",responseObject);
+       // NSLog(@"responseObject===%@",responseObject);
         NSDictionary*dic=responseObject;
         complete(dic);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -835,7 +867,7 @@
     
     [manager PUT:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
-         NSLog(@"JSON:%@",responseObject);
+         //NSLog(@"JSON:%@",responseObject);
          completion(@"succe");
          
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
@@ -874,7 +906,7 @@
     } progress:^(NSProgress * _Nonnull uploadProgress) {
       
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-       NSLog(@"pic===JSON:%@",responseObject);
+       //NSLog(@"pic===JSON:%@",responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"Error:%@",error);
     }];
@@ -896,7 +928,7 @@
     [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"JSON:%@",responseObject);
+        //NSLog(@"JSON:%@",responseObject);
         NSMutableArray*dataArray=[[NSMutableArray alloc]init];
         NSArray*array=responseObject;
         for (int i=0; i<array.count; i++)
@@ -931,7 +963,7 @@
     
     [manager PUT:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
-         NSLog(@"bijiJSON:%@",responseObject);
+         //NSLog(@"bijiJSON:%@",responseObject);
          
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
      {
@@ -959,7 +991,7 @@
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"新增JSON:%@",responseObject);
+        //NSLog(@"新增JSON:%@",responseObject);
         completion(@"succe");
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -983,7 +1015,7 @@
      {
          
          
-         NSLog(@"购物车 JSON:%@",responseObject);
+         //NSLog(@"购物车 JSON:%@",responseObject);
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error)
      {
          NSLog(@"Error:%@",error);
@@ -1006,7 +1038,7 @@
     NSLog(@"strstrstr====%@",str);
     [session PUT:str parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject)
      {
-         NSLog(@"设置默认地址＝＝JSON:%@",responseObject);
+         //NSLog(@"设置默认地址＝＝JSON:%@",responseObject);
      } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
          NSLog(@"设置默认地址===Error:%@",error);
      }];
@@ -1049,7 +1081,7 @@
     [session GET:str parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"购物车 JSON:%@",responseObject);
+        //NSLog(@"购物车 JSON:%@",responseObject);
         NSArray*array=responseObject;
         complete(array);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -1079,6 +1111,7 @@
         complete(dic);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error:%@",error);
+        complete(nil);
     }];
 }
 //amount,method
@@ -1101,7 +1134,7 @@
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"JSON:%@",responseObject);
+        //NSLog(@"JSON:%@",responseObject);
         
         complete(responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -1137,7 +1170,7 @@
     [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"售后 JSON:%@",responseObject);
+        //NSLog(@"售后 JSON:%@",responseObject);
         
         NSMutableArray*dataArray=[[NSMutableArray alloc]init];
         NSArray*resultArray=responseObject[@"results"];
@@ -1166,7 +1199,7 @@
     [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"消息 JSON:%@",responseObject);
+        //NSLog(@"消息 JSON:%@",responseObject);
         complete(responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
          NSLog(@"Error:%@",error);
@@ -1207,7 +1240,7 @@
         //NSLog(@"产地 JSON:%@",responseObject);
         complete(responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"Error:%@",error);
+        //NSLog(@"Error:%@",error);
         complete(nil);
     }];
 }

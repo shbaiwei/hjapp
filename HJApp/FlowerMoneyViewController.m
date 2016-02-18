@@ -25,7 +25,7 @@
 
 /////
 @property(nonatomic,strong)NSArray*dataArray;
-
+@property (nonatomic,unsafe_unretained)NSInteger status;
 @end
 
 @implementation FlowerMoneyViewController
@@ -55,6 +55,7 @@
     [HttpEngine getRedBagStatus:@"1" completion:^(NSArray *dataArray)
      {
          _dataArray=dataArray;
+         _status = 1;
          [self.flowerTV reloadData];
          
      }];
@@ -74,20 +75,23 @@
     self.madaBtn.titleLabel.font = [UIFont systemFontOfSize:14];
     self.madaBtn.frame = CGRectMake(0, 0, LBVIEW_WIDTH1 / 3-1, LBVIEW_HEIGHT1 / 15);
     [self.madaBtn addTarget:self action:@selector(lookRedBagBtn:) forControlEvents:UIControlEventTouchUpInside];
-    if (_dataArray.count!=0)
-    {
+//    if (_dataArray.count!=0)
+//    {
         _muYou=[NSString stringWithFormat:@"待使用(%lu)",_dataArray.count];
-    }
-    else
-    {
-        _muYou=@"待使用";
-    }
+//    }
+//    else
+//    {
+//        _muYou=@"待使用";
+//    }
     [self.madaBtn setTitle:_muYou forState:UIControlStateNormal];
     self.madaBtn.tag=1;
     [self.topView addSubview:self.madaBtn];
     
     self.dattaBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [self.dattaBtn setTitle:@"已使用" forState:UIControlStateNormal];
+    [HttpEngine getRedBagStatus:@"2" completion:^(NSArray *dataArray)
+     {
+        [self.dattaBtn setTitle:[NSString stringWithFormat:@"已使用(%lu)",dataArray.count] forState:UIControlStateNormal];
+     }];
     [self.dattaBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.dattaBtn.backgroundColor = [UIColor whiteColor];
     self.dattaBtn.titleLabel.font = [UIFont systemFontOfSize:14];
@@ -97,7 +101,10 @@
     [self.topView addSubview:self.dattaBtn];
     
     self.mouBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [self.mouBtn setTitle:@"已过期" forState:UIControlStateNormal];
+    [HttpEngine getRedBagStatus:@"3" completion:^(NSArray *dataArray)
+     {
+         [self.mouBtn setTitle:[NSString stringWithFormat:@"已过期(%lu)",dataArray.count] forState:UIControlStateNormal];
+     }];
     [self.mouBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.mouBtn.backgroundColor = [UIColor whiteColor];
     self.mouBtn.titleLabel.font = [UIFont systemFontOfSize:14];
@@ -172,6 +179,25 @@
         fullLabel.font=[UIFont systemFontOfSize:12];
         [cell addSubview:fullLabel];
         
+        switch (_status) {
+            case 2:
+            {
+                UIImageView*statusImage=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/2, 5, (LBVIEW_WIDTH1-40)/5.6+5, (LBVIEW_WIDTH1-40)/5.6-10)];
+                statusImage.image=[UIImage imageNamed:@"hongbao_0.png"];
+                [cell addSubview:statusImage];
+            }
+                break;
+            case 3:
+            {
+                UIImageView*statusImage=[[UIImageView alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1/2, 5, (LBVIEW_WIDTH1-40)/5.6+5, (LBVIEW_WIDTH1-40)/5.6-10)];
+                statusImage.image=[UIImage imageNamed:@"hongbao_1.png"];
+                [cell addSubview:statusImage];
+            }
+                break;
+            default:
+                break;
+        }
+        
     }
     
     return cell;
@@ -184,10 +210,8 @@
     [HttpEngine getRedBagStatus:str completion:^(NSArray *dataArray)
      {
          _dataArray=dataArray;
+         _status = sender.tag;
          [self.flowerTV reloadData];
      }];
-
 }
-
-
 @end

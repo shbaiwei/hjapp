@@ -33,9 +33,7 @@
         [btn addTarget:self action:@selector(chooseSex:) forControlEvents:UIControlEventTouchUpInside];
         btn.tag=i;
         [view addSubview:btn];
-        
     }
- 
 }
 
 -(void)chooseSex:(UIButton*)sender
