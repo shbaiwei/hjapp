@@ -528,7 +528,7 @@
     btn.layer.cornerRadius=5;
     btn.clipsToBounds=YES;
     btn.titleLabel.font=[UIFont systemFontOfSize:12];
-    btn.frame=CGRectMake(LBVIEW_WIDTH1-80, LBVIEW_HEIGHT1*0.1-30, 70, 25);
+    btn.frame=CGRectMake(LBVIEW_WIDTH1-75, LBVIEW_HEIGHT1*0.1-30, 65, 25);
     
     int status=[dic[@"status"] intValue];
     if (status==0)

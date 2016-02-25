@@ -13,6 +13,7 @@
 #import "LoginViewController.h"
 #import "RegisterViewController.h"
 #import "ChangCityViewController.h"
+#import "ShopV.h"
 
 @interface ShopingPageViewController ()<UITableViewDataSource,UITableViewDelegate,UIGestureRecognizerDelegate>
 
@@ -31,6 +32,7 @@
 @property(nonatomic,unsafe_unretained)BOOL isBool;
 @property (nonatomic,unsafe_unretained)CGRect btnRect;
 @property (nonatomic,unsafe_unretained)NSInteger btnRow;
+@property (nonatomic,strong)ShopV *shopv;
 
 @end
 
@@ -41,6 +43,7 @@
 
 #define LBVIEW_WIDTH1 [UIScreen mainScreen].bounds.size.width
 #define LBVIEW_HEIGHT1 [UIScreen mainScreen].bounds.size.height
+#define SIZE [UIScreen mainScreen].bounds.size
 
 @implementation ShopingPageViewController
 
@@ -68,6 +71,14 @@
         [_tableView removeFromSuperview];
         [self showTableView];
         [_tableView reloadData];
+        
+        if (_dataArray.count == 0) {
+            _shopv = [[ShopV alloc]init];
+            _shopv.frame = CGRectMake((LBVIEW_WIDTH1-100)/2, (LBVIEW_HEIGHT1-118-100)/2, 100, 100);
+            _shopv.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
+            [_shopv viewWithSuperSize:SIZE withTabVC:self.tbBarVC];
+            [self.view addSubview:_shopv];
+        }
     }];
     
     NSString*code=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];

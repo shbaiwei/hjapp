@@ -196,6 +196,8 @@
 		325AC5EF1BE7707500408525 /* IdeaBackViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 325AC5ED1BE7707500408525 /* IdeaBackViewController.xib */; };
 		325AC5F31BE772F900408525 /* CooperateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 325AC5F11BE772F900408525 /* CooperateViewController.m */; };
 		325AC5F41BE772F900408525 /* CooperateViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 325AC5F21BE772F900408525 /* CooperateViewController.xib */; };
+		3262ABF41C7ECA3000149B0B /* ShopV.m in Sources */ = {isa = PBXBuildFile; fileRef = 3262ABF21C7ECA3000149B0B /* ShopV.m */; };
+		3262ABF51C7ECA3000149B0B /* ShopView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3262ABF31C7ECA3000149B0B /* ShopView.xib */; };
 		3270DF671C5EF829009E3B13 /* IkenV.m in Sources */ = {isa = PBXBuildFile; fileRef = 3270DF661C5EF829009E3B13 /* IkenV.m */; };
 		3270DF6B1C5EFF2F009E3B13 /* GuessV.m in Sources */ = {isa = PBXBuildFile; fileRef = 3270DF6A1C5EFF2F009E3B13 /* GuessV.m */; };
 		327C93421C3A468300AB54BF /* loading_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 327C93401C3A468300AB54BF /* loading_logo@2x.png */; };
@@ -523,6 +525,9 @@
 		325AC5F01BE772F900408525 /* CooperateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CooperateViewController.h; sourceTree = "<group>"; };
 		325AC5F11BE772F900408525 /* CooperateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CooperateViewController.m; sourceTree = "<group>"; };
 		325AC5F21BE772F900408525 /* CooperateViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CooperateViewController.xib; sourceTree = "<group>"; };
+		3262ABF11C7ECA3000149B0B /* ShopV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShopV.h; sourceTree = "<group>"; };
+		3262ABF21C7ECA3000149B0B /* ShopV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShopV.m; sourceTree = "<group>"; };
+		3262ABF31C7ECA3000149B0B /* ShopView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShopView.xib; sourceTree = "<group>"; };
 		3270DF651C5EF829009E3B13 /* IkenV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IkenV.h; sourceTree = "<group>"; };
 		3270DF661C5EF829009E3B13 /* IkenV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IkenV.m; sourceTree = "<group>"; };
 		3270DF691C5EFF2F009E3B13 /* GuessV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuessV.h; sourceTree = "<group>"; };
@@ -992,6 +997,16 @@
 			name = "登陆注册";
 			sourceTree = "<group>";
 		};
+		3262ABF01C7ECA1000149B0B /* view */ = {
+			isa = PBXGroup;
+			children = (
+				3262ABF11C7ECA3000149B0B /* ShopV.h */,
+				3262ABF21C7ECA3000149B0B /* ShopV.m */,
+				3262ABF31C7ECA3000149B0B /* ShopView.xib */,
+			);
+			name = view;
+			sourceTree = "<group>";
+		};
 		3270DF681C5EFE4D009E3B13 /* view */ = {
 			isa = PBXGroup;
 			children = (
@@ -1163,6 +1178,7 @@
 		32B49B8E1BE30E1800AB6D55 /* ShopingPage */ = {
 			isa = PBXGroup;
 			children = (
+				3262ABF01C7ECA1000149B0B /* view */,
 				32B49B9F1BE30EF100AB6D55 /* ShopingPageViewController.h */,
 				32B49BA01BE30EF100AB6D55 /* ShopingPageViewController.m */,
 				32B49BA11BE30EF100AB6D55 /* ShopingPageViewController.xib */,
@@ -1664,6 +1680,7 @@
 				325AC5EF1BE7707500408525 /* IdeaBackViewController.xib in Resources */,
 				320BBEEB1BF9D4DD004DE70A /* order_select.png in Resources */,
 				320BBF321BF9DCF7004DE70A /* user.png in Resources */,
+				3262ABF51C7ECA3000149B0B /* ShopView.xib in Resources */,
 				320BBEFB1BF9D4DD004DE70A /* select1.png in Resources */,
 				320BBED61BF9D4DD004DE70A /* icons.png in Resources */,
 				320BBEEC1BF9D4DD004DE70A /* order_state1.png in Resources */,
@@ -1895,6 +1912,7 @@
 				32EFB1D31BF48C530065B475 /* MD5DataSigner.m in Sources */,
 				32EFB1D21BF48C530065B475 /* DataVerifier.m in Sources */,
 				32DDC1221BECAB1400649AE5 /* FlowerTableViewCell.m in Sources */,
+				3262ABF41C7ECA3000149B0B /* ShopV.m in Sources */,
 				325AC5E11BE7412800408525 /* RegisterViewController.m in Sources */,
 				32EF5CEF1C0EEBCF0015FCC7 /* OrderPayViewController.m in Sources */,
 				32E4DD851BEAF6D400EFC9C3 /* RightAssortTableViewCell.m in Sources */,
