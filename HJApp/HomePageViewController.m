@@ -302,11 +302,11 @@ NSString *trackViewURL;
     
     self.mapImageView = [[UIImageView alloc] init];
     self.mapImageView.image = [UIImage imageNamed:@"Map.png"];
-    self.mapImageView.frame = CGRectMake(main_size.width * 0.035, main_size.height * 0.044, 15, 20);
+    self.mapImageView.frame = CGRectMake(main_size.width * 0.035, 34, 15, 20);
     [self.topView addSubview:self.mapImageView];
     
     self.cityLabel = [[UILabel alloc] init];
-    self.cityLabel.frame = CGRectMake(main_size.width * 0.085, main_size.height * 0.042, main_size.width * 0.21, main_size.height * 0.035);
+    self.cityLabel.frame = CGRectMake(main_size.width * 0.085, 32, main_size.width * 0.21, 20);
     
     NSString*cityName=[[NSUserDefaults standardUserDefaults]objectForKey:@"CITYNAME"];
     if (cityName!=NULL)
@@ -323,7 +323,7 @@ NSString *trackViewURL;
     [self.topView addSubview:self.cityLabel];
     
     self.downButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    self.downButton.frame = CGRectMake(5, main_size.height * 0.053, 80, 30);
+    self.downButton.frame = CGRectMake(0, 38, 80, 30);
     UIImage *downImage = [UIImage imageNamed:@"swiper-market-btn-b.png"];
     downImage = [downImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     [self.downButton setImage:downImage forState:UIControlStateNormal];
