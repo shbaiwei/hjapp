@@ -809,7 +809,7 @@
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-       // NSLog(@"responseObject===%@",responseObject);
+        NSLog(@"responseObject===%@",responseObject);
         NSDictionary*dic=responseObject;
         complete(dic);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -1081,7 +1081,7 @@
     [session GET:str parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        //NSLog(@"购物车 JSON:%@",responseObject);
+        NSLog(@"购物车 JSON:%@",responseObject);
         NSArray*array=responseObject;
         complete(array);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -1089,6 +1089,29 @@
         complete(nil);
     }];
     
+}
+
++(void) getOrderRedBagUniqueid:(NSString *)uniqueid To_uid:(NSString *)to_uid order_price:(NSString *)order_price completion:(void(^)(NSArray*dataArray))complete {
+    
+    AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
+    NSString*str=@"http://hjapi.baiwei.org/member-coupon/valid/";
+    NSString*token=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
+    NSString*tokenStr=[NSString stringWithFormat:@"JWT %@",token];
+    [session.requestSerializer setValue:tokenStr forHTTPHeaderField:@"Authorization"];
+    
+    NSDictionary*parameters=@{@"uniqueid":uniqueid,@"to_uid":to_uid,@"order_price":order_price};
+    //NSLog(@"%@",parameters);
+    [session GET:str parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"我的红包 ＝＝JSON:%@",responseObject);
+        NSArray*array=responseObject;
+        complete(array);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"Error:%@",error);
+        complete(nil);
+    }];
+
 }
 
 //花集余额

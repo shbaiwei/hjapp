@@ -132,6 +132,7 @@
 
 //我的红包
 +(void)getRedBagStatus:(NSString*)status completion:(void(^)(NSArray*dataArray))complete;
++(void) getOrderRedBagUniqueid:(NSString *)uniqueid To_uid:(NSString *)to_uid order_price:(NSString *)order_price completion:(void(^)(NSArray*dataArray))complete;
 
 //花集余额
 +(void)getBalance:(void(^)(NSDictionary*dic))complete;

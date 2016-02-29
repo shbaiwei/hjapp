@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface ShopingCarDetail : NSObject
-@property(nonatomic,copy)NSString *skuName,*price,*number,*skuId,*supplierId,*Id;
+@property(nonatomic,copy)NSString *skuName,*price,*number,*skuId,*supplierId,*Id,*supplier_uniqueid,*user_id;
 @property(nonatomic,strong)NSArray*dataArray;
 
 +(id)ConsumerDetailDictionary:(NSDictionary*)dic;

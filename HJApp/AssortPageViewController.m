@@ -44,7 +44,8 @@
 @property(nonatomic,strong)NSArray*catalogueArray;
 @property(nonatomic,strong)UILabel*colorLable;
 @property(nonatomic,strong)MyBtn*chooseBtn;
-@property(nonatomic,strong)UIView*assortTopView;
+@property (nonatomic,strong) UIView *assortTopView;
+@property (nonatomic,strong) UIView *assortTopViewHide;
 @property(nonatomic,strong)UIScrollView*titleBtnScrollView;
 @property(nonatomic,strong)NSArray*carArray;
 @property(nonatomic,strong)NSMutableArray*catalogueStrArray;
@@ -55,6 +56,7 @@
 @property(nonatomic,copy)NSString *sendArea;
 @property(nonatomic,unsafe_unretained)NSInteger areaRow;
 @property(nonatomic,unsafe_unretained)NSInteger areaSection;
+@property (nonatomic,strong) MBProgressHUD *hud;
 @end
 
 #define VIEW_WIDTH self.view.bounds.size.width
@@ -71,6 +73,7 @@ NSString *cid;
 NSString *locatioanStr;
 NSInteger btnRow;
 NSInteger btnSection;
+static dispatch_once_t onceT;
 
 //视图将要出现  刷新数据
 -(void)viewWillAppear:(BOOL)animated
@@ -80,7 +83,8 @@ NSInteger btnSection;
     self.navigationItem.hidesBackButton=YES;
     
     self.sendArea = @"";
-
+    
+    
     //判断发货地
     NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
     NSString*code=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
@@ -115,7 +119,7 @@ NSInteger btnSection;
          //左Uitableview
          _floerNameArray=dataArray;
          [self judgeIsTag];
-         [self showLeftTableView];
+         
      }];
 
     if(!_rightTableV)
@@ -131,9 +135,6 @@ NSInteger btnSection;
 
 -(void)judgeIsTag
 {
-    if (!_assortTopView) {
-        [self delayGetProduct];
-    }
     //获取上个页面所选取的种类
     NSString*isTagStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"TWOTAG"];
     if (isTagStr)
@@ -162,19 +163,23 @@ NSInteger btnSection;
         
         [self.leftTableV selectRowAtIndexPath:index1 animated:NO scrollPosition:UITableViewScrollPositionNone];
         [self didSelectLeftTableView:tag];
-        //[self loadDetailData];
+
     } else {
         AllFlower*flower=_floerNameArray[_isTag];
         [HttpEngine getProduct:flower.flowerId completion:^(NSArray *dataArray)
          {
              _catalogueArray=dataArray;
              [self updataCatalogueStrArray];
+             [self setCatalogue];
          }];
     }
 }
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+     _hud = [BWCommon getHUD];
+    
      _catalogueStrArray=[[NSMutableArray alloc]init];
     self.view.backgroundColor=[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     
@@ -222,17 +227,8 @@ NSInteger btnSection;
     [self showRightTableView];
     page = 1;
     [self loadDetailData];
-}
-
-//获取分类栏属性
--(void)delayGetProduct
-{
-    AllFlower*flower=_floerNameArray[_isTag];
-    [HttpEngine getProduct:flower.flowerId completion:^(NSArray *dataArray)
-     {
-         _catalogueArray=dataArray;
-         [self setCatalogue];
-     }];
+    [self showLeftTableView];
+    [self.assortTopViewHide removeFromSuperview];
 }
 
 #pragma  mark-------分类栏设置
@@ -307,6 +303,11 @@ NSInteger btnSection;
         [_assortTopView addSubview:label];
     }
     
+    dispatch_once(&onceT, ^{
+        self.assortTopViewHide = [[UIView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1-90, 70+10)];
+        self.assortTopViewHide.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
+        [self.assortTopView addSubview:self.assortTopViewHide];
+    });
 }
 //分类栏收缩
 -(void)shouSuo
@@ -428,6 +429,8 @@ NSInteger btnSection;
 
 - (void) loadDetailData{
     
+
+    [_hud removeFromSuperview];
     locatioanStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
 
     if (!locatioanStr)
@@ -458,7 +461,6 @@ NSInteger btnSection;
              [_floerDetailArray addObjectsFromArray:[dataArray mutableCopy]];
          }
          [_rightTableV reloadData];
-         
      }];
 }
 

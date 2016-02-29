@@ -27,6 +27,8 @@
         _supplierId=[dic[@"supplier_id"]copy];
         _Id=[dic[@"id"]copy];
         _dataArray=dic[@"props"];
+        _supplier_uniqueid = [dic[@"supplier_uniqueid"]copy];
+        _user_id = [dic[@"user_id"]copy];
     }
     return self;
 }

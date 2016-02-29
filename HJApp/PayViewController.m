@@ -130,7 +130,7 @@ NSInteger pay_type;
     if(![_isTagRedPacket isEqualToString:@""])
     {
         _redStr=[NSString stringWithFormat:@"%@元红包",_isTagRedPacket];
-        _priceRed=[_isTagRedPacket substringToIndex:2];
+        _priceRed = _isTagRedPacket;
         _ttPrice=[_paymentPrice intValue]-[_priceRed intValue];
         _ttLabel.text=[NSString stringWithFormat:@"¥%d.00",_ttPrice];
         _paymentPrice=[NSString stringWithFormat:@"%d",_ttPrice];
@@ -322,42 +322,27 @@ NSInteger pay_type;
     
     //配送方式字符串
     _styleStr=@"送货上门";
-    
+ 
     //红包状态
-    NSString*priceStr=[NSString stringWithFormat:@"%@",_paymentPrice];
-    int price=[priceStr intValue];
-    [HttpEngine getRedBagStatus:@"1" completion:^(NSArray *dataArray)
-     {
-         _redArray=dataArray;
-         
-         if (_redArray.count==0)
-         {
-             _redStr=@"暂无红包";
-         }
-         else
-         {
-             for (int i=0; i<_redArray.count; i++)
-             {
-                 NSDictionary*dic=_redArray[i];
-                 NSString*termPriceStr=[NSString stringWithFormat:@"%@",dic[@"term_price"]];
-                 int termPrice=[termPriceStr intValue];
-                 if (price>termPrice)
-                 {
-                     _redStr=@"请选择红包";
-                     break;
-                 }
-                 else
-                 {
-                     if (i==_redArray.count-1)
-                     {
-                         _redStr=@"红包不可用";
-                     }
-                 }
-             }
-             
-         }
-         [_tableView reloadData];
-     }];
+    ShopingCarDetail*shCa = _dataArray[_dataArray.count-1];
+    NSString *toUid = shCa.supplier_uniqueid;
+     NSString* idStr = shCa.user_id;
+    [HttpEngine getOrderRedBagUniqueid:idStr To_uid:toUid order_price:_totalPrice completion:^(NSArray *dataArray) {
+        
+        _redArray=dataArray;
+        
+        if (_redArray.count==0)
+        {
+            _redStr=@"暂无红包可用";
+        }
+        else
+        {
+            _redStr=@"请选择红包";
+            //
+        }
+        [_tableView reloadData];
+    }];
+    
     
     [self showBtn];
 }
@@ -616,7 +601,7 @@ NSInteger pay_type;
                 _redLabel.textColor=[UIColor blackColor];
                 [cell addSubview:_redLabel];
 
-            if (![_redStr isEqualToString:@"红包不可用"]&&![_redStr isEqualToString:@"暂无红包"])
+            if (![_redStr isEqualToString:@"暂无红包可用"])
             {
                 UIButton*btn=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, 40)];
                 [btn addTarget:self action:@selector(chooseRedPage) forControlEvents:UIControlEventTouchUpInside];
@@ -647,18 +632,18 @@ NSInteger pay_type;
         {
             cell.textLabel.text=_orderArray[indexPath.row];
             cell.textLabel.font=[UIFont systemFontOfSize:14];
-            UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-50, 0, LBVIEW_WIDTH1*0.2, 30)];
+            UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-65, 0, LBVIEW_WIDTH1*0.2, 30)];
             if (indexPath.row==2)
             {
                 label.text=[NSString stringWithFormat:@"¥-%@",_priceRed];
             }
             else
             {
-            label.text=[NSString stringWithFormat:@"¥%@",_priceOrderArray[indexPath.row]];
+                label.text=[NSString stringWithFormat:@"¥%@",_priceOrderArray[indexPath.row]];
             }
             label.font=[UIFont systemFontOfSize:14];
             [cell addSubview:label];
-            
+            cell.detailTextLabel.font = [UIFont systemFontOfSize:14];
         }
             break;
         case 7:
@@ -761,8 +746,8 @@ NSInteger pay_type;
 {
     redPacketViewController*redPacketVC=[[redPacketViewController alloc]init];
     redPacketVC.payVC=self;
-    redPacketVC.dataArray=_redArray;
-    redPacketVC.payPrice=_paymentPrice;
+    redPacketVC.dataArray = _redArray;
+    redPacketVC.payPrice = _paymentPrice;
     [self.navigationController pushViewController:redPacketVC animated:YES];
 }
 

@@ -169,6 +169,7 @@
 		323531301C0FFA9400E16144 /* ico_item3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 323531271C0FFA9400E16144 /* ico_item3@2x.png */; };
 		323531311C0FFA9400E16144 /* ico_item4_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 323531281C0FFA9400E16144 /* ico_item4_active@2x.png */; };
 		323531321C0FFA9400E16144 /* ico_item4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 323531291C0FFA9400E16144 /* ico_item4@2x.png */; };
+		32358DD21C84146700E9743D /* OrderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 32358DD11C84146700E9743D /* OrderTableViewCell.m */; };
 		323648A71BFC114A007D6EF5 /* ComplainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 323648A51BFC114A007D6EF5 /* ComplainViewController.m */; };
 		323648A81BFC114A007D6EF5 /* ComplainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 323648A61BFC114A007D6EF5 /* ComplainViewController.xib */; };
 		323648AB1BFC136C007D6EF5 /* ComplainServe.m in Sources */ = {isa = PBXBuildFile; fileRef = 323648AA1BFC136C007D6EF5 /* ComplainServe.m */; };
@@ -479,6 +480,8 @@
 		323531271C0FFA9400E16144 /* ico_item3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ico_item3@2x.png"; sourceTree = "<group>"; };
 		323531281C0FFA9400E16144 /* ico_item4_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ico_item4_active@2x.png"; sourceTree = "<group>"; };
 		323531291C0FFA9400E16144 /* ico_item4@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ico_item4@2x.png"; sourceTree = "<group>"; };
+		32358DD01C84146700E9743D /* OrderTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderTableViewCell.h; sourceTree = "<group>"; };
+		32358DD11C84146700E9743D /* OrderTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderTableViewCell.m; sourceTree = "<group>"; };
 		323648A41BFC114A007D6EF5 /* ComplainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComplainViewController.h; sourceTree = "<group>"; };
 		323648A51BFC114A007D6EF5 /* ComplainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComplainViewController.m; sourceTree = "<group>"; };
 		323648A61BFC114A007D6EF5 /* ComplainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ComplainViewController.xib; sourceTree = "<group>"; };
@@ -1193,6 +1196,8 @@
 				324421721C0AFE9C00CA943A /* redPacketViewController.m */,
 				32F877CF1C0B6CF500CC9C3A /* PayTableViewCell.h */,
 				32F877D01C0B6CF500CC9C3A /* PayTableViewCell.m */,
+				32358DD01C84146700E9743D /* OrderTableViewCell.h */,
+				32358DD11C84146700E9743D /* OrderTableViewCell.m */,
 			);
 			name = ShopingPage;
 			sourceTree = "<group>";
@@ -1855,6 +1860,7 @@
 				324421701C0AF9AA00CA943A /* DistributionTimeViewController.m in Sources */,
 				324421731C0AFE9C00CA943A /* redPacketViewController.m in Sources */,
 				32B49B5C1BE30CE400AB6D55 /* ViewController.m in Sources */,
+				32358DD21C84146700E9743D /* OrderTableViewCell.m in Sources */,
 				32D031821BE9E480008CAC2B /* OrderDetailViewController.m in Sources */,
 				325AC5EE1BE7707500408525 /* IdeaBackViewController.m in Sources */,
 				32DDC1131BEC7A6400649AE5 /* MyButton.m in Sources */,
@@ -2091,6 +2097,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.huaji.HJApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos7.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -2124,6 +2131,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.huaji.HJApp;
 				PRODUCT_NAME = "花集进货";
 				PROVISIONING_PROFILE = "8134e129-c8cc-4078-8539-94313d793694";
+				SDKROOT = iphoneos7.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;

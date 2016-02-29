@@ -365,6 +365,7 @@
         }];
     }
 }
+//
 //- (void)showMessge:(NSString *)MessgeStr {
 //    [WSProgressHUD showImage:nil status:MessgeStr];
 //    [self performSelector:@selector(dismisshud) withObject:nil afterDelay:1.5];

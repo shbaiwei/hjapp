@@ -214,9 +214,9 @@ NSString *trackViewURL;
     [self theTodayFlowes];
     [self theOneMoney];
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self checkVersion:@"http://itunes.apple.com/lookup?id=1063993741"];
-    });
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        [self checkVersion:@"http://itunes.apple.com/lookup?id=1063993741"];
+//    });
     
 //    [HttpEngine getPictureWithTime:@"TIME" with:^(NSArray *dataArray)
 //     {

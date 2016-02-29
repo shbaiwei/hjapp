@@ -148,8 +148,6 @@
         [cell addSubview:redPageImage];
         
         
-        UILabel*timeEndLabel=[[UILabel alloc]initWithFrame:CGRectMake(redPageImage.frame.size.width/11, (LBVIEW_WIDTH1-40)/5.6-22,120, 20)];
-        
         NSString*strTime=dic[@"end_time"];
         NSInteger intTime=[strTime integerValue];
         NSDate *confromTimesp = [NSDate dateWithTimeIntervalSince1970:intTime];
@@ -159,9 +157,14 @@
         [formatter setTimeStyle:NSDateFormatterShortStyle];
         [formatter setDateFormat:@"YYYY-MM-dd"];
         NSString*strtt=[formatter stringFromDate:confromTimesp];
-     
-        timeEndLabel.text=[NSString stringWithFormat:@"有效期到:%@",strtt];
-        timeEndLabel.font=[UIFont systemFontOfSize:12];
+        
+        NSString *validDate = [NSString stringWithFormat:@"有效期到:%@",strtt];
+        UIFont *validFont = [UIFont systemFontOfSize:12];
+        CGSize size = [validDate boundingRectWithSize:CGSizeMake(300, 20) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:validFont} context:nil].size;
+        
+        UILabel*timeEndLabel=[[UILabel alloc]initWithFrame:CGRectMake(redPageImage.frame.size.width/11, (LBVIEW_WIDTH1-40)/5.6-22,size.width, 20)];
+        timeEndLabel.text= validDate;
+        timeEndLabel.font=validFont;
         timeEndLabel.textColor=[UIColor grayColor];
         [cell addSubview:timeEndLabel];
         
