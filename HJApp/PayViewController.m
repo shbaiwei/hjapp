@@ -90,6 +90,8 @@ NSInteger pay_type;
 #define LBVIEW_WIDTH1 [UIScreen mainScreen].bounds.size.width
 #define LBVIEW_HEIGHT1 [UIScreen mainScreen].bounds.size.height
 
+#define SELF_PICKUP 11
+
 -(void)viewWillAppear:(BOOL)animated
 {
     //判断是否返回错误信息（用来防止某些时间段不能付款）
@@ -108,7 +110,7 @@ NSInteger pay_type;
     }
     
     //返回配送方式
-    if (_isTag==11)
+    if (_deliveryMethod==SELF_PICKUP)
     {
         _styleStr=@"上门自提";
         _selfPickup = @"1";
@@ -389,24 +391,96 @@ NSInteger pay_type;
     NSString *town = _defaultAddressDic[@"town"];
     NSString *phoneMob = _defaultAddressDic[@"phone_mob"];
     NSString *consignee = _defaultAddressDic[@"consignee"];
-    if (_isTag!=11) {
+
+    if (_deliveryMethod!=SELF_PICKUP) {
         NSString *address = _defaultAddressDic[@"address"];
         _addressDetail = address;
     }
     if (!_preferNo) {
-        _preferNo = @"0";
+        _preferNo = @"";
     }
     if (!_CustMessageTextV.text) {
-        _CustMessageTextV.text = @" ";
+        _CustMessageTextV.text = @"";
     }
     if (!_distributionLabel.text) {
-        _distributionLabel.text = @" ";
+        _distributionLabel.text = @"";
     }
     if (!_password) {
-        _password = @" ";
+        _password = @"";
     }
     NSArray *pay_method = [[NSArray alloc] initWithObjects:@"huaji",@"alipay",@"weixin", nil];
     
+   /*
+    $params["consignee"]= $pickup_address->consignee;
+    $params["province"]= $pickup_address->province;
+    $params["city"]= $pickup_address->city;
+    $params["town"]= 0;
+    $params["phone_mob"]= $pickup_address->phone_mob;
+    $params["address"]= $pickup_address->address;
+    */
+    
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+    [params setValue:[pay_method objectAtIndex:pay_type] forKey:@"method"];
+    [params setValue:_password forKey:@"spaypassword"];
+    [params setValue:_distributionLabel.text forKey:@"deadline"];
+    [params setValue:_preferNo forKey:@"coupon_no"];
+    [params setValue:self.cust_message.text forKey:@"cust_message"];
+    
+    if(_deliveryMethod == SELF_PICKUP){
+        [params setValue:@"1" forKey:@"self_pickup"];
+        [params setValue:consignee forKey:@"consignee"];
+        [params setValue:province forKey:@"province"];
+        [params setValue:city forKey:@"city"];
+        [params setValue:town forKey:@"town"];
+        [params setValue:phoneMob forKey:@"phone_mob"];
+        [params setValue:_defaultAddressDic[@"address"] forKey:@"address"];
+    }else{
+        [params setValue:@"0" forKey:@"self_pickup"];
+        [params setValue:_addrId forKey:@"address_id"];
+    }
+    
+    NSLog(@"create order post data: %@",params);
+    
+    [HttpEngine createOrder:[params mutableCopy] complete:^(NSDictionary *dict) {
+
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"温馨提醒" message:dict[@"msg"] preferredStyle:UIAlertControllerStyleAlert];
+
+        NSString *actionTitle = pay_type == 0 ? @"查看我的订单" : @"去支付";
+        UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:actionTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action){
+            if(pay_type == 0)
+            {
+                // order page
+            }
+            else if (pay_type==1)
+            {
+                [self alipay:dict[@"out_trade_no"] amount:dict[@"payment_price"] completion:^(BOOL success)
+                 {
+                     //order page
+                 }];
+            }
+            else if (pay_type==2)
+            {
+                [self WeiXinPay:dict[@"out_trade_no"]];
+            }
+            [self.navigationController popViewControllerAnimated:YES];
+        }];
+        if (pay_type!=0)
+        {
+            UIAlertAction*cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action)
+                                  {
+                                      [self.navigationController popViewControllerAnimated:YES];
+                                  }];
+            [alertController addAction:cancel];
+            
+        }
+        [alertController addAction:defaultAction];
+        
+        [self presentViewController:alertController animated:YES completion:nil];
+    } failure:^(NSError *error) {
+        
+    }];
+    
+    /*
     [HttpEngine submitOrderMethod:[pay_method objectAtIndex:pay_type] withSpaypassword:_password withDeadline:_distributionLabel.text withCouponNo:_preferNo withCustMessage:_CustMessageTextV.text withSelfPickup:_selfPickup withAddressId:_addrId withConsignee:consignee withProvince:province withCity:city withTown:town withPhoneMob:phoneMob withAddress:_addressDetail completion:^(NSDictionary *dict) {
         
          UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"温馨提醒" message:dict[@"msg"] preferredStyle:UIAlertControllerStyleAlert];
@@ -446,6 +520,7 @@ NSInteger pay_type;
          [self presentViewController:alertController animated:YES completion:nil];
          
      }];
+     */
 }
 
 //输入密码
@@ -553,7 +628,7 @@ NSInteger pay_type;
         [cell addSubview:_distributionAddrsDetailLabel];
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
             
-        if (_isTag==11)
+        if (_deliveryMethod==SELF_PICKUP)
         {
             NSArray *pickupAddressArray = _styleDic[@"pickup_address"];
             NSDictionary *pickupAddressDic = pickupAddressArray[0];
@@ -699,7 +774,7 @@ NSInteger pay_type;
         }
     }else
         if(indexPath.section ==1){
-            if (_isTag!=11) {
+            if (_deliveryMethod!=SELF_PICKUP) {
               [self changeAddress];
             }
         }else

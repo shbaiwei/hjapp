@@ -96,6 +96,7 @@ NSString *trackViewURL;
     self.navigationController.navigationBarHidden=YES;
     self.cityLabel.text=[[NSUserDefaults standardUserDefaults]objectForKey:@"CITYNAME"];
     
+
     //滑动轮播图部分
     [HttpEngine getPictureWithTime:@"YES" with:^(NSArray *dataArray)
      {
@@ -104,16 +105,7 @@ NSString *trackViewURL;
          [self refreshAdData];
      }];
     
-    
-    NSString *strLocation = [[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
-    if (strLocation) {
-        [self guessYouLikeData:strLocation];
-    } else {
-        [_guessYouView removeFromSuperview];
-        _guessYouView.bounds =CGRectMake(0, 0, LBVIEW_WIDTH1, 0);
-        _mainScroll.contentSize = CGSizeMake( LBVIEW_WIDTH1, scrollPicHeight+flowerViewHeight+todayShopHeight+LBVIEW_HEIGHT1/6+6+50+118);
-        [self theIkenAndBess];
-    }
+
 }
 
 -(void)checkVersion:(NSString* )appurl
@@ -132,7 +124,7 @@ NSString *trackViewURL;
             NSString* appStoreVersion = [releaseInfo objectForKey:@"version"];
             NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
             NSString *currentVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];
-            if (![appStoreVersion isEqualToString:currentVersion])
+            if ([appStoreVersion floatValue] > [currentVersion floatValue] )
             {
                 trackViewURL = [[NSString alloc] initWithString:[releaseInfo objectForKey:@"trackViewUrl"]];
                 NSString* msg =[releaseInfo objectForKey:@"releaseNotes"];
@@ -149,14 +141,15 @@ NSString *trackViewURL;
                 [alert addAction:defaul];
                 [self presentViewController:alert animated:YES completion:nil];
                 
-//                UIAlertView* alertview =[[UIAlertView alloc] initWithTitle:@"版本升级" message:[NSString stringWithFormat:@"%@%@%@", @"新版本特性:",msg, @"\n是否升级？"] delegate:self cancelButtonTitle:@"稍后升级" otherButtonTitles:@"马上升级", nil];
-//                [alertview show];
+                //                UIAlertView* alertview =[[UIAlertView alloc] initWithTitle:@"版本升级" message:[NSString stringWithFormat:@"%@%@%@", @"新版本特性:",msg, @"\n是否升级？"] delegate:self cancelButtonTitle:@"稍后升级" otherButtonTitles:@"马上升级", nil];
+                //                [alertview show];
             }
             
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
+
 }
 
 - (void)viewDidLoad
@@ -188,6 +181,10 @@ NSString *trackViewURL;
         NSLog(@"Please enable location service.");
     }
     
+    [HttpEngine getAdvertisement:^(NSArray *dataArray) {
+        
+    }];
+    
     
     NSString*login=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
     if (login )
@@ -206,6 +203,17 @@ NSString *trackViewURL;
         }];
     }
     
+
+    NSString *strLocation = [[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
+    if (strLocation) {
+        [self guessYouLikeData:strLocation];
+    } else {
+        [_guessYouView removeFromSuperview];
+        _guessYouView.bounds =CGRectMake(0, 0, LBVIEW_WIDTH1, 0);
+        _mainScroll.contentSize = CGSizeMake( LBVIEW_WIDTH1, scrollPicHeight+flowerViewHeight+todayShopHeight+LBVIEW_HEIGHT1/6+6+50+118);
+        [self theIkenAndBess];
+    }
+    
     //主scrollView
     [self theTopView];
     [self ScrollViewMain];
@@ -214,9 +222,9 @@ NSString *trackViewURL;
     [self theTodayFlowes];
     [self theOneMoney];
     
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//        [self checkVersion:@"http://itunes.apple.com/lookup?id=1063993741"];
-//    });
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self checkVersion:@"http://itunes.apple.com/lookup?id=1063993741"];
+    });
     
 //    [HttpEngine getPictureWithTime:@"TIME" with:^(NSArray *dataArray)
 //     {
@@ -433,7 +441,15 @@ NSString *trackViewURL;
     
     if([deadline isEqualToString:@""]){
         showPromotion=NO;
+        
+        //若没有秒杀 则隐藏
+        [self.promotionView setHidden:YES];
+        //上移猜你喜欢等VIEW
+        [self guessYouLike];
+        [self theIkenAndBess];
+        promotionTimer = nil;
     }
+    
 
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateStyle:NSDateFormatterMediumStyle];
@@ -705,15 +721,7 @@ NSString *trackViewURL;
 
 -(void)promotionAnimation{
     
-    //若没有秒杀 则隐藏
-    if(!showPromotion){
-        [self.promotionView setHidden:YES];
-        //上移猜你喜欢等VIEW
-        [self guessYouLike];
-        [self theIkenAndBess];
-        promotionTimer = nil;
-        return;
-    }
+
     
     if(timeGap>0){
         int hour = (int)floor(timeGap / 3600);
@@ -733,6 +741,7 @@ NSString *trackViewURL;
 #pragma mark -----猜你喜欢
 - (void)guessYouLikeData:(NSString *)strLocation {
     
+
 //    NSString *strLocation = [[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
     [HttpEngine goodsFeaturedWithLocation:strLocation withPageLimit:@"6" with:^(NSArray *dataArray) {
         _guessLikeArray = dataArray;

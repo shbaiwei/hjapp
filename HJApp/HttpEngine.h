@@ -35,6 +35,8 @@
 //广告图
 +(void)getPictureWithTime:(NSString*)time with:(void(^)(NSArray*dataArray))complete;
 
++(void)getAdvertisement:(void(^)(NSArray*dataArray))complete;
+
 //花集公告
 +(void)getNotifition:(void(^)(NSArray*dataArray))complete;
 
@@ -47,6 +49,8 @@
 
 //商务合作
 +(void)cooperateName:(NSString*)name withMoblie:(NSString*)moblie withEmail:(NSString*)email withDanWei:(NSString*)danWei withOther:(NSString*)other withIp:(NSString*)ip complete:(void(^)(NSString *error))complete;
+
++(void)addOrderComplain:(NSDictionary *)dict complete:(void(^)(NSDictionary *dict))complete failure:(void(^)(NSString *error)) failure;
 
 //发送短信
 +(void)sendMessageMoblie:(NSString*)mobliePhone withKind:(int)tag;
@@ -99,15 +103,22 @@
 //上传图片
 +(void)uploadPicData:(UIImage*)image;
 
++(void)publicUploadImage:(UIImage *) image complete:(void(^)(NSDictionary*dict))complete failure : (void(^)(void))failure;
+
 //我的订单
 +(void)myOrder:(NSString*)full with:(NSString*)page with:(NSString*)pageSize with:(NSString*)status completion:(void(^)(NSArray*dataArray))complete;
 //订单详细
 +(void)detailOrder:(NSString*)idStr completion:(void(^)(NSDictionary*dataDic))complete;
 //再次购买
-+(void)anginBuy:(NSString*)order;
++(void)anginBuy:(NSString*)order complete:(void(^)(void))complete;
+
++(void)queryOrderExpress:(NSString *)order_no complete:(void(^)(NSArray*array))complete failure:(void (^)(NSError *error))failure;
+
 
 //订单提交
 +(void)submitOrderMethod:(NSString*)method withSpaypassword:(NSString*)spaypassword withDeadline:(NSString *)deadline withCouponNo:(NSString*)couponNo withCustMessage:(NSString *)CustMessage withSelfPickup:(NSString *)selfPickup withAddressId:(NSString*)addressId withConsignee:(NSString *)consignee withProvince:(NSString *)province withCity:(NSString *)city withTown:(NSString *)town withPhoneMob:(NSString *)phoneMob withAddress:(NSString *)address completion:(void(^)(NSDictionary*dict))complete;
+
++(void)createOrder:(NSDictionary*)params complete:(void(^)(NSDictionary*dict))complete failure:(void (^)(NSError *error))failure;
 
 //获取订单号
 //+(void)getOutOrderNoNum:(NSString*)num Completion:(void(^)(NSString*orderNo))complete;

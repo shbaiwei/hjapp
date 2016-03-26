@@ -18,6 +18,8 @@
 #import "LoginViewController.h"
 #import "OrderPayViewController.h"
 #import "PayTableViewCell.h"
+#import "OrderExpressTableViewController.h"
+#import "OrderAddComplainViewController.h"
 
 
 @interface OrderPageViewController ()
@@ -51,12 +53,22 @@
 #define LBVIEW_WIDTH1 [UIScreen mainScreen].bounds.size.width
 #define LBVIEW_HEIGHT1 [UIScreen mainScreen].bounds.size.height
 
+#define STATUS_UNPAID 0
+#define STATUS_PAID 1
+#define STATUS_CONFIRMED 2
+#define STATUS_SIGNED 3
+#define STATUS_REFUND 4
+#define STATUS_CLOSED 5
+#define STATUS_CANCELED 6
+#define STATUS_ROLLBACK 7
+#define STATUS_FINISHED 8
+
 @implementation OrderPageViewController
 
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    self.navigationController.navigationBarHidden=YES;
+    //self.navigationController.navigationBarHidden=YES;
         
     HJViewController*hj=[[HJViewController alloc]init];
     if (!_isBool)
@@ -75,7 +87,6 @@
     _chooseValue=[[NSUserDefaults standardUserDefaults]objectForKey:@"THREETAG"];
     if (_chooseValue)
     {
-        NSLog(@"_chooseValue===%@",_chooseValue);
         _kindOrder = _chooseValue;
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"THREETAG"];
         [HttpEngine myOrder:@"1" with:@"1" with:@"10" with:_chooseValue completion:^(NSArray *dataArray)
@@ -101,25 +112,33 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.navigationController.navigationBarHidden=NO;
+    self.navigationController.navigationBar.translucent =NO;
+    //self.title = @"";
+    //self.navigationItem.hidesBackButton=YES;
+    
     self.view.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
     _pay_type = 0;
+    
     UIView*headView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1,64)];
-    headView.backgroundColor=[UIColor colorWithRed:0 green:171/255.0f blue:238/255.0f alpha:1];
-    [self.view addSubview:headView];
+    [self.navigationItem setTitleView:headView];
     
     //我的订单
-    _myOrderBtn=[[MyButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.3, 25, LBVIEW_WIDTH1*0.4, 30)];
+    _myOrderBtn=[[MyButton alloc]initWithFrame:CGRectMake((LBVIEW_WIDTH1 - 90)/2 - 20, 15, 90, 30)];
     [_myOrderBtn setTitle:@"我的订单" forState:UIControlStateNormal];
+    [_myOrderBtn.titleLabel setTextAlignment:NSTextAlignmentCenter];
     [_myOrderBtn addTarget:self action:@selector(myOrderBtnClick) forControlEvents:UIControlEventTouchUpInside];
-    _myOrderBtn.titleLabel.font=[UIFont boldSystemFontOfSize:19];
+    _myOrderBtn.titleLabel.font=[UIFont boldSystemFontOfSize:18];
     _myOrderBtn.isOpen=NO;
     [headView addSubview:_myOrderBtn];
 
-    _stausBtn=[[UIButton alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1*0.5+40, 34, 15, 10)];
+    _stausBtn=[[UIButton alloc]initWithFrame:CGRectMake((LBVIEW_WIDTH1 - 90)/2 + 70, 25, 15, 10)];
     [_stausBtn setBackgroundImage:[UIImage imageNamed:@"xia.png"] forState:UIControlStateNormal];
     [_stausBtn setBackgroundImage:[UIImage imageNamed:@"shang.png"] forState:UIControlStateSelected];
     _stausBtn.selected=NO;
     [headView addSubview:_stausBtn];
+    
     
     
     self.paymentTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, VIEW_WIDTH*0.45, 172) style:UITableViewStyleGrouped];
@@ -174,7 +193,7 @@
     if (_myOrderBtn.isOpen==NO)
     {
         //选择视图
-        _chooseView=[[UIView alloc]initWithFrame:CGRectMake(0, 64, LBVIEW_WIDTH1, LBVIEW_HEIGHT1*0.25)];
+        _chooseView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1*0.25)];
         _chooseView.backgroundColor=[UIColor whiteColor];
         [self.view addSubview:_chooseView];
         NSArray*btnNameArray=[[NSArray alloc]initWithObjects:@"全部", @"待付款",@"待收货",@"退款／售后",nil];
@@ -208,47 +227,43 @@
 {
     _myOrderBtn.isOpen=!_myOrderBtn.isOpen;
     [_chooseView removeFromSuperview];
+    NSString *status = @"";
     //订单布局
-    if (sender.tag==1)
+    if (sender.tag==2)
     {
-        _kindOrder = @"";
-        [HttpEngine myOrder:@"1" with:@"1" with:@"10" with:@"" completion:^(NSArray *dataArray)
-         {
-             _dataArray=dataArray;
-             //订单布局
-             [self showMyOrder];
-         }];
+        status = @"0";
+        [_myOrderBtn setTitle:@"待付款" forState:UIControlStateNormal];
     }
-    else
+    else if(sender.tag == 3)
     {
-        if (sender.tag==2)
-        {
-            _kindOrder = @"0";
-            [HttpEngine myOrder:@"true" with:@"1" with:@"10" with:@"0" completion:^(NSArray *dataArray)
-             {
-                 _dataArray=dataArray;
-                 //订单布局
-                 [self showMyOrder];
-             }];
-        }
-        else
-        {
-            NSString*str=[NSString stringWithFormat:@"%ld",sender.tag-1];
-            _kindOrder = str;
-            [HttpEngine myOrder:@"true" with:@"1" with:@"10" with:str completion:^(NSArray *dataArray)
-             {
-                 _dataArray=dataArray;
-                 //订单布局
-                 [self showMyOrder];
-             }];
-        }
-        
+        status = @"2";
+        [_myOrderBtn setTitle:@"待收货" forState:UIControlStateNormal];
     }
+    else if(sender.tag == 4)
+    {
+        status = @"3";
+        [_myOrderBtn setTitle:@"退款/售后" forState:UIControlStateNormal];
+    }
+    else{
+        [_myOrderBtn setTitle:@"我的订单" forState:UIControlStateNormal];
+    }
+    
+    _kindOrder = status;
+    
+    [HttpEngine myOrder:@"1" with:@"1" with:@"10" with:status completion:^(NSArray *dataArray)
+     {
+         _dataArray=dataArray;
+         //订单布局
+         [self showMyOrder];
+         
+     }];
+    
+    _stausBtn.selected = NO;
     
 }
 -(void)showMyOrder
 {
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-104) style:UITableViewStyleGrouped];
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, LBVIEW_WIDTH1, LBVIEW_HEIGHT1-104) style:UITableViewStyleGrouped];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.view addSubview:self.tableView];
@@ -404,31 +419,31 @@
     NSString*jystr;
     switch (intStatus)
     {
-        case 0:
+        case STATUS_UNPAID:
             jystr=@"等待支付";
             break;
-        case 1:
+        case STATUS_PAID:
             jystr=@"已支付,等待确认";
             break;
-        case 2:
+        case STATUS_CONFIRMED:
             jystr=@"已确认,等待配送";
             break;
-        case 3:
+        case STATUS_SIGNED:
             jystr=@"已签收,等待转账";
             break;
-        case 4:
+        case STATUS_REFUND:
             jystr=@"已退款";
             break;
-        case 5:
+        case STATUS_CLOSED:
             jystr=@"交易关闭";
             break;
-        case 6:
+        case STATUS_CANCELED:
             jystr=@"已取消";
             break;
-        case 7:
+        case STATUS_ROLLBACK:
             jystr=@"已撤单";
             break;
-        case 8:
+        case STATUS_FINISHED:
             jystr=@"交易成功";
             break;
         default:
@@ -521,8 +536,63 @@
     freeLable.font=[UIFont systemFontOfSize:12];
     [view addSubview:freeLable];
     
+    int status=[dic[@"status"] intValue];
+    CGFloat btnWidth = 70.0f;
+    CGFloat btnHeight = 25.0f;
+    CGFloat padding = 10.0f;
+    CGFloat btnGap = padding + btnWidth;
+    int btnNumber = 0;
     
-    MyButton*btn=[MyButton buttonWithType:UIButtonTypeSystem];
+    if(status == STATUS_UNPAID)
+    {
+        btnNumber+=1;
+        MyButton *btnCancel = [self createMenuButton:@"取消订单"];
+        btnCancel.frame = CGRectMake(VIEW_WIDTH-btnGap * btnNumber, padding+25, btnWidth, btnHeight);
+        
+        btnNumber+=1;
+        MyButton *btnPay = [self createMenuButton:@"支付"];
+        btnPay.frame = CGRectMake(VIEW_WIDTH-btnGap * btnNumber, padding+25, btnWidth, btnHeight);
+        [btnPay addTarget:self action:@selector(payorder:) forControlEvents:UIControlEventTouchUpInside];
+        
+        [view addSubview:btnCancel];
+        [view addSubview:btnPay];
+    }
+    else if(status == STATUS_CONFIRMED)
+    {
+        //btnNumber+=1;
+        MyButton *btnSign = [self createMenuButton:@"确认签收"];
+        btnSign.frame = CGRectMake(VIEW_WIDTH-btnGap * btnNumber, padding+25, btnWidth, btnHeight);
+        
+        //[view addSubview:btnSign];
+    }
+    
+    if(status == STATUS_CONFIRMED || status==STATUS_SIGNED || status==STATUS_PAID || status==STATUS_FINISHED)
+    {
+        btnNumber +=1;
+        MyButton *btnComplain = [self createMenuButton:@"申请售后"];
+        btnComplain.tag = section;
+        btnComplain.frame = CGRectMake(VIEW_WIDTH - btnGap * btnNumber, padding+25, btnWidth, btnHeight);
+        [btnComplain addTarget:self action:@selector(complainTouched:) forControlEvents:UIControlEventTouchUpInside];
+        [view addSubview:btnComplain];
+    }
+    
+    if(status > STATUS_UNPAID)
+    {
+        btnNumber +=1;
+        MyButton *btnBuyAgain = [self createMenuButton:@"再次购买"];
+        btnBuyAgain.frame = CGRectMake(VIEW_WIDTH - btnGap * btnNumber, padding+25, btnWidth, btnHeight);
+        [btnBuyAgain addTarget:self action:@selector(reorder:) forControlEvents:UIControlEventTouchUpInside];
+        btnBuyAgain.tag = section;
+        [view addSubview:btnBuyAgain];
+
+        btnNumber +=1;
+        MyButton *btnExpress = [self createMenuButton:@"物流信息"];
+        btnExpress.frame = CGRectMake(VIEW_WIDTH - btnGap * btnNumber, padding+25, btnWidth, btnHeight);
+        btnExpress.tag = section;
+        [btnExpress addTarget:self action:@selector(expressTouched:) forControlEvents:UIControlEventTouchUpInside];
+        [view addSubview:btnExpress];
+    }
+    /*MyButton*btn=[MyButton buttonWithType:UIButtonTypeSystem];
     btn.layer.borderColor=[UIColor grayColor].CGColor;
     btn.layer.borderWidth=1;
     btn.layer.cornerRadius=5;
@@ -530,8 +600,10 @@
     btn.titleLabel.font=[UIFont systemFontOfSize:12];
     btn.frame=CGRectMake(LBVIEW_WIDTH1-75, LBVIEW_HEIGHT1*0.1-30, 65, 25);
     
+    
     int status=[dic[@"status"] intValue];
-    if (status==0)
+    
+    if (status==STATUS_UNPAID)
     {
        [btn setTitle:@"支付" forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(payorder:) forControlEvents:UIControlEventTouchUpInside];
@@ -547,9 +619,48 @@
     [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     btn.tag=section+500;
     btn.status=status;
+    */
     
     return view;
 }
+
+-(void) complainTouched:(UIButton *) sender{
+    NSDictionary*dic=_dataArray[sender.tag];
+    NSString *order_no=[dic objectForKey:@"order_no"];
+    
+    OrderAddComplainViewController *addComplainVC = [[OrderAddComplainViewController alloc] init];
+    
+    addComplainVC.order_no = order_no;
+    addComplainVC.hidesBottomBarWhenPushed = YES;
+    
+    [self.navigationController pushViewController:addComplainVC animated:YES];
+}
+
+-(void) expressTouched:(UIButton *)sender{
+    
+    NSDictionary*dic=_dataArray[sender.tag];
+    NSString *order_no=[dic objectForKey:@"order_no"];
+    
+    OrderExpressTableViewController *expressVC = [[OrderExpressTableViewController alloc] init];
+    expressVC.order_no = order_no;
+    expressVC.hidesBottomBarWhenPushed=YES;
+    [self.navigationController pushViewController:expressVC animated:YES];
+    
+}
+
+-(MyButton *)createMenuButton:(NSString *)title{
+    
+    MyButton*btn=[MyButton buttonWithType:UIButtonTypeSystem];
+    btn.layer.borderColor=[BWCommon getRGBColor:0xcccccc].CGColor;
+    btn.layer.borderWidth=1;
+    btn.layer.cornerRadius=3;
+    btn.clipsToBounds=YES;
+    btn.titleLabel.font=[UIFont systemFontOfSize:12];
+    [btn setTitle:title forState:UIControlStateNormal];
+    [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    return btn;
+}
+
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -566,12 +677,12 @@
 //再次购买
 -(void)reorder:(MyButton*)sender{
 
-    NSDictionary*dic=_dataArray[sender.tag-500];
-    NSArray*array=dic[@"detail"];
-    NSDictionary*dicc=array[0];
-    NSLog(@"dicc[order_no]===%@",dicc[@"order_no"]);
-    [HttpEngine anginBuy:dicc[@"order_no"]];
-    self.tbBarVC.selectedIndex=3;
+    NSDictionary*dict=_dataArray[sender.tag];
+
+    [HttpEngine anginBuy:[dict objectForKey:@"order_no"] complete:^{
+        self.tbBarVC.selectedIndex=3;
+    }];
+    
 }
 
 -(void)gotoPayOrder:(NSInteger)tag
@@ -601,9 +712,8 @@
 
 -(void)toPayOrder:(NSInteger )tag{
     
-    NSDictionary*dic=_dataArray[tag-500];
-    NSArray*array=dic[@"detail"];
-    NSDictionary*dicc=array[0];
+    NSDictionary*dict=_dataArray[tag];
+
     if (_pay_type == 0)
     {
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"输入支付密码" message:@"请输入您花集账户的支付密码" preferredStyle:UIAlertControllerStyleAlert];
@@ -620,10 +730,8 @@
         UIAlertAction *confirmAction = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action)
                                         {
             UITextField *pay_password = alertController.textFields.firstObject;
-            [HttpEngine payOrderNum:dicc[@"order_no"] withSpaypassword:pay_password.text withMethod:@"huaji" withCoupon:@"" Completion:^(NSString *orderNo,NSString*price)
-                                             {
-                                                 
-                                             }];
+            [HttpEngine payOrderNum:dict[@"order_no"] withSpaypassword:pay_password.text withMethod:@"huaji" withCoupon:@"" Completion:^(NSString *orderNo,NSString*price)
+                                             {}];
                        
                                         }];
         [alertController addAction:cancelAction];
@@ -633,7 +741,7 @@
     }
     if (_pay_type==1)
     {
-        [HttpEngine payOrderNum:dicc[@"order_no"] withSpaypassword:@"" withMethod:@"weixin" withCoupon:@"" Completion:^(NSString *orderNo,NSString*price)
+        [HttpEngine payOrderNum:dict[@"order_no"] withSpaypassword:@"" withMethod:@"weixin" withCoupon:@"" Completion:^(NSString *orderNo,NSString*price)
          {
              [self alipay:orderNo amount:price completion:^(BOOL success)
               {
@@ -644,7 +752,7 @@
     }
     if (_pay_type==2)
     {
-        [HttpEngine payOrderNum:dicc[@"order_no"] withSpaypassword:@"" withMethod:@"alipay" withCoupon:@"" Completion:^(NSString *orderNo,NSString*price)
+        [HttpEngine payOrderNum:dict[@"order_no"] withSpaypassword:@"" withMethod:@"alipay" withCoupon:@"" Completion:^(NSString *orderNo,NSString*price)
         {
              [self WeiXinPay:orderNo];
         }];

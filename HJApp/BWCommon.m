@@ -67,6 +67,14 @@
     return result;
 }
 
+
++(UIColor *) getRGBColor:(NSInteger) rgbValue{
+    return [UIColor \
+            colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 \
+            green:((float)((rgbValue & 0xFF00) >> 8))/255.0 \
+            blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0];
+}
+
 +(MBProgressHUD *) getHUD{
     
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[BWCommon getCurrentVC].view animated:YES];
@@ -99,6 +107,48 @@
     //hud.opaque = YES;
     
     return hud;
+}
+
++(void) setTopBorder:(UIView *)view color:(UIColor *)color{
+    
+    [view sizeToFit];
+    CALayer* layer = [view layer];
+    CALayer *topBorder = [CALayer layer];
+    topBorder.borderWidth = 1;
+    topBorder.frame = CGRectMake(-1, 0, layer.frame.size.width, 1);
+    [topBorder setBorderColor:color.CGColor];
+    [layer addSublayer:topBorder];
+    
+}
++(void) setBottomBorder:(UIView *)view color:(UIColor *)color{
+    
+    [view sizeToFit];
+    
+    CALayer* layer = [view layer];
+    
+    CALayer *bottomBorder = [CALayer layer];
+    bottomBorder.borderWidth = 1;
+    bottomBorder.frame = CGRectMake(-1, layer.frame.size.height, layer.frame.size.width, 1);
+    [bottomBorder setBorderColor:color.CGColor];
+    [layer addSublayer:bottomBorder];
+}
+
+/**
+ *  计算文本的宽高
+ *
+ *  @param str     需要计算的文本
+ *  @param font    文本显示的字体
+ *  @param maxSize 文本显示的范围
+ *
+ *  @return 文本占用的真实宽高
+ */
++ (CGSize)sizeWithString:(NSString *)str font:(UIFont *)font maxSize:(CGSize)maxSize
+{
+    NSDictionary *dict = @{NSFontAttributeName : font};
+    // 如果将来计算的文字的范围超出了指定的范围,返回的就是指定的范围
+    // 如果将来计算的文字的范围小于指定的范围, 返回的就是真实的范围
+    CGSize size =  [str boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:dict context:nil].size;
+    return size;
 }
 
 @end

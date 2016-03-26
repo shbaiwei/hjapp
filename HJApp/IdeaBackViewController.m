@@ -126,11 +126,11 @@
     btn.layer.cornerRadius=5;
     btn.titleLabel.font=[UIFont systemFontOfSize:14];
     btn.clipsToBounds=YES;
-    [btn addTarget:self action:@selector(comit) forControlEvents:UIControlEventTouchUpInside];
+    [btn addTarget:self action:@selector(submit:) forControlEvents:UIControlEventTouchUpInside];
     [scrollView addSubview:btn];
 }
 
--(void)comit
+-(void)submit:(UIButton *) sender
 {
     UITextField*field1=(UITextField*)[self.view viewWithTag:1];
     UITextField*field2=(UITextField*)[self.view viewWithTag:2];

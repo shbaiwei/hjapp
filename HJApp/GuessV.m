@@ -63,7 +63,7 @@
         
         //图片
         UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(10, 10,60, 60)];
-        [image sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@@!l60",guessDic[@"image"]]]];
+        [image sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@@!l120",guessDic[@"image"]]]];
         [view addSubview:image];
         
         //名字

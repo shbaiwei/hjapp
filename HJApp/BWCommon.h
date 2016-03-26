@@ -22,4 +22,11 @@
 
 +(MBProgressHUD *)getHUD;
 
++(UIColor *) getRGBColor: (NSInteger) rgbValue;
+
++ (CGSize)sizeWithString:(NSString *)str font:(UIFont *)font maxSize:(CGSize)maxSize;
+
++(void) setTopBorder:(UIView *)view color:(UIColor *)color;
++(void) setBottomBorder:(UIView *)view color:(UIColor *)color;
+
 @end

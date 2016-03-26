@@ -56,7 +56,7 @@
     PayViewController*payVC=_payVC;
     payVC.isTagRedPacket=dic[@"price"];
     payVC.couponNo=dic[@"prefer_no"];
-    [self.navigationController popViewControllerAnimated:NO];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

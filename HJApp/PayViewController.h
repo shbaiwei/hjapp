@@ -18,8 +18,8 @@ UITableViewDelegate,
 UIGestureRecognizerDelegate
 >
 
-@property(nonatomic,unsafe_unretained)int isTag;
-@property(nonatomic,unsafe_unretained)int isTagTime;
+@property(nonatomic,assign)int deliveryMethod;
+@property(nonatomic,assign)int isTagTime;
 @property(nonatomic,copy)NSString*isTagRedPacket;
 @property(nonatomic,copy)NSString*couponNo;
 @end

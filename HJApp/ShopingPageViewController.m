@@ -340,6 +340,9 @@
 //删除按钮
 -(void)subBtn:(UIButton*)sender
 {
+    
+    _btnRect = [sender convertRect:sender.bounds toView:self.view];
+    
 [HttpEngine getSimpleCart:^(NSArray *array)
  {
     _dataArray=array;

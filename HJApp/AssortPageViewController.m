@@ -57,6 +57,9 @@
 @property(nonatomic,unsafe_unretained)NSInteger areaRow;
 @property(nonatomic,unsafe_unretained)NSInteger areaSection;
 @property (nonatomic,strong) MBProgressHUD *hud;
+
+@property (nonatomic,retain) NSMutableArray *photos;
+
 @end
 
 #define VIEW_WIDTH self.view.bounds.size.width
@@ -133,6 +136,18 @@ static dispatch_once_t onceT;
 
 }
 
+- (NSUInteger)numberOfPhotosInPhotoBrowser:(MWPhotoBrowser *)photoBrowser {
+    return self.photos.count;
+}
+
+- (id <MWPhoto>)photoBrowser:(MWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index {
+    if (index < self.photos.count) {
+        return [self.photos objectAtIndex:index];
+    }
+    return nil;
+}
+
+
 -(void)judgeIsTag
 {
     //获取上个页面所选取的种类
@@ -171,6 +186,7 @@ static dispatch_once_t onceT;
              _catalogueArray=dataArray;
              [self updataCatalogueStrArray];
              [self setCatalogue];
+
          }];
     }
 }
@@ -191,6 +207,8 @@ static dispatch_once_t onceT;
     [doubleTap setNumberOfTapsRequired:2];
     doubleTap.delegate = self;
     [self.view addGestureRecognizer:doubleTap];
+    
+    self.photos = [[NSMutableArray alloc] init];
 
     //search
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"iconfont_sou"] style:UIBarButtonItemStylePlain target:self action:@selector(rightSearchBtn)];
@@ -455,11 +473,21 @@ static dispatch_once_t onceT;
      {
          //右uitableview
          if(page == 1){
+             self.photos = [[NSMutableArray alloc] init];
              _floerDetailArray = [dataArray mutableCopy];
              
          }else{
              [_floerDetailArray addObjectsFromArray:[dataArray mutableCopy]];
          }
+         
+         
+         for(NSInteger i=0;i<[dataArray count];i++){
+             FlowerDetail*flow = dataArray[i];
+             NSString *image_url = flow.image;
+             [self.photos addObject:[MWPhoto photoWithURL:[NSURL URLWithString:image_url]]];
+             
+         }
+         
          [_rightTableV reloadData];
      }];
 }
@@ -926,11 +954,14 @@ static dispatch_once_t onceT;
 //减少按钮
 -(void)subBtnClick:(MyBtn*)sender
 {
+    
     FlowerDetail*dFlower=_floerDetailArray[sender.tag-500];
     NSDictionary*dic=dFlower.dataArray[sender.row];
     NSString*flowerStr=[NSString stringWithFormat:@"%@",dFlower.Id];
     
     NSString*locatioanStr=[[NSUserDefaults standardUserDefaults]objectForKey:@"CODE"];
+    
+    _btnRect = [sender convertRect:sender.bounds toView:self.view];
     
     for (int i=0; i<_cartList.count; i++)
     {
@@ -1116,6 +1147,28 @@ static dispatch_once_t onceT;
     }
     return 80;
 }
+
+
+-(void) imageTouched:(UIButton *) sender{
+    self.browser = [[MWPhotoBrowser alloc] initWithDelegate:self];
+    // Set options
+    self.browser.displayActionButton = YES; // Show action button to allow sharing, copying, etc (defaults to YES)
+    self.browser.displayNavArrows = NO; // Whether to display left and right nav arrows on toolbar (defaults to NO)
+    self.browser.displaySelectionButtons = NO; // Whether selection buttons are shown on each image (defaults to NO)
+    self.browser.zoomPhotosToFill = YES; // Images that almost fill the screen will be initially zoomed to fill (defaults to YES)
+    self.browser.alwaysShowControls = NO; // Allows to control whether the bars and controls are always visible or whether they fade away to show the photo full (defaults to NO)
+    self.browser.enableGrid = YES; // Whether to allow the viewing of all the photo thumbnails on a grid (defaults to YES)
+    self.browser.startOnGrid = NO; // Whether to start on the grid of thumbnails instead of the first photo (defaults to NO)
+    self.browser.autoPlayOnAppear = NO; // Auto-play first video
+    [self.browser setCurrentPhotoIndex:sender.tag];
+    [self.browser showNextPhotoAnimated:YES];
+    [self.browser showPreviousPhotoAnimated:YES];
+    // Present
+    [self.navigationController pushViewController:self.browser animated:YES];
+    
+
+}
+
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if([tableView isEqual:self.leftTableV])
@@ -1133,8 +1186,15 @@ static dispatch_once_t onceT;
         
         //图片
         UIImageView*image=[[UIImageView alloc]initWithFrame:CGRectMake(10, LBVIEW_HEIGHT1*0.01,LBVIEW_WIDTH1/6, LBVIEW_WIDTH1/6)];
-        [image sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@@!l60",flow.image]]];
+        [image sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@@!l120",flow.image]]];
         [view addSubview:image];
+        
+        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(10, LBVIEW_HEIGHT1*0.01,LBVIEW_WIDTH1/6, LBVIEW_WIDTH1/6)];
+        
+        [view addSubview:imageButton];
+        imageButton.tag = section;
+        [imageButton addTarget:self action:@selector(imageTouched:) forControlEvents:UIControlEventTouchUpInside];
+        
         
         //名字
         UILabel*nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(15+LBVIEW_WIDTH1/6, 0,LBVIEW_WIDTH1/2+10, 30)];
@@ -1202,9 +1262,13 @@ static dispatch_once_t onceT;
         {
             UILabel*picLabel=[[UILabel alloc]initWithFrame:CGRectMake(15+LBVIEW_WIDTH1/6, 50, 100, 20)];
             NSDictionary*dic=flow.dataArray[0];
+            CGFloat price = 99999.0f;
+            for(int i=0;i<[flow.dataArray count];i++){
+                price = MIN(price,[[flow.dataArray[0] objectForKey:@"price"] floatValue]);
+            }
             if (flow.dataArray.count>1)
             {
-                picLabel.text=[NSString stringWithFormat:@"¥%@ 起",dic[@"price"]];
+                picLabel.text=[NSString stringWithFormat:@"¥%f 起",price];
             }
             else
             {
