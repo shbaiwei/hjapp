@@ -31,7 +31,7 @@
 @property(nonatomic,copy)NSString*totalPrice;
 @property(nonatomic,copy)NSString*shippingFee;
 @property(nonatomic,copy)NSString*paymentPrice;
-@property(nonatomic,strong)NSArray*priceOrderArray;
+@property(nonatomic,strong)NSMutableArray*priceOrderArray;
 
 @property(nonatomic,strong)UILabel*okaneL;
 @property(nonatomic,strong)UIButton*kessanBtn;
@@ -43,8 +43,12 @@
 @property(nonatomic,copy)UITextField*tf;
 @property(nonatomic,retain) UITextView *cust_message;
 
+@property(nonatomic,unsafe_unretained) BOOL show_assure;
+
 @property(nonatomic,unsafe_unretained)BOOL show_deadline;
 @property(nonatomic,unsafe_unretained)BOOL self_pickup;
+
+@property(nonatomic,unsafe_unretained) BOOL assure_selected;
 
 //送货方式
 @property(nonatomic,strong)UIView*shadView;
@@ -75,7 +79,8 @@
 @property(nonatomic,copy)NSString*priceRed;
 
 @property(nonatomic,copy)NSString*defaultPayPrice;
-@property(nonatomic,unsafe_unretained)int ttPrice;
+@property(nonatomic,unsafe_unretained)float ttPrice;
+@property(nonatomic,unsafe_unretained)float assure_price;
 @property(nonatomic,strong)UILabel*ttLabel;
 
 //订单备注
@@ -95,14 +100,22 @@ NSInteger pay_type;
 -(void)viewWillAppear:(BOOL)animated
 {
     //判断是否返回错误信息（用来防止某些时间段不能付款）
-    [HttpEngine getCart:^(NSDictionary*allDic,NSArray *dataArray, NSString *totalPrice, NSString *shippingFee, NSString *paymentPrice,NSString*error)
+    /*[HttpEngine getCart:^(NSDictionary*allDic,NSArray *dataArray, NSString *totalPrice, NSString *shippingFee, NSString *paymentPrice,NSString*error)
      {
          if ([error isEqualToString:@""])
          {
              [self getdefaultAddress];
          }
          
-     }];
+     }];*/
+    
+    [HttpEngine checkout:^(NSDictionary *dict) {
+        
+        [self getdefaultAddress];
+        
+    } failure:^(NSError *error) {
+        
+    }];
 
     if (_defaultPayPrice)
     {
@@ -132,10 +145,12 @@ NSInteger pay_type;
     if(![_isTagRedPacket isEqualToString:@""])
     {
         _redStr=[NSString stringWithFormat:@"%@元红包",_isTagRedPacket];
-        _priceRed = _isTagRedPacket;
-        _ttPrice=[_paymentPrice intValue]-[_priceRed intValue];
-        _ttLabel.text=[NSString stringWithFormat:@"¥%d.00",_ttPrice];
-        _paymentPrice=[NSString stringWithFormat:@"%d",_ttPrice];
+        _priceRed = [NSString stringWithFormat:@"%.2f",[_isTagRedPacket floatValue]];
+        _ttPrice=[_paymentPrice floatValue]-[_priceRed intValue];
+        _ttPrice = MAX(0,_ttPrice);
+
+        _ttLabel.text=[NSString stringWithFormat:@"¥%.2f",_ttPrice];
+        _paymentPrice=[NSString stringWithFormat:@"%.2f",_ttPrice];
         _preferNo=_couponNo;
 
     }
@@ -246,18 +261,81 @@ NSInteger pay_type;
     [super viewDidLoad];
     self.title = @"确认订单";
     
+    self.assure_selected = false;
     pay_type = 0;
     _isTagRedPacket = @"";
     
     if (!_priceRed)
     {
-        _priceRed=@"0";
+        _priceRed=@"0.00";
     }
     _selfPickup = @"0";
     
+    self.show_assure = false;
+    
     MBProgressHUD *hud = [BWCommon getHUD];
+    
+    [HttpEngine checkout:^(NSDictionary *dict) {
+        
+        [hud removeFromSuperview];
+
+        NSArray*array=dict[@"cart_list"];
+        NSMutableArray*dataArray=[[NSMutableArray alloc]init];
+        for (int i=0; i<array.count; i++)
+        {
+            NSDictionary*dic=array[i];
+            ShopingCarDetail*shCa=[ShopingCarDetail ConsumerDetailDictionary:dic];
+            [dataArray addObject:shCa];
+        }
+        
+        _dataArray=dataArray;
+        _styleDic=dict;
+        _show_deadline = dict[@"show_deadline"];
+        _self_pickup = dict[@"self_pickup"];
+        
+        self.show_assure = [dict[@"show_assure"] boolValue];
+        
+        if (_show_deadline) {
+            NSArray*array=_styleDic[@"deadline"];
+            _distributionTimeStr=array[0];
+        }
+        if (self.show_assure)
+            self.assure_price = [[dict objectForKey:@"assure_price"] floatValue];
+
+        //float tprice = [totalPrice floatValue];
+        _totalPrice = [NSString stringWithFormat:@"%.2f",[[dict objectForKey:@"total_price"] floatValue]];
+        //_totalPrice=totalPrice;
+        //float fprice = [paymentPrice floatValue];z
+        _paymentPrice = [NSString stringWithFormat:@"%.2f",[[dict objectForKey:@"payment_price"] floatValue]];
+        _defaultPayPrice=_paymentPrice;
+        
+        _shippingFee=[NSString stringWithFormat:@"%.2f",[[dict objectForKey:@"shipping_fee"] floatValue]];
+        [self showTableView];
+        //NSString *warning_message = [dict objectForKey:@"warning_message"];
+        
+        NSString *tips_message = [dict objectForKey:@"tips_message"];
+        tips_message = @"";
+        if(![tips_message isEqualToString:@""])
+        {
+            UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:tips_message preferredStyle: UIAlertControllerStyleAlert];
+            UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"知道了" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action)
+                                     {
+                                         //[self.navigationController popViewControllerAnimated:YES];
+                                     }];
+            [alert addAction:defaultAction];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+        
+        
+
+        
+    } failure:^(NSError *error) {
+        
+        [hud removeFromSuperview];
+        
+    }];
     //获取错误信息  防止时间段不供应
-    [HttpEngine getCart:^(NSDictionary*allDic,NSArray *dataArray, NSString *totalPrice, NSString *shippingFee, NSString *paymentPrice,NSString*error)
+   /* [HttpEngine getCart:^(NSDictionary*allDic,NSArray *dataArray, NSString *totalPrice, NSString *shippingFee, NSString *paymentPrice,NSString*error)
     {
              [hud removeFromSuperview];
              if (![error isEqualToString:@""])
@@ -294,7 +372,7 @@ NSInteger pay_type;
         _shippingFee=shippingFee;
         [self showTableView];
         
-    }];
+    }]; */
     
 }
 
@@ -320,7 +398,7 @@ NSInteger pay_type;
          }
      }];
     _orderArray=[[NSArray alloc]initWithObjects:@"总价",@"配送费",@"花集红包", nil];
-    _priceOrderArray=[[NSArray alloc]initWithObjects:_totalPrice,_shippingFee,_priceRed, nil];
+    _priceOrderArray=[[NSMutableArray alloc]initWithObjects:_totalPrice,_shippingFee,_priceRed, nil];
     
     //配送方式字符串
     _styleStr=@"送货上门";
@@ -437,6 +515,10 @@ NSInteger pay_type;
     }else{
         [params setValue:@"0" forKey:@"self_pickup"];
         [params setValue:_addrId forKey:@"address_id"];
+    }
+    
+    if(self.assure_selected){
+        [params setValue:@"1" forKey:@"assure_flag"];
     }
     
     NSLog(@"create order post data: %@",params);
@@ -556,12 +638,14 @@ NSInteger pay_type;
 {
     if((section == 0 && !_self_pickup) || (section == 2 && !_show_deadline))
         return 0;
-
-    if (section==3||section==6)
+    
+    NSInteger case_base = self.show_assure ? 1 : 0;
+    
+    if (section==3||section==case_base+6)
     {
         return 3;
     }
-    if (section==7)
+    if (section==case_base+7)
     {
         return _dataArray.count;
     }
@@ -572,19 +656,21 @@ NSInteger pay_type;
     if((indexPath.section == 0 && !_self_pickup) || (indexPath.section == 2 && !_show_deadline))
         return 0;
     
+    NSInteger case_base = self.show_assure ? 1 : 0;
+    
     if (indexPath.section==1)
     {
         return 60;
     }
-    if (indexPath.section==5)
+    if (indexPath.section==case_base+5)
     {
         return 70;
     }
-    if (indexPath.section==6)
+    if (indexPath.section==case_base+6)
     {
         return 40;
     }
-    if (indexPath.section==7)
+    if (indexPath.section==case_base+7)
     {
         return 40;
     }
@@ -602,9 +688,23 @@ NSInteger pay_type;
         
     }
     
-    switch (indexPath.section)
+    NSInteger case_base = self.show_assure ? 1 : 0;
+    
+    if(self.show_assure && indexPath.section == 4)
     {
-        case 0:
+        cell.textLabel.text= [NSString stringWithFormat:@"时效金额(￥%.2f)",self.assure_price ];
+        cell.textLabel.font=[UIFont systemFontOfSize:14];
+        
+        if(self.assure_selected){
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        }else{
+            cell.accessoryType = UITableViewCellAccessoryNone;
+        }
+        //cell.accessoryType=UITableViewCellAccessoryCheckmark;
+        return cell;
+    }
+
+        if(indexPath.section==0)
         {
             _styleLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 5, 90, 30)];
             _styleLabel.text=_styleStr;
@@ -613,8 +713,7 @@ NSInteger pay_type;
             [cell addSubview:_styleLabel];
             cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
         }
-            break;
-        case 1:
+        else if(indexPath.section==1)
         {
            
         _distributionAddrsNameLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 5, 200, 25)];
@@ -640,9 +739,7 @@ NSInteger pay_type;
         }
             
         }
-            break;
-            
-        case 2:
+        else if(indexPath.section == 2)
         {
             _distributionLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 5, 160, 30)];
             _distributionLabel.text=_distributionTimeStr;
@@ -651,9 +748,7 @@ NSInteger pay_type;
             [cell addSubview:_distributionLabel];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
-            break;
-            
-        case 3:
+        else if(indexPath.section == 3)
         {
             PayTableViewCell *cell0 = [PayTableViewCell cellWithTableView:tableView];
             [cell0.iconImage setImage:[UIImage imageNamed:[NSString stringWithFormat:@"pay1-%lu.png",indexPath.row+1]]];
@@ -666,9 +761,7 @@ NSInteger pay_type;
             
             return cell0;
         }
-            break;
-            
-        case 4:
+        else if(indexPath.section == case_base+4)
         {
                 _redLabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 5, 120, 30)];
                 _redLabel.text=_redStr;
@@ -689,9 +782,7 @@ NSInteger pay_type;
             }
             
         }
-            break;
-            
-        case 5:
+        else if(indexPath.section == case_base+5)
         {
             _CustMessageTextV=[[UITextView alloc]initWithFrame:CGRectMake(10, 5, LBVIEW_WIDTH1-20,60)];
             _CustMessageTextV.layer.borderColor =[UIColor grayColor].CGColor;
@@ -701,16 +792,17 @@ NSInteger pay_type;
             self.cust_message = _CustMessageTextV;
             [cell addSubview:_CustMessageTextV];
         }
-            break;
-            
-        case 6:
+        else if(indexPath.section == case_base+6)
         {
             cell.textLabel.text=_orderArray[indexPath.row];
             cell.textLabel.font=[UIFont systemFontOfSize:14];
             UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(LBVIEW_WIDTH1-65, 0, LBVIEW_WIDTH1*0.2, 30)];
             if (indexPath.row==2)
             {
-                label.text=[NSString stringWithFormat:@"¥-%@",_priceRed];
+                if([_priceRed isEqualToString:@"0"])
+                    label.text=[NSString stringWithFormat:@"¥%@",_priceRed];
+                else
+                    label.text=[NSString stringWithFormat:@"¥-%@",_priceRed];
             }
             else
             {
@@ -720,8 +812,7 @@ NSInteger pay_type;
             [cell addSubview:label];
             cell.detailTextLabel.font = [UIFont systemFontOfSize:14];
         }
-            break;
-        case 7:
+        else if(indexPath.section == case_base+7)
         {
             ShopingCarDetail*spCa=_dataArray[indexPath.row];
             NSArray*detailArray=spCa.dataArray;
@@ -758,11 +849,7 @@ NSInteger pay_type;
             numLabel.font=[UIFont systemFontOfSize:14];
             [cell addSubview:numLabel];
         }
-            break;
-            
-        default:
-            break;
-    }
+
     return cell;
 }
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -772,25 +859,40 @@ NSInteger pay_type;
         if (selfPickup==1) {
             [self cutAddress];
         }
-    }else
-        if(indexPath.section ==1){
+    }else if(indexPath.section ==1){
             if (_deliveryMethod!=SELF_PICKUP) {
               [self changeAddress];
             }
-        }else
-            if(indexPath.section == 2)
+    }else if(indexPath.section == 2)
             {
                 int showDeadline = [_styleDic[@"show_deadline"] intValue];
                 if (showDeadline) {
                     [self distributionTime];
                 }
             }
-            else
-                if (indexPath.section==3)
+    else if (indexPath.section==3)
                 {
                     pay_type = indexPath.row;
                     [tableView reloadData];
                 }
+    else if (indexPath.section==4 && self.show_assure)
+    {
+        self.assure_selected =!self.assure_selected;
+        
+        if(self.assure_selected){
+            NSString *_total_price = [NSString stringWithFormat:@"%.2f",[_totalPrice floatValue]+self.assure_price ];
+            _priceOrderArray=[[NSMutableArray alloc]initWithObjects:_total_price,_shippingFee,_priceRed, nil];
+            
+            _paymentPrice = [NSString stringWithFormat:@"%.2f",[_defaultPayPrice floatValue]+self.assure_price ];
+        }else{
+            _priceOrderArray=[[NSMutableArray alloc]initWithObjects:_totalPrice,_shippingFee,_priceRed, nil];
+            _paymentPrice = _defaultPayPrice;
+        }
+        
+        _ttLabel.text=[NSString stringWithFormat:@"实付款:  ¥%@",_paymentPrice];
+        
+        [tableView reloadData];
+    }
 }
 //切换配送方式
 -(void)cutAddress
@@ -841,6 +943,8 @@ NSInteger pay_type;
 //区数
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
+    if(self.show_assure)
+        return 9;
     
     return 8;
 }
@@ -852,7 +956,12 @@ NSInteger pay_type;
     if((section == 0 && !_self_pickup) || (section == 2 && !_show_deadline))
         return view;
     
-    NSArray*array=[[NSArray alloc]initWithObjects:@"配送方式",@"配送地址",@"配送时间",@"支付方式",@"花集红包",@"订单备注",@"订单价格",@"商品清单", nil];
+    
+    NSMutableArray *array=[[NSMutableArray alloc]initWithObjects:@"配送方式",@"配送地址",@"配送时间",@"支付方式",@"花集红包",@"订单备注",@"订单价格",@"商品清单", nil];
+    
+    if(self.show_assure){
+        array=[[NSMutableArray alloc]initWithObjects:@"配送方式",@"配送地址",@"配送时间",@"支付方式",@"时效保障计划",@"花集红包",@"订单备注",@"订单价格",@"商品清单", nil];
+    }
     UILabel*label=[[UILabel alloc]initWithFrame:CGRectMake(10, 5, 150, 20)];
     label.text=array[section];
     [label setFont:NJTitleFont];
@@ -910,15 +1019,15 @@ NSInteger pay_type;
     labelp.font=[UIFont systemFontOfSize:14];
     [view addSubview:labelp];
     
-    if (section==6)
-    {
+    if((self.show_assure && section == 7) || (!self.show_assure && section==6))
         return view;
-    }
+    
+
     return nil;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    if (section==6)
+    if((self.show_assure && section == 7) || (!self.show_assure && section==6))
     {
         return 40;
     }

@@ -337,7 +337,7 @@
     }
     else if (indexPath.row==8)
     {
-        NSString*str=@"客服电话 0571-28002289";
+        NSString*str=@"客服电话 0571-28009985";
         UIFont*font=[UIFont systemFontOfSize:14];
         CGSize size=[str boundingRectWithSize:CGSizeMake(400, 20) options: NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
         
@@ -346,7 +346,7 @@
         [cell addSubview:self.phoneImageV];
         
         self.phoneLabel = [[UILabel alloc] initWithFrame:CGRectMake((VIEW_WIDTH-size.width-VIEW_WIDTH * 0.05-5)/2+VIEW_WIDTH * 0.05+5, VIEW_HEIGHT * 0.02,size.width, VIEW_HEIGHT * 0.035)];
-        self.phoneLabel.text = @"客服电话 0571-28002289";
+        self.phoneLabel.text = str;
         self.phoneLabel.textColor = [UIColor redColor];
         self.phoneLabel.textAlignment=NSTextAlignmentCenter;
         self.phoneLabel.font = NJTitleFont;
@@ -500,7 +500,7 @@
                               }];
         UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action)
                               {
-                                  NSString *allString = [NSString stringWithFormat:@"tel://057128980809"];
+                                  NSString *allString = [NSString stringWithFormat:@"tel://057128009985"];
                                   [[UIApplication sharedApplication] openURL:[NSURL URLWithString:allString]];
                               }];
         [alert addAction:cancel];

@@ -3,7 +3,7 @@
 # Uncomment this line if you're using Swift
 # use_frameworks!
 
-platform :ios,'7.0' 
+platform :ios,'8.0' 
 
 target 'HJApp' do
 pod 'AFNetworking','~>3.0.4'
@@ -12,7 +12,7 @@ pod 'SVPullToRefresh','~>0.4.1'
 pod 'SDWebImage','~>3.7.3'
 pod 'FMDB','~>2.5'
 pod 'WSProgressHUD','~> 1.0.9'
-
+pod 'MWPhotoBrowser', '~> 2.1.1'
 end
 
 target 'HJAppTests' do

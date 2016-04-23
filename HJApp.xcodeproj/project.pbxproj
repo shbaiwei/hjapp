@@ -177,6 +177,10 @@
 		323648B21BFC279E007D6EF5 /* MessageCenterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 323648B01BFC279E007D6EF5 /* MessageCenterViewController.m */; };
 		323648B31BFC279E007D6EF5 /* MessageCenterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 323648B11BFC279E007D6EF5 /* MessageCenterViewController.xib */; };
 		323648B61BFC2F31007D6EF5 /* MessageDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 323648B51BFC2F31007D6EF5 /* MessageDetailViewController.m */; };
+		3242A2B91CA6EA1100BAF7BF /* OrderAddComplainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3242A2B01CA6EA1100BAF7BF /* OrderAddComplainViewController.m */; };
+		3242A2BA1CA6EA1100BAF7BF /* OrderExpressTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3242A2B21CA6EA1100BAF7BF /* OrderExpressTableViewCell.m */; };
+		3242A2BB1CA6EA1100BAF7BF /* OrderExpressTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3242A2B41CA6EA1100BAF7BF /* OrderExpressTableViewController.m */; };
+		3242A2BC1CA6EA1100BAF7BF /* OrderExpressTableViewFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 3242A2B61CA6EA1100BAF7BF /* OrderExpressTableViewFrame.m */; };
 		3242B1331BE70C4700B29989 /* GetPic.m in Sources */ = {isa = PBXBuildFile; fileRef = 3242B1321BE70C4700B29989 /* GetPic.m */; };
 		3244216A1C0A911500CA943A /* ChangeSexViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 324421691C0A911500CA943A /* ChangeSexViewController.m */; };
 		3244216D1C0AF3F300CA943A /* DistributionStyleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3244216C1C0AF3F300CA943A /* DistributionStyleViewController.m */; };
@@ -494,6 +498,14 @@
 		323648B11BFC279E007D6EF5 /* MessageCenterViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageCenterViewController.xib; sourceTree = "<group>"; };
 		323648B41BFC2F31007D6EF5 /* MessageDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageDetailViewController.h; sourceTree = "<group>"; };
 		323648B51BFC2F31007D6EF5 /* MessageDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageDetailViewController.m; sourceTree = "<group>"; };
+		3242A2AF1CA6EA1100BAF7BF /* OrderAddComplainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderAddComplainViewController.h; sourceTree = "<group>"; };
+		3242A2B01CA6EA1100BAF7BF /* OrderAddComplainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderAddComplainViewController.m; sourceTree = "<group>"; };
+		3242A2B11CA6EA1100BAF7BF /* OrderExpressTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderExpressTableViewCell.h; sourceTree = "<group>"; };
+		3242A2B21CA6EA1100BAF7BF /* OrderExpressTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderExpressTableViewCell.m; sourceTree = "<group>"; };
+		3242A2B31CA6EA1100BAF7BF /* OrderExpressTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderExpressTableViewController.h; sourceTree = "<group>"; };
+		3242A2B41CA6EA1100BAF7BF /* OrderExpressTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderExpressTableViewController.m; sourceTree = "<group>"; };
+		3242A2B51CA6EA1100BAF7BF /* OrderExpressTableViewFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderExpressTableViewFrame.h; sourceTree = "<group>"; };
+		3242A2B61CA6EA1100BAF7BF /* OrderExpressTableViewFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderExpressTableViewFrame.m; sourceTree = "<group>"; };
 		3242B1311BE70C4700B29989 /* GetPic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetPic.h; sourceTree = "<group>"; };
 		3242B1321BE70C4700B29989 /* GetPic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetPic.m; sourceTree = "<group>"; };
 		324421681C0A911500CA943A /* ChangeSexViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChangeSexViewController.h; sourceTree = "<group>"; };
@@ -770,9 +782,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32DE56E51C0851AC007F520C /* libWeChatSDK.a in Frameworks */,
 				32E5122E1C05ABAB00D08F02 /* libsqlite3.tbd in Frameworks */,
 				322695061BF42C7900955170 /* libz.tbd in Frameworks */,
-				32DE56E51C0851AC007F520C /* libWeChatSDK.a in Frameworks */,
 				322695041BF42C6B00955170 /* libc++.tbd in Frameworks */,
 				32EFB1DB1BF48C730065B475 /* libssl.a in Frameworks */,
 				322695021BF42C4F00955170 /* CoreMotion.framework in Frameworks */,
@@ -1161,6 +1173,14 @@
 		32B49B8D1BE30E0100AB6D55 /* OrderPage */ = {
 			isa = PBXGroup;
 			children = (
+				3242A2AF1CA6EA1100BAF7BF /* OrderAddComplainViewController.h */,
+				3242A2B01CA6EA1100BAF7BF /* OrderAddComplainViewController.m */,
+				3242A2B11CA6EA1100BAF7BF /* OrderExpressTableViewCell.h */,
+				3242A2B21CA6EA1100BAF7BF /* OrderExpressTableViewCell.m */,
+				3242A2B31CA6EA1100BAF7BF /* OrderExpressTableViewController.h */,
+				3242A2B41CA6EA1100BAF7BF /* OrderExpressTableViewController.m */,
+				3242A2B51CA6EA1100BAF7BF /* OrderExpressTableViewFrame.h */,
+				3242A2B61CA6EA1100BAF7BF /* OrderExpressTableViewFrame.m */,
 				32B49B9A1BE30EDA00AB6D55 /* OrderPageViewController.h */,
 				32B49B9B1BE30EDA00AB6D55 /* OrderPageViewController.m */,
 				32B49B9C1BE30EDA00AB6D55 /* OrderPageViewController.xib */,
@@ -1550,11 +1570,12 @@
 		32B49B491BE30CE400AB6D55 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0710;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "shanghai baiwei network technology";
 				TargetAttributes = {
 					32B49B501BE30CE400AB6D55 = {
 						CreatedOnToolsVersion = 7.1;
+						DevelopmentTeam = EFW772SY3Z;
 					};
 					32B49B691BE30CE500AB6D55 = {
 						CreatedOnToolsVersion = 7.1;
@@ -1866,6 +1887,7 @@
 				32DDC1131BEC7A6400649AE5 /* MyButton.m in Sources */,
 				32EFB1D41BF48C530065B475 /* NSDataEx.m in Sources */,
 				32D0317A1BE9B99A008CAC2B /* OderTableViewCell.m in Sources */,
+				3242A2BB1CA6EA1100BAF7BF /* OrderExpressTableViewController.m in Sources */,
 				3257DC6C1C0D5E24001BC879 /* MyHJTableViewCell.m in Sources */,
 				3244216D1C0AF3F300CA943A /* DistributionStyleViewController.m in Sources */,
 				32B49CC41BE37BB500AB6D55 /* HttpEngine.m in Sources */,
@@ -1885,6 +1907,7 @@
 				32E4DD801BEAF64B00EFC9C3 /* AssortTableViewCell.m in Sources */,
 				325AC5DC1BE7407400408525 /* LoginViewController.m in Sources */,
 				32D0317E1BE9CD8A008CAC2B /* orderDetail.m in Sources */,
+				3242A2BA1CA6EA1100BAF7BF /* OrderExpressTableViewCell.m in Sources */,
 				32EFB1D11BF48C530065B475 /* DataSigner.m in Sources */,
 				32B49B931BE30E9C00AB6D55 /* HomePageViewController.m in Sources */,
 				32DE56E01C08041D007F520C /* ShopingCarDetail.m in Sources */,
@@ -1895,6 +1918,7 @@
 				320697911C02DA8700E77750 /* HZAreaPickerView.m in Sources */,
 				32DDC1271BECB43900649AE5 /* ChangCityViewController.m in Sources */,
 				32F877C61C0B065B00CC9C3A /* MyPropBtn.m in Sources */,
+				3242A2BC1CA6EA1100BAF7BF /* OrderExpressTableViewFrame.m in Sources */,
 				32E512351C05AD4D00D08F02 /* GroupTableModel.m in Sources */,
 				32EFB1D51BF48C530065B475 /* openssl_wrapper.m in Sources */,
 				32DDC0FA1BEC389100649AE5 /* AdressViewController.m in Sources */,
@@ -1917,6 +1941,7 @@
 				32B49B591BE30CE400AB6D55 /* AppDelegate.m in Sources */,
 				32EFB1D31BF48C530065B475 /* MD5DataSigner.m in Sources */,
 				32EFB1D21BF48C530065B475 /* DataVerifier.m in Sources */,
+				3242A2B91CA6EA1100BAF7BF /* OrderAddComplainViewController.m in Sources */,
 				32DDC1221BECAB1400649AE5 /* FlowerTableViewCell.m in Sources */,
 				3262ABF41C7ECA3000149B0B /* ShopV.m in Sources */,
 				325AC5E11BE7412800408525 /* RegisterViewController.m in Sources */,
@@ -2047,6 +2072,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: ZHEJIANG HUAJIWANG TECHNOLOGY Co., Ltd. (EFW772SY3Z)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -2062,7 +2088,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "8134e129-c8cc-4078-8539-94313d793694";
+				OTHER_LDFLAGS = "";
+				PROVISIONING_PROFILE = "27178ebf-4970-4007-b831-ec9556d466c5";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -2086,19 +2113,20 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = HJApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/SDKExport",
-					/Users/HJApp/SDKExport,
 				);
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.huaji.HJApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SDKROOT = iphoneos7.0;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
+				VALID_ARCHS = "arm64 armv7 armv7s x86_64";
 			};
 			name = Debug;
 		};
@@ -2120,19 +2148,19 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = HJApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/SDKExport",
-					/Users/HJApp/SDKExport,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.huaji.HJApp;
 				PRODUCT_NAME = "花集进货";
-				PROVISIONING_PROFILE = "8134e129-c8cc-4078-8539-94313d793694";
-				SDKROOT = iphoneos7.0;
+				PROVISIONING_PROFILE = "27178ebf-4970-4007-b831-ec9556d466c5";
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
+				VALID_ARCHS = "arm64 armv7 armv7s x86_64";
 			};
 			name = Release;
 		};

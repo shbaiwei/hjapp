@@ -174,14 +174,18 @@
         NSString*valueStr=[NSString stringWithFormat:@"%d",100-value];
         _shippingFee=[NSString stringWithFormat:@"运费10元(差%@元免配送)",valueStr];
     }
+    //临时先去除运费显示
+    _shippingFee = @"";
+    
     UIFont*font1=[UIFont systemFontOfSize:12];
     CGSize size1=[_shippingFee boundingRectWithSize:CGSizeMake(LBVIEW_WIDTH1, LBVIEW_HEIGHT1 / 15) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font1} context:nil].size;
     _shippingFeeLabel.frame=CGRectMake(10+size.width, (LBVIEW_HEIGHT1/13-LBVIEW_HEIGHT1/15)/2, size1.width, LBVIEW_HEIGHT1/15);
     _shippingFeeLabel.font=font1;
     _shippingFeeLabel.text=_shippingFee;
     
-    
 }
+
+
 -(void)gotopayAction
 {
     NSString*str=[[NSUserDefaults standardUserDefaults]objectForKey:@"TOKEN_KEY"];
@@ -193,19 +197,34 @@
         return;
     }
     
-    [HttpEngine getSimpleCart:^(NSArray *array) {
-       
+    [HttpEngine checkout:^(NSDictionary *dict) {
+        
+        NSLog(@"checkout : %@",dict);
+        
+        NSArray *array = [dict objectForKey:@"cart_list"];
+        
+        NSString *warning_message = [dict objectForKey:@"warning_message"];
+        if(![warning_message isEqualToString:@""]){
+            
+            [self customAlert:warning_message];
+            return;
+        }
+        
         if (array.count==0)
         {
             self.tbBarVC.selectedIndex=1;
         }
         else
         {
-        PayViewController*payVC=[[PayViewController alloc]init];
-        payVC.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:payVC animated:YES];
+            PayViewController*payVC=[[PayViewController alloc]init];
+            payVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:payVC animated:YES];
         }
+    } failure:^(NSError *error) {
+        
+        NSLog(@"checkout error: %@",error);
     }];
+    
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -424,6 +443,10 @@
              NSString*valueStr=[NSString stringWithFormat:@"%d",100-price];
              _shippingFee=[NSString stringWithFormat:@"运费10元(差%@元免配送)",valueStr];
          }
+         
+         //临时先去除运费显示
+         _shippingFee = @"";
+         
          UIFont*font1=[UIFont systemFontOfSize:12];
          CGSize size1=[_shippingFee boundingRectWithSize:CGSizeMake(LBVIEW_WIDTH1, LBVIEW_HEIGHT1 / 15) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font1} context:nil].size;
          self.shippingFeeLabel.text=_shippingFee;
@@ -449,6 +472,13 @@
                                      [self.navigationController pushViewController:changVC animated:YES];
                                  }];
 //  [alert addAction:cancel];
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+-(void) customAlert:(NSString *)message{
+    UIAlertController*alert=[UIAlertController alertControllerWithTitle:@"温馨提示" message:message preferredStyle: UIAlertControllerStyleAlert];
+    UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction*action){}];
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
 }

@@ -273,11 +273,31 @@
 
 }
 
+//产品分类 首页图标
++(void)getHomeNav:(void(^)(NSArray*dataArray))complete
+{
+    AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
+    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/goods-categories/nav/"];
+    [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        //NSLog(@"产品分类JSON:%@",responseObject);
+        NSArray*array=responseObject;
+        complete(array);
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"Error:%@",error);
+        
+    }];
+    
+    
+}
+
 //产品分类
 +(void)getAllFlower:(void(^)(NSArray*dataArray))complete
 {
     AFHTTPSessionManager*session=[AFHTTPSessionManager manager];
-    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/goods-categories/?ordering=-sort_order"];
+    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/goods-categories/?ordering=-sort_order&page_size=20"];
     [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -420,6 +440,27 @@
     
     
 }
+
++(void) checkout:(void (^)(NSDictionary *))complete failure:(void (^)(NSError *))failure
+{
+    AFHTTPSessionManager *session = [self getTokenManager];
+    NSString*str=[NSString stringWithFormat:@"http://hjapi.baiwei.org/cart/checkout/"];
+    [session GET:str parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dict = responseObject;
+        complete(dict);
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        //NSLog(@"checkout== Error:%@",error);
+        failure(error);
+        
+        //        NSDictionary*userInfo=error.userInfo;
+        //        NSString*errorStr=[self errorData:userInfo];
+        //        complete(nil,nil,@"",@"",@"",errorStr);
+    }];
+}
+
 //购物车列表
 +(void)getSimpleCart:(void(^)(NSArray*array))complete
 {
@@ -787,6 +828,28 @@
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         failure(error);
     }];
+
+}
+
++(void)cancelOrder:(NSString *)order uniqueid:(NSString *)uniqueid complete:(void (^)(NSArray *))complete failure:(void (^)(NSError *))failure
+{
+    AFHTTPSessionManager*session= [self getTokenManager];
+    NSString *str= [NSString stringWithFormat: @"http://hjapi.baiwei.org/orders/%@/updatestatus/",order];
+    
+    NSDictionary *params = [[NSDictionary alloc] init];
+    params=@{@"status":@"5",@"uniqueid":uniqueid};
+    
+    [session POST:str parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject)
+     {
+         NSArray*array=responseObject;
+         complete(array);
+     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        failure(error);
+     }];
 
 }
 

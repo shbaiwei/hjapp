@@ -160,19 +160,44 @@ static dispatch_once_t onceT;
         //NSLog(@"_isTag===%@",cid);
         page = 1;
         
-        NSInteger tag = [isTagStr integerValue];
+        NSInteger tag = 0;//[isTagStr integerValue];
+        
+        for(int i=0;i<[_floerNameArray count];i++){
+            AllFlower *flower =_floerNameArray[i];
+            
+            //NSLog(@"%@ %@",flower.flowerId,cid);
+            NSInteger flowerId = [flower.flowerId integerValue];
+            if(flowerId == [cid integerValue]){
+                tag = i;
+                NSLog(@"selected %@ %@",flower.flowerId,cid);
+                break;
+            }
+        }
+        
+        
+        //NSLog(@"left array:%@",_floerNameArray);
         
         //临时用于对应table数组
-        if(tag == 1){
+        /*if(tag == 1){
             tag = 0;
         }else {
+            
             if(tag>13) {
                 tag -=13;
             }
-                else{
-                    tag -= 4;
-                }
-        }
+            else if(tag == 8){
+                tag -=3;
+            }
+            else if(tag == 9){
+                tag -=2;
+            }
+            else if(tag == 10){
+                tag -=2;
+            }
+            else if(tag == 11){
+                tag -=5;
+            }
+        }*/
         
         NSIndexPath *index1 = [NSIndexPath indexPathForItem:tag inSection:0];
         
@@ -1264,11 +1289,11 @@ static dispatch_once_t onceT;
             NSDictionary*dic=flow.dataArray[0];
             CGFloat price = 99999.0f;
             for(int i=0;i<[flow.dataArray count];i++){
-                price = MIN(price,[[flow.dataArray[0] objectForKey:@"price"] floatValue]);
+                price = MIN(price,[[flow.dataArray[i] objectForKey:@"price"] floatValue]);
             }
             if (flow.dataArray.count>1)
             {
-                picLabel.text=[NSString stringWithFormat:@"¥%f 起",price];
+                picLabel.text=[NSString stringWithFormat:@"¥%0.2f 起",price];
             }
             else
             {

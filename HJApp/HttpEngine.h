@@ -71,6 +71,8 @@
 +(void)momodifyPasswordUser:(NSString*)user withPassword:(NSString*)password complete:(void(^)(NSString*fail))complete;
 
 
++(void)getHomeNav:(void(^)(NSArray*dataArray))complete;
+
 //产品分类
 +(void)getAllFlower:(void(^)(NSArray*dataArray))complete;
 
@@ -83,6 +85,8 @@
 
 //购物车详细列表
 +(void)getCart:(void(^)(NSDictionary*allDic,NSArray*dataArray,NSString*totalPrice,NSString*shippingFee,NSString*paymentPrice,NSString*error))complete;
+
++(void)checkout:(void(^)(NSDictionary*dict))complete failure:(void (^)(NSError *error))failure;
 
 //购物车列表
 +(void)getSimpleCart:(void(^)(NSArray*array))complete;
@@ -111,6 +115,8 @@
 +(void)detailOrder:(NSString*)idStr completion:(void(^)(NSDictionary*dataDic))complete;
 //再次购买
 +(void)anginBuy:(NSString*)order complete:(void(^)(void))complete;
+
++(void)cancelOrder:(NSString*)order uniqueid:(NSString*)uniqueid complete:(void(^)(NSArray*array))complete failure:(void (^)(NSError *error))failure;
 
 +(void)queryOrderExpress:(NSString *)order_no complete:(void(^)(NSArray*array))complete failure:(void (^)(NSError *error))failure;
 

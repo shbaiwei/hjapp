@@ -547,7 +547,9 @@
     {
         btnNumber+=1;
         MyButton *btnCancel = [self createMenuButton:@"取消订单"];
+        btnCancel.tag = section;
         btnCancel.frame = CGRectMake(VIEW_WIDTH-btnGap * btnNumber, padding+25, btnWidth, btnHeight);
+        [btnCancel addTarget:self action:@selector(cancelTouched:) forControlEvents:UIControlEventTouchUpInside];
         
         btnNumber+=1;
         MyButton *btnPay = [self createMenuButton:@"支付"];
@@ -636,7 +638,40 @@
     [self.navigationController pushViewController:addComplainVC animated:YES];
 }
 
+-(void) cancelTouched:(UIButton *)sender{
+    
+    NSDictionary*dic=_dataArray[sender.tag];
+    NSString *order_no=[dic objectForKey:@"order_no"];
+    NSString *uniqueid = [dic objectForKey:@"to_florist_uid"];
+    __weak OrderPageViewController *weakSelf = self;
+    
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"系统提醒" message:@"确定要取消此订单吗？" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction*cancelAction=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action){
+        return;
+    }];
+    [alertController addAction:cancelAction];
+    
+    UIAlertAction*defaultAction=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action){
+        
+        
+        [HttpEngine cancelOrder:order_no uniqueid:uniqueid complete:^(NSArray *array) {
+            //[_tableView reloadData];
+            [weakSelf insertRowAtTop];
+        } failure:^(NSError *error) {
+            //[_tableView reloadData];
+            [weakSelf insertRowAtTop];
+        }];
+        
+    }];
+    [alertController addAction:defaultAction];
+    
+    [self presentViewController:alertController animated:YES completion:^{}];
+    
+
+}
+
 -(void) expressTouched:(UIButton *)sender{
+
     
     NSDictionary*dic=_dataArray[sender.tag];
     NSString *order_no=[dic objectForKey:@"order_no"];

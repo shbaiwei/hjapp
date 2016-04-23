@@ -422,6 +422,11 @@ NSString *trackViewURL;
         
         NSURL*urlStr=[NSURL URLWithString:getpic.pictureUrlStr];
         [scrollImage sd_setImageWithURL:urlStr];
+        
+        scrollImage.userInteractionEnabled = YES;
+        scrollImage.tag = 1;
+        UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(adClick:)];
+        [scrollImage addGestureRecognizer:singleTap];
         j++;
     }
     
@@ -474,7 +479,13 @@ NSString *trackViewURL;
 - (UIButton*) createFlowerIcon:(NSString *)image category:(NSInteger) cid title:(NSString *) title
 {
     UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
-    UIImage *newImage = [UIImage imageNamed: image];
+    //image url = http://jinhuo.huaji.com/static/images/index-{image}.png
+    
+    //NSLog(@"nav icon: %@",[NSString stringWithFormat:@"http://jinhuo.huaji.com/static/images/index-%@.png",image]);
+    NSURL*urlStr=[NSURL URLWithString:[NSString stringWithFormat:@"http://jinhuo.huaji.com/static/images/index-%@.png",image]];
+    //[cell.leftImageV sd_setImageWithURL:urlStr];
+    NSData *imageData = [[NSData alloc] initWithContentsOfURL:urlStr];
+    UIImage *newImage = [UIImage imageWithData:imageData];
     //newImage = [newImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     [button setBackgroundImage:newImage forState:UIControlStateNormal];
     [button setTitle:title forState:UIControlStateNormal];
@@ -500,42 +511,24 @@ NSString *trackViewURL;
     CGFloat firstColumnsY = main_size.height * 0.02;
     CGFloat secondColumnsY = iconW + 20 + firstColumnsY * 2;
     
-    self.roseButton = [self createFlowerIcon:@"index_meigui" category:1 title:@"玫瑰"];
-    self.roseButton.frame = CGRectMake(main_size.width/13, firstColumnsY, iconW, iconW);
-    [self.flowerView addSubview:self.roseButton];
-    
-    self.baiheButton = [self createFlowerIcon:@"index_baihe" category:5 title:@"百合"];
-    self.baiheButton.frame = CGRectMake(4*main_size.width/13, firstColumnsY, iconW, iconW);
-    [self.flowerView addSubview:self.baiheButton];
-    
-    
-    self.KNXButton = [self createFlowerIcon:@"index_kangnaixing" category:6 title:@"康乃馨"];
-    self.KNXButton.frame = CGRectMake(7*main_size.width/13, firstColumnsY,  iconW,iconW);
-    [self.flowerView addSubview:self.KNXButton];
-    
-    
-    self.DTJButton = [self createFlowerIcon:@"index_duotouju" category:7 title:@"多头菊"];
-    self.DTJButton.frame = CGRectMake(10*main_size.width/13, firstColumnsY,  iconW, iconW);
-    [self.flowerView addSubview:self.DTJButton];
-    
-    
-    self.huacaoButton = [self createFlowerIcon:@"index_peihuapeicao" category:8 title:@"配花配草"];
-    self.huacaoButton.frame = CGRectMake(main_size.width/13, secondColumnsY, iconW,iconW);
-    [self.flowerView addSubview:self.huacaoButton];
-    
-    
-    self.baoButton = [self createFlowerIcon:@"index_baozhuangzicai" category:9 title:@"包装资材"];
-    self.baoButton.frame = CGRectMake(4*main_size.width/13, secondColumnsY, iconW,  iconW);
-    [self.flowerView addSubview:self.baoButton];
-    
-    self.yshButton = [self createFlowerIcon:@"index_yongshenghua" category:10 title:@"永生花"];
-    self.yshButton.frame = CGRectMake(7*main_size.width/13, secondColumnsY,  iconW,iconW);
-    [self.flowerView addSubview:self.yshButton];
-    
-    self.jkhButton = [self createFlowerIcon:@"index_jinkouhua" category:11 title:@"进口花"];
-    
-    self.jkhButton.frame = CGRectMake(10*main_size.width/13, secondColumnsY, iconW,iconW);
-    [self.flowerView addSubview:self.jkhButton];
+    [HttpEngine getHomeNav:^(NSArray *dataArray) {
+        for (int i=0; i<[dataArray count]; i++) {
+            NSString *icon = [dataArray[i] objectForKey:@"alias"];
+            NSInteger category = [[dataArray[i] objectForKey:@"id"] integerValue];
+            NSString *title = [dataArray[i] objectForKey:@"name"];
+            UIButton *navButton = [self createFlowerIcon:icon category:category title:title];
+            
+            if(i < 4){
+                NSInteger pos = i * 3 + 1 ;
+                navButton.frame = CGRectMake(pos * main_size.width/13, firstColumnsY, iconW, iconW);
+            }else{
+                NSInteger pos = (i-4) * 3 + 1 ;
+                navButton.frame = CGRectMake(pos * main_size.width/13, secondColumnsY, iconW, iconW);
+            }
+            [self.flowerView addSubview:navButton];
+        }
+    }];
+
 
     
 }
@@ -544,6 +537,12 @@ NSString *trackViewURL;
      NSString*isTag=[NSString stringWithFormat:@"%lu",sender.tag];
     [[NSUserDefaults standardUserDefaults]setObject:isTag forKey:@"TWOTAG"];
      self.tabBarVC.selectedIndex=1;
+}
+
+-(void)adClick:(id*)sender{
+    NSString*isTag=@"1";
+    [[NSUserDefaults standardUserDefaults]setObject:isTag forKey:@"TWOTAG"];
+    self.tabBarVC.selectedIndex=1;
 }
 
 // VIEW_WIDTH/15 * 2+10+ 20 + VIEW_HEIGHT * 0.02 * 2;
